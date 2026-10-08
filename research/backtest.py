@@ -202,3 +202,44 @@ def backtest_m1(df, m1, cfg: Cfg, tf_minutes, setups=None):
                            trend_atr=trend, entry=ep, stop=stop, R_usd=R, exit=why, pnl_usd=pnl, pnl_R=pnl / R))
         busy = mt[xi]
     return pd.DataFrame(trades)
+
+
+def backtest_bars(df, cfg: Cfg, setups, overlap=False):
+    """沒有 M1 時，只用同週期 K 棒模擬的保守版本：
+    突破進場那根若也碰到停損 → 算進場後被停損；進場那根不給停利；同根同時碰停損停利 → 停損。"""
+    o, h, l, c, atr, spr = _arrays(df)
+    n = len(df)
+    trades, busy = [], -1
+    for t, s, kind, ext, A, trend in setups:
+        if t <= busy and not overlap:
+            continue
+        stop = ext - s * cfg.buf * A
+        trig = h[t] if s == 1 else l[t]
+        ei = None
+        for j in range(t + 1, min(t + 1 + cfg.wait, n)):
+            up = h[j] > trig if s == 1 else l[j] < trig
+            dn = l[j] <= stop if s == 1 else h[j] >= stop
+            if up:
+                ei, ep = j, (max(trig, o[j]) if s == 1 else min(trig, o[j]))
+                break
+            if dn:
+                break
+        if ei is None:
+            continue
+        R = s * (ep - stop)
+        tgt = ep + s * cfg.tp * R
+        xi, why = None, "time"
+        for j in range(ei, min(ei + 1 + cfg.hold, n)):
+            hs = l[j] <= stop if s == 1 else h[j] >= stop
+            ht = (h[j] >= tgt if s == 1 else l[j] <= tgt) and j > ei
+            if hs:
+                xi, xp, why = j, (stop if j == ei else (min(stop, o[j]) if s == 1 else max(stop, o[j]))), "stop"; break
+            if ht:
+                xi, xp, why = j, tgt, "tp"; break
+        if xi is None:
+            xi = min(ei + cfg.hold, n - 1); xp = c[xi]
+        pnl = s * (xp - ep) - spr[ei]
+        trades.append(dict(setup=df.index[t], t=t, entry_time=df.index[ei], exit_time=df.index[xi], side=s, kind=kind,
+                           trend_atr=trend, entry=ep, stop=stop, R_usd=R, exit=why, pnl_usd=pnl, pnl_R=pnl / R))
+        busy = xi
+    return pd.DataFrame(trades)
