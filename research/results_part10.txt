@@ -1,0 +1,263 @@
+====================================================================================================
+資料： 2026-01-02 01:00:00 ~ 2026-10-08 13:50:00  交易日數 191 （4/3~4/14 缺資料）
+VA 寬度 / σ_TPO：中位數 2.21（常態 70% = 2.07）；POC 與 μ 的距離 / σ：中位數 0.43
+日波幅中位數 100.1，ATR10 中位數 107.7
+
+範例 TPO 字母圖 2026-10-06  POC 4164.5 VAH 4175.0 VAL 4132.0 IB 4140.8~4145.4（| = IB 範圍）
+    4184   q                                             
+    4182   q                                             
+    4180   q                                             
+    4178   cq                                            
+    4176   cdpq                                          
+    4174   bcdepq                                         <VAH
+    4172   bdeopqr                                       
+    4170   bdejoprs                                      
+    4168   bdejoprs                                      
+    4166   bdejnoprs                                     
+    4164   abefijkmnost                                   <POC
+    4162   aefijkmnst                                    
+    4160   Zafiklmn                                      
+    4158   XZafgilm                                      
+    4156   WXZafghilm                                    
+    4154   VWXYZfghl                                     
+    4152   GVWXYfgh                                      
+    4150   FGVWXYgh                                      
+    4148   FGVgh                                         
+    4146   FGUVgh                                        
+    4144 | ABFGUgh                                       
+    4142 | ABFGSU                                        
+    4140   BCDEFGSTU                                     
+    4138   CDEFGHJSTU                                    
+    4136   DEFGHJST                                      
+    4134   DEHJQRST                                      
+    4132   HJKLQRS                                        <VAL
+    4130   HIJKLMQRS                                     
+    4128   HIJKLMNQS                                     
+    4126   IJKLMNOQ                                      
+    4124   JLNOPQ                                        
+    4122   JNOPQ                                         
+    4120   JNOPQ                                         
+    4118   JPQ                                           
+    4116   JPQ                                           
+    4114   JQ                                            
+    4112   J                                             
+    4110   J                                             
+    4108   J                                             
+    4106   J                                             
+    4104   J                                             
+
+====================================================================================================
+[ASIA] IB = broker 01:00 起 60 分鐘；事件 189 天
+  IB 區間中位數 16.3（0.14 ATR）；IB 後有延伸：任一邊 99%、兩邊都延伸 71%
+  當天最終 POC 落在 IB 內的比例 29%
+  延伸倍數（IB 單位）分位數 ext_max： {0.25: 2.23, 0.5: 4.33, 0.75: 7.76, 0.9: 12.37}
+
+  (a) IB z-score → 後續延伸（IB 單位）與剩餘波幅（ATR）
+  ib_z 分組：
+              z<-1 n= 40  ext_max=+8.66  ext_sum=+10.78  rest_range=+0.87  poc_in_ib=+0.35
+           -1~-0.3 n= 42  ext_max=+6.94  ext_sum=+8.31  rest_range=+0.92  poc_in_ib=+0.19
+          -0.3~0.3 n= 34  ext_max=+5.82  ext_sum=+6.64  rest_range=+1.05  poc_in_ib=+0.18
+             0.3~1 n= 26  ext_max=+2.62  ext_sum=+3.28  rest_range=+0.85  poc_in_ib=+0.46
+               z>1 n= 27  ext_max=+2.31  ext_sum=+2.57  rest_range=+1.09  poc_in_ib=+0.33
+  Spearman: ib_z vs ext_sum -0.65, ib_z vs rest_range(ATR) 0.11
+
+  (b) 首次突破 IB → 突破價進場、收盤出場、IB 另一側停損（brk_ret: ATR，brk_R: IB 區間）
+    全部： n=178 mean=+0.007 t=+0.25 | R: n=188 mean=+0.011 t=+0.07
+    H1： n= 85 mean=-0.004 t=-0.11
+    H2： n= 93 mean=+0.017 t=+0.45
+  ib_z 分組：
+        小IB z<-0.5 n= 72  brk_ret=-0.02  brk_R=-0.32
+                 中 n= 52  brk_ret=+0.03  brk_R=+0.23
+         大IB z>0.5 n= 45  brk_ret=+0.05  brk_R=+0.24
+    突破方向朝前日 μ（回價值）           n= 78 mean=+0.028 t=+0.74
+    突破方向遠離前日 μ（離開價值）         n=100 mean=-0.010 t=-0.25
+
+  (c) IB 相對前日價值區（loc）→ 收盤位置（IB 單位）、IB 後報酬（ATR）、首次突破方向
+    above_VA   n= 29 close_pos=-0.64 ret_close=-0.06 (t=-0.45) 首破向上=52% 碰前日POC=28%
+    overlap    n= 62 close_pos=+0.43 ret_close=+0.06 (t=+0.58) 首破向上=44% 碰前日POC=62%
+    inside_VA  n= 71 close_pos=-2.84 ret_close=-0.19 (t=-2.31) 首破向上=45% 碰前日POC=78%
+    below_VA   n= 27 close_pos=+2.55 ret_close=+0.07 (t=+0.49) 首破向上=59% 碰前日POC=44%
+
+  (d) 剖面 z（IB 結束時價格相對前日 TPO 分佈）→ 回到前日 POC 機率、到收盤報酬（ATR，正 = 往前日 μ 方向）
+  az 分組：
+           |z|<0.5 n= 46  poc_touch=+0.84  ret_to_mu=+0.11
+             0.5~1 n= 45  poc_touch=+0.76  ret_to_mu=+0.05
+             1~1.5 n= 37  poc_touch=+0.50  ret_to_mu=+0.03
+           1.5~2.5 n= 44  poc_touch=+0.43  ret_to_mu=+0.00
+              >2.5 n= 17  poc_touch=+0.24  ret_to_mu=+0.16
+    ret_to_mu |z|>1.5: n= 58 mean=+0.045 t=+0.46 | H1 n= 31 mean=+0.032 t=+0.24 | H2 n= 27 mean=+0.061 t=+0.42
+    ret_to_mu |z|<1: n= 84 mean=+0.080 t=+0.98 | H1 n= 40 mean=+0.082 t=+0.61 | H2 n= 44 mean=+0.077 t=+0.80
+
+  (f) 字母樹 z（價格所在列在前日剖面的 TPO 數 z）→ IB 後剩餘波幅（ATR）、首破延續
+    LVN薄   n= 41 rest_range=1.15  brk_ret n= 39 mean=+0.077 t=+0.96
+    中      n= 54 rest_range=1.02  brk_ret n= 52 mean=+0.031 t=+0.66
+    HVN厚   n= 75 rest_range=0.91  brk_ret n= 70 mean=-0.014 t=-0.40
+    前日區間外 n= 19 rest_range=1.06  brk_ret n= 17 mean=-0.141 t=-2.02
+
+====================================================================================================
+[LDN] IB = broker 10:00 起 60 分鐘；事件 190 天
+  IB 區間中位數 16.2（0.15 ATR）；IB 後有延伸：任一邊 100%、兩邊都延伸 66%
+  當天最終 POC 落在 IB 內的比例 60%
+  延伸倍數（IB 單位）分位數 ext_max： {0.25: 1.81, 0.5: 2.88, 0.75: 4.65, 0.9: 6.8}
+
+  (a) IB z-score → 後續延伸（IB 單位）與剩餘波幅（ATR）
+  ib_z 分組：
+              z<-1 n= 28  ext_max=+5.15  ext_sum=+6.53  rest_range=+0.68  poc_in_ib=+0.43
+           -1~-0.3 n= 43  ext_max=+3.94  ext_sum=+4.60  rest_range=+0.64  poc_in_ib=+0.63
+          -0.3~0.3 n= 43  ext_max=+3.13  ext_sum=+3.72  rest_range=+0.67  poc_in_ib=+0.65
+             0.3~1 n= 28  ext_max=+3.08  ext_sum=+3.53  rest_range=+0.76  poc_in_ib=+0.64
+               z>1 n= 28  ext_max=+2.49  ext_sum=+2.68  rest_range=+0.89  poc_in_ib=+0.46
+  Spearman: ib_z vs ext_sum -0.45, ib_z vs rest_range(ATR) 0.12
+
+  (b) 首次突破 IB → 突破價進場、收盤出場、IB 另一側停損（brk_ret: ATR，brk_R: IB 區間）
+    全部： n=180 mean=+0.039 t=+1.55 | R: n=190 mean=+0.027 t=+0.21
+    H1： n= 87 mean=+0.043 t=+1.10
+    H2： n= 93 mean=+0.036 t=+1.09
+  ib_z 分組：
+        小IB z<-0.5 n= 60  brk_ret=+0.00  brk_R=-0.07
+                 中 n= 67  brk_ret=-0.01  brk_R=-0.12
+         大IB z>0.5 n= 43  brk_ret=+0.17  brk_R=+0.74
+    突破方向朝前日 μ（回價值）           n= 80 mean=+0.038 t=+1.04
+    突破方向遠離前日 μ（離開價值）         n=100 mean=+0.040 t=+1.14
+
+  (c) IB 相對前日價值區（loc）→ 收盤位置（IB 單位）、IB 後報酬（ATR）、首次突破方向
+    above_VA   n= 47 close_pos=+0.88 ret_close=+0.07 (t=+1.02) 首破向上=60% 碰前日POC=11%
+    overlap    n= 41 close_pos=-2.48 ret_close=-0.23 (t=-2.98) 首破向上=51% 碰前日POC=50%
+    inside_VA  n= 57 close_pos=-0.26 ret_close=-0.02 (t=-0.35) 首破向上=35% 碰前日POC=69%
+    below_VA   n= 45 close_pos=+0.32 ret_close=+0.01 (t=+0.07) 首破向上=51% 碰前日POC=29%
+
+  (d) 剖面 z（IB 結束時價格相對前日 TPO 分佈）→ 回到前日 POC 機率、到收盤報酬（ATR，正 = 往前日 μ 方向）
+  az 分組：
+           |z|<0.5 n= 38  poc_touch=+0.71  ret_to_mu=+0.06
+             0.5~1 n= 38  poc_touch=+0.63  ret_to_mu=-0.01
+             1~1.5 n= 32  poc_touch=+0.36  ret_to_mu=-0.09
+           1.5~2.5 n= 35  poc_touch=+0.29  ret_to_mu=-0.05
+              >2.5 n= 47  poc_touch=+0.11  ret_to_mu=-0.06
+    ret_to_mu |z|>1.5: n= 75 mean=-0.054 t=-0.94 | H1 n= 42 mean=-0.024 t=-0.28 | H2 n= 33 mean=-0.091 t=-1.24
+    ret_to_mu |z|<1: n= 73 mean=+0.024 t=+0.42 | H1 n= 36 mean=+0.073 t=+0.90 | H2 n= 37 mean=-0.023 t=-0.28
+
+  (e) 發展中剖面 z（當天開盤到 IB 前的 TPO 分佈）→ 到收盤報酬（正 = 往發展中 μ）
+  adz 分組：
+             |z|<1 n= 92  ret_to_dev=-0.07  brk_ret=+0.03
+               1~2 n= 59  ret_to_dev=-0.20  brk_ret=+0.06
+               2~3 n= 32  ret_to_dev=+0.02  brk_ret=+0.02
+                >3 n=  7  ret_to_dev=+0.04  brk_ret=+0.06
+
+  (f) 字母樹 z（價格所在列在前日剖面的 TPO 數 z）→ IB 後剩餘波幅（ATR）、首破延續
+    LVN薄   n= 34 rest_range=0.83  brk_ret n= 30 mean=+0.093 t=+1.23
+    中      n= 47 rest_range=0.70  brk_ret n= 47 mean=+0.083 t=+1.39
+    HVN厚   n= 50 rest_range=0.73  brk_ret n= 47 mean=-0.016 t=-0.50
+    前日區間外 n= 59 rest_range=0.80  brk_ret n= 56 mean=+0.020 t=+0.46
+
+====================================================================================================
+[NY] IB = broker 15:30 起 60 分鐘；事件 190 天
+  IB 區間中位數 25.2（0.21 ATR）；IB 後有延伸：任一邊 96%、兩邊都延伸 48%
+  當天最終 POC 落在 IB 內的比例 60%
+  延伸倍數（IB 單位）分位數 ext_max： {0.25: 0.63, 0.5: 1.23, 0.75: 2.09, 0.9: 3.75}
+
+  (a) IB z-score → 後續延伸（IB 單位）與剩餘波幅（ATR）
+  ib_z 分組：
+              z<-1 n= 29  ext_max=+2.91  ext_sum=+3.45  rest_range=+0.50  poc_in_ib=+0.45
+           -1~-0.3 n= 51  ext_max=+2.13  ext_sum=+2.38  rest_range=+0.56  poc_in_ib=+0.65
+          -0.3~0.3 n= 32  ext_max=+1.52  ext_sum=+1.63  rest_range=+0.50  poc_in_ib=+0.59
+             0.3~1 n= 30  ext_max=+0.90  ext_sum=+0.97  rest_range=+0.58  poc_in_ib=+0.47
+               z>1 n= 28  ext_max=+0.36  ext_sum=+0.43  rest_range=+0.58  poc_in_ib=+0.71
+  Spearman: ib_z vs ext_sum -0.66, ib_z vs rest_range(ATR) 0.18
+
+  (b) 首次突破 IB → 突破價進場、收盤出場、IB 另一側停損（brk_ret: ATR，brk_R: IB 區間）
+    全部： n=173 mean=-0.018 t=-0.81 | R: n=183 mean=-0.055 t=-0.53
+    H1： n= 84 mean=+0.026 t=+0.71
+    H2： n= 89 mean=-0.060 t=-2.29
+  ib_z 分組：
+        小IB z<-0.5 n= 60  brk_ret=-0.03  brk_R=-0.13
+                 中 n= 60  brk_ret=-0.01  brk_R=+0.01
+         大IB z>0.5 n= 50  brk_ret=-0.09  brk_R=-0.29
+    突破方向朝前日 μ（回價值）           n= 70 mean=-0.036 t=-0.91
+    突破方向遠離前日 μ（離開價值）         n=103 mean=-0.006 t=-0.23
+
+  (c) IB 相對前日價值區（loc）→ 收盤位置（IB 單位）、IB 後報酬（ATR）、首次突破方向
+    above_VA   n= 52 close_pos=+0.19 ret_close=-0.02 (t=-0.39) 首破向上=67% 碰前日POC=10%
+    overlap    n= 56 close_pos=-0.18 ret_close=+0.02 (t=+0.42) 首破向上=48% 碰前日POC=45%
+    inside_VA  n= 38 close_pos=-1.20 ret_close=-0.06 (t=-0.98) 首破向上=42% 碰前日POC=73%
+    below_VA   n= 44 close_pos=-0.64 ret_close=-0.06 (t=-0.90) 首破向上=55% 碰前日POC=7%
+
+  (d) 剖面 z（IB 結束時價格相對前日 TPO 分佈）→ 回到前日 POC 機率、到收盤報酬（ATR，正 = 往前日 μ 方向）
+  az 分組：
+           |z|<0.5 n= 33  poc_touch=+0.72  ret_to_mu=+0.07
+             0.5~1 n= 21  poc_touch=+0.57  ret_to_mu=-0.01
+             1~1.5 n= 35  poc_touch=+0.23  ret_to_mu=-0.04
+           1.5~2.5 n= 33  poc_touch=+0.27  ret_to_mu=+0.10
+              >2.5 n= 68  poc_touch=+0.05  ret_to_mu=-0.04
+    ret_to_mu |z|>1.5: n= 94 mean=+0.002 t=+0.04 | H1 n= 47 mean=-0.035 t=-0.54 | H2 n= 47 mean=+0.038 t=+0.65
+    ret_to_mu |z|<1: n= 53 mean=+0.037 t=+0.58 | H1 n= 30 mean=+0.088 t=+1.07 | H2 n= 23 mean=-0.030 t=-0.31
+
+  (e) 發展中剖面 z（當天開盤到 IB 前的 TPO 分佈）→ 到收盤報酬（正 = 往發展中 μ）
+  adz 分組：
+             |z|<1 n= 82  ret_to_dev=+0.02  brk_ret=+0.03
+               1~2 n= 57  ret_to_dev=-0.05  brk_ret=-0.03
+               2~3 n= 28  ret_to_dev=+0.15  brk_ret=-0.10
+                >3 n= 23  ret_to_dev=-0.03  brk_ret=-0.04
+
+  (f) 字母樹 z（價格所在列在前日剖面的 TPO 數 z）→ IB 後剩餘波幅（ATR）、首破延續
+    LVN薄   n= 39 rest_range=0.54  brk_ret n= 36 mean=-0.041 t=-1.06
+    中      n= 42 rest_range=0.54  brk_ret n= 38 mean=-0.030 t=-0.57
+    HVN厚   n= 33 rest_range=0.57  brk_ret n= 32 mean=-0.006 t=-0.11
+    前日區間外 n= 76 rest_range=0.67  brk_ret n= 67 mean=-0.005 t=-0.14
+
+====================================================================================================
+80% 法則：開盤在前日 VA 外，之後連續兩個 30 分期收盤在 VA 內 → 觸及 VA 另一側的機率
+  開盤在前日 VA 外 80 天，觸發 49 天；觸發後當天碰到另一側 35%；先碰另一側才回 VA 外邊界 16%
+  觸發進場 → 收盤報酬（ATR，正 = 往另一側） n= 48 mean=+0.010 t=+0.14
+
+圖：part10_tpo_ib.png
+
+====================================================================================================
+補充檢查
+
+[ASIA]
+  碰前日 POC 的 AUC（越小越不會碰）：|剖面 z| 0.735  vs  |距離/ATR| 0.796  vs  |距離/IB區間| 0.703
+  IB 跨 VAH   收盤報酬（+ = 往前日價值區）n= 27 mean=-0.087 t=-0.64 | H1 n= 15 mean=-0.197 t=-1.31 | H2 n= 12 mean=+0.051 t=+0.21
+  IB 跨 VAL   收盤報酬（+ = 往前日價值區）n= 32 mean=+0.029 t=+0.21 | H1 n= 17 mean=+0.158 t=+0.82 | H2 n= 15 mean=-0.117 t=-0.61
+  IB 在 VA 上方 收盤報酬（+ = 往前日價值區）n= 26 mean=+0.060 t=+0.45 | H1 n= 15 mean=+0.040 t=+0.19 | H2 n= 11 mean=+0.086 t=+0.57
+  IB 在 VA 下方 收盤報酬（+ = 往前日價值區）n= 27 mean=+0.072 t=+0.49 | H1 n= 12 mean=-0.112 t=-0.54 | H2 n= 15 mean=+0.219 t=+1.08
+  首破延續 大IB z>0.5        n= 45 mean=+0.046 t=+0.59 | H1 n= 20 mean=-0.020 t=-0.19 | H2 n= 25 mean=+0.099 t=+0.90 | 勝率 38%
+  首破延續 小IB z<-0.5       n= 72 mean=-0.021 t=-0.93 | H1 n= 34 mean=+0.022 t=+0.50 | H2 n= 38 mean=-0.060 t=-4.70 | 勝率 14%
+  首破延續 LVN tree_z<-0.5  n= 39 mean=+0.077 t=+0.96 | H1 n= 20 mean=-0.055 t=-0.65 | H2 n= 19 mean=+0.215 t=+1.62 | 勝率 32%
+  首破延續 HVN tree_z>0.5   n= 70 mean=-0.014 t=-0.40 | H1 n= 30 mean=+0.004 t=+0.06 | H2 n= 40 mean=-0.028 t=-0.58 | 勝率 16%
+  首破延續 大IB 且 非HVN       n= 33 mean=+0.106 t=+1.06 | H1 n= 14 mean=+0.024 t=+0.17 | H2 n= 19 mean=+0.166 t=+1.20 | 勝率 42%
+  剩餘波幅(ATR) Spearman：ib_z 0.11, IB/ATR 0.06
+  延伸倍數 小IB z<-0.5   25/50/75% = [4.47, 7.35, 10.98]  （IB 區間中位數 8.9）
+  延伸倍數 中            25/50/75% = [2.83, 4.28, 7.18]  （IB 區間中位數 15.2）
+  延伸倍數 大IB z>0.5    25/50/75% = [1.39, 1.99, 3.15]  （IB 區間中位數 34.3）
+
+[LDN]
+  碰前日 POC 的 AUC（越小越不會碰）：|剖面 z| 0.775  vs  |距離/ATR| 0.794  vs  |距離/IB區間| 0.777
+  IB 跨 VAH   收盤報酬（+ = 往前日價值區）n= 19 mean=+0.087 t=+1.18 | H1 n= 11 mean=+0.103 t=+1.09 | H2 n=  8 mean=+0.065 t=+0.52
+  IB 跨 VAL   收盤報酬（+ = 往前日價值區）n= 22 mean=-0.349 t=-2.83 | H1 n=  6 mean=-0.777 t=-2.80 | H2 n= 16 mean=-0.188 t=-1.64
+  IB 在 VA 上方 收盤報酬（+ = 往前日價值區）n= 42 mean=-0.069 t=-1.02 | H1 n= 24 mean=-0.025 t=-0.24 | H2 n= 18 mean=-0.129 t=-1.49
+  IB 在 VA 下方 收盤報酬（+ = 往前日價值區）n= 43 mean=+0.006 t=+0.07 | H1 n= 20 mean=-0.032 t=-0.23 | H2 n= 23 mean=+0.038 t=+0.32
+  首破延續 大IB z>0.5        n= 43 mean=+0.172 t=+2.30 | H1 n= 17 mean=+0.192 t=+1.54 | H2 n= 26 mean=+0.159 t=+1.68 | 勝率 51%
+  首破延續 小IB z<-0.5       n= 60 mean=+0.003 t=+0.12 | H1 n= 30 mean=-0.002 t=-0.04 | H2 n= 30 mean=+0.008 t=+0.22 | 勝率 27%
+  首破延續 LVN tree_z<-0.5  n= 30 mean=+0.093 t=+1.23 | H1 n= 15 mean=+0.156 t=+1.16 | H2 n= 15 mean=+0.029 t=+0.42 | 勝率 35%
+  首破延續 HVN tree_z>0.5   n= 47 mean=-0.016 t=-0.50 | H1 n= 20 mean=-0.051 t=-1.41 | H2 n= 27 mean=+0.011 t=+0.23 | 勝率 24%
+  首破延續 大IB 且 非HVN       n= 34 mean=+0.204 t=+2.29 | H1 n= 12 mean=+0.264 t=+1.57 | H2 n= 22 mean=+0.172 t=+1.63 | 勝率 56%
+  剩餘波幅(ATR) Spearman：ib_z 0.12, IB/ATR 0.26
+  延伸倍數 小IB z<-0.5   25/50/75% = [2.77, 4.14, 5.52]  （IB 區間中位數 12.8）
+  延伸倍數 中            25/50/75% = [1.89, 2.76, 3.93]  （IB 區間中位數 16.5）
+  延伸倍數 大IB z>0.5    25/50/75% = [1.26, 1.84, 3.91]  （IB 區間中位數 24.5）
+
+[NY]
+  碰前日 POC 的 AUC（越小越不會碰）：|剖面 z| 0.824  vs  |距離/ATR| 0.861  vs  |距離/IB區間| 0.813
+  IB 跨 VAH   收盤報酬（+ = 往前日價值區）n= 24 mean=+0.038 t=+0.64 | H1 n= 10 mean=-0.008 t=-0.12 | H2 n= 14 mean=+0.071 t=+0.78
+  IB 跨 VAL   收盤報酬（+ = 往前日價值區）n= 28 mean=+0.076 t=+0.84 | H1 n= 14 mean=+0.173 t=+1.15 | H2 n= 14 mean=-0.021 t=-0.20
+  IB 在 VA 上方 收盤報酬（+ = 往前日價值區）n= 48 mean=+0.024 t=+0.39 | H1 n= 26 mean=-0.010 t=-0.10 | H2 n= 22 mean=+0.064 t=+0.89
+  IB 在 VA 下方 收盤報酬（+ = 往前日價值區）n= 42 mean=-0.056 t=-0.90 | H1 n= 18 mean=-0.107 t=-1.05 | H2 n= 24 mean=-0.017 t=-0.21
+  首破延續 大IB z>0.5        n= 43 mean=-0.087 t=-1.76 | H1 n= 18 mean=-0.042 t=-0.58 | H2 n= 25 mean=-0.120 t=-1.75 | 勝率 24%
+  首破延續 小IB z<-0.5       n= 60 mean=-0.029 t=-1.18 | H1 n= 26 mean=+0.016 t=+0.39 | H2 n= 34 mean=-0.064 t=-2.09 | 勝率 28%
+  首破延續 LVN tree_z<-0.5  n= 36 mean=-0.041 t=-1.06 | H1 n= 15 mean=+0.039 t=+0.56 | H2 n= 21 mean=-0.098 t=-2.38 | 勝率 28%
+  首破延續 HVN tree_z>0.5   n= 32 mean=-0.006 t=-0.11 | H1 n= 17 mean=+0.042 t=+0.43 | H2 n= 15 mean=-0.060 t=-1.25 | 勝率 27%
+  首破延續 大IB 且 非HVN       n= 41 mean=-0.074 t=-1.44 | H1 n= 17 mean=-0.027 t=-0.36 | H2 n= 24 mean=-0.107 t=-1.52 | 勝率 25%
+  剩餘波幅(ATR) Spearman：ib_z 0.18, IB/ATR 0.27
+  延伸倍數 小IB z<-0.5   25/50/75% = [1.19, 1.86, 3.08]  （IB 區間中位數 16.4）
+  延伸倍數 中            25/50/75% = [0.84, 1.26, 1.86]  （IB 區間中位數 26.8）
+  延伸倍數 大IB z>0.5    25/50/75% = [0.15, 0.39, 0.76]  （IB 區間中位數 54.8）
