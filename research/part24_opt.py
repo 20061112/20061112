@@ -13,8 +13,10 @@ import matplotlib.pyplot as plt
 from part22_lib import CUT
 from part24_lib import load_all, event_frame, add_outcomes, apply_cap, summarize, fmt, CUT1
 
-out = open("results_part24.txt", "w")
-def P(s=""): print(s, flush=True); out.write(s + "\n"); out.flush()
+def P(s=""):
+    print(s, flush=True)
+    with open("results_part24.txt", "a") as f:
+        f.write(s + "\n")
 
 MR_SPECS = {f"mr_H{H}_s{st}": ("mr", H, st, False) for H in (6, 12, 24) for st in (1.5, 2.0, 3.0)}
 MR_SPECS.update({f"mr_T_H{H}_s{st}": ("mr", H, st, True) for H in (12, 24) for st in (2.0, 3.0)})   # 目標 = 訊號當下 EMA20
@@ -23,6 +25,7 @@ PERS = (("IS1", lambda E: E.per == "IS1"), ("IS2", lambda E: E.per == "IS2"), ("
 
 
 if __name__ == "__main__":
+    open("results_part24.txt", "w").close()
     d, A, M, X = load_all()
     RFI_IS = X.loc[(X.index < CUT) & X.rfi.notna(), "rfi"].to_numpy()        # RFI 分位一律用 IS 全部 K 棒
     P("=" * 120)
