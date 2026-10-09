@@ -1,0 +1,191 @@
+============================================================================================================================================
+1. 放寬出場 × 部位模式（|z| ≥ 3；R = 損益 / 初始停損；含點差、隔夜、週五平倉）
+
+--- S1 M15 ou L400
+  基準 μ0 sl1.5 H40 [one]                        n=  43（0.22/天） avg=+1.510R win=49% PF=3.93 總R= +64.9 MDD=  5.6 P/MDD= 11.6 Sharpe=+2.51（前 +2.55 / 後 +3.09）  持有中位  7.2h stop51% time44% flat5%
+  基準 μ0 sl1.5 H40 [unlimited]                  n=  72（0.38/天） avg=+1.236R win=47% PF=3.31 總R= +89.0 MDD=  8.6 P/MDD= 10.4 Sharpe=+2.86（前 +2.79 / 後 +3.07）  持有中位  7.5h stop53% time43% flat4%
+  基準 μ0 sl1.5 H40 [pyr8]                       n= 101（0.53/天） avg=+0.922R win=44% PF=2.64 總R= +93.2 MDD= 11.7 P/MDD=  8.0 Sharpe=+2.59（前 +2.31 / 後 +2.87）  持有中位  6.2h stop54% time39% flat7%
+  時間 H80 sl1.5 [one]                           n=  35（0.18/天） avg=+0.771R win=40% PF=2.28 總R= +27.0 MDD=  5.5 P/MDD=  4.9 Sharpe=+2.04（前 +1.17 / 後 +3.09）  持有中位  8.5h stop57% time29% flat14%
+  時間 H80 sl1.5 [unlimited]                     n=  72（0.38/天） avg=+1.257R win=36% PF=2.96 總R= +90.5 MDD= 12.9 P/MDD=  7.0 Sharpe=+2.22（前 +2.00 / 後 +2.80）  持有中位  7.5h stop61% time28% flat11%
+  時間 H80 sl1.5 [pyr8]                          n=  99（0.52/天） avg=+0.808R win=35% PF=2.25 總R= +80.0 MDD= 13.0 P/MDD=  6.2 Sharpe=+2.23（前 +1.57 / 後 +2.88）  持有中位  6.2h stop62% time25% flat13%
+  時間 H160 sl3 [one]                            n=  28（0.15/天） avg=+0.626R win=39% PF=2.07 總R= +17.5 MDD=  5.5 P/MDD=  3.2 Sharpe=+1.45（前 +1.20 / 後 +2.03）  持有中位 13.6h stop57% flat21% time21%
+  時間 H160 sl3 [unlimited]                      n=  72（0.38/天） avg=+0.397R win=29% PF=1.55 總R= +28.6 MDD= 13.7 P/MDD=  2.1 Sharpe=+0.90（前 +0.42 / 後 +2.01）  持有中位 14.8h stop68% time17% flat15%
+  時間 H160 sl3 [pyr8]                           n=  91（0.47/天） avg=+0.328R win=32% PF=1.48 總R= +29.8 MDD= 14.1 P/MDD=  2.1 Sharpe=+0.95（前 +0.27 / 後 +1.91）  持有中位 12.8h stop64% time19% flat18%
+  時間 H320 sl5 [one]                            n=  24（0.12/天） avg=+0.530R win=46% PF=2.01 總R= +12.7 MDD=  6.5 P/MDD=  1.9 Sharpe=+1.22（前 +1.53 / 後 +0.80）  持有中位 20.8h stop50% flat38% time12%
+  時間 H320 sl5 [unlimited]                      n=  72（0.38/天） avg=+0.157R win=33% PF=1.23 總R= +11.3 MDD= 17.6 P/MDD=  0.6 Sharpe=+0.37（前 +0.70 / 後 -0.31）  持有中位 23.9h stop64% flat32% time4%
+  時間 H320 sl5 [pyr8]                           n=  80（0.42/天） avg=+0.085R win=38% PF=1.14 總R=  +6.8 MDD= 17.6 P/MDD=  0.4 Sharpe=+0.29（前 +0.56 / 後 -0.18）  持有中位 25.9h stop57% flat31% time11%
+  移動4ATR(初始3) H320 [one]                       n=  37（0.19/天） avg=+0.353R win=49% PF=1.90 總R= +13.0 MDD=  3.7 P/MDD=  3.6 Sharpe=+1.74（前 +2.11 / 後 +1.26）  持有中位  6.2h stop92% flat8%
+  移動4ATR(初始3) H320 [unlimited]                 n=  72（0.38/天） avg=+0.527R win=57% PF=2.62 總R= +37.9 MDD=  4.1 P/MDD=  9.3 Sharpe=+2.17（前 +2.11 / 後 +2.41）  持有中位  7.0h stop94% flat6%
+  移動4ATR(初始3) H320 [pyr8]                      n= 100（0.52/天） avg=+0.212R win=47% PF=1.53 總R= +21.2 MDD=  7.9 P/MDD=  2.7 Sharpe=+1.38（前 +0.71 / 後 +1.88）  持有中位  6.8h stop93% flat7%
+  移動6ATR(初始4) H640 [one]                       n=  30（0.16/天） avg=+0.508R win=53% PF=2.33 總R= +15.2 MDD=  2.8 P/MDD=  5.4 Sharpe=+1.89（前 +1.84 / 後 +2.34）  持有中位 10.8h stop77% flat23%
+  移動6ATR(初始4) H640 [unlimited]                 n=  72（0.38/天） avg=+0.974R win=56% PF=3.92 總R= +70.2 MDD=  8.6 P/MDD=  8.1 Sharpe=+1.87（前 +1.95 / 後 +2.69）  持有中位 14.1h stop85% flat15%
+  移動6ATR(初始4) H640 [pyr8]                      n=  92（0.48/天） avg=+0.569R win=50% PF=2.41 總R= +52.3 MDD= 11.3 P/MDD=  4.6 Sharpe=+1.74（前 +1.68 / 後 +2.25）  持有中位 12.9h stop79% flat21%
+  |z|<2 出場 sl3 H320 [one]                      n=  55（0.29/天） avg=+0.292R win=33% PF=2.30 總R= +16.1 MDD=  4.1 P/MDD=  3.9 Sharpe=+1.71（前 +1.16 / 後 +2.28）  持有中位  1.2h z91% flat5% stop4%
+  |z|<2 出場 sl3 H320 [unlimited]                n=  72（0.38/天） avg=+0.256R win=33% PF=2.17 總R= +18.4 MDD=  4.4 P/MDD=  4.2 Sharpe=+1.78（前 +1.38 / 後 +2.15）  持有中位  1.6h z92% flat6% stop3%
+  |z|<2 出場 sl3 H320 [pyr8]                     n=  99（0.52/天） avg=+0.198R win=35% PF=1.79 總R= +19.6 MDD=  5.9 P/MDD=  3.3 Sharpe=+1.30（前 +0.03 / 後 +2.01）  持有中位  2.0h z84% stop8% flat8%
+  |z|<1 出場 sl3 H320 [one]                      n=  36（0.19/天） avg=+0.720R win=36% PF=3.45 總R= +25.9 MDD=  2.5 P/MDD= 10.6 Sharpe=+1.71（前 +1.60 / 後 +2.12）  持有中位  3.5h z81% stop11% flat8%
+  |z|<1 出場 sl3 H320 [unlimited]                n=  72（0.38/天） avg=+0.565R win=42% PF=2.86 總R= +40.7 MDD=  4.3 P/MDD=  9.5 Sharpe=+1.79（前 +1.48 / 後 +2.35）  持有中位  6.4h z78% stop11% flat11%
+  |z|<1 出場 sl3 H320 [pyr8]                     n=  94（0.49/天） avg=+0.452R win=36% PF=2.30 總R= +42.5 MDD=  6.8 P/MDD=  6.3 Sharpe=+1.51（前 +0.89 / 後 +2.15）  持有中位  6.9h z70% stop17% flat13%
+  跌破EMA(L/4) sl3 H320 [one]                    n=  33（0.17/天） avg=+0.285R win=42% PF=1.61 總R=  +9.4 MDD=  5.8 P/MDD=  1.6 Sharpe=+1.12（前 +0.95 / 後 +1.49）  持有中位 10.0h ma52% stop33% flat15%
+  跌破EMA(L/4) sl3 H320 [unlimited]              n=  72（0.38/天） avg=+0.442R win=43% PF=1.90 總R= +31.8 MDD= 12.6 P/MDD=  2.5 Sharpe=+1.11（前 +1.06 / 後 +1.58）  持有中位 12.8h ma56% stop35% flat10%
+  跌破EMA(L/4) sl3 H320 [pyr8]                   n=  95（0.49/天） avg=+0.178R win=38% PF=1.35 總R= +16.9 MDD= 13.6 P/MDD=  1.2 Sharpe=+0.69（前 +0.07 / 後 +1.40）  持有中位  9.0h ma49% stop38% flat13%
+  跌破EMA(L/4)+移動4ATR H640 [one]                 n=  40（0.21/天） avg=+0.339R win=48% PF=2.00 總R= +13.6 MDD=  4.0 P/MDD=  3.4 Sharpe=+1.82（前 +2.23 / 後 +1.25）  持有中位  5.0h stop78% ma20% flat2%
+  跌破EMA(L/4)+移動4ATR H640 [unlimited]           n=  72（0.38/天） avg=+0.387R win=53% PF=2.20 總R= +27.8 MDD=  4.1 P/MDD=  6.8 Sharpe=+1.77（前 +2.22 / 後 +1.20）  持有中位  6.8h stop82% ma15% flat3%
+  跌破EMA(L/4)+移動4ATR H640 [pyr8]                n= 101（0.53/天） avg=+0.127R win=45% PF=1.33 總R= +12.8 MDD=  7.2 P/MDD=  1.8 Sharpe=+1.11（前 +1.00 / 後 +1.25）  持有中位  6.0h stop79% ma16% flat5%
+
+--- S2 M15 ou_ew L800
+  基準 μ0 sl1.5 H40 [one]                        n=  47（0.24/天） avg=+1.166R win=43% PF=3.00 總R= +54.8 MDD=  7.0 P/MDD=  7.8 Sharpe=+2.45（前 +2.30 / 後 +2.90）  持有中位  4.2h stop57% time43%
+  基準 μ0 sl1.5 H40 [unlimited]                  n=  82（0.43/天） avg=+1.226R win=41% PF=3.15 總R=+100.6 MDD= 12.9 P/MDD=  7.8 Sharpe=+2.44（前 +2.83 / 後 +1.99）  持有中位  6.1h stop56% time43% flat1%
+  基準 μ0 sl1.5 H40 [pyr8]                       n= 112（0.58/天） avg=+0.786R win=38% PF=2.27 總R= +88.0 MDD= 10.5 P/MDD=  8.4 Sharpe=+2.08（前 +2.53 / 後 +1.51）  持有中位  4.5h stop60% time36% flat4%
+  時間 H80 sl1.5 [one]                           n=  41（0.21/天） avg=+1.210R win=32% PF=2.79 總R= +49.6 MDD=  8.0 P/MDD=  6.2 Sharpe=+2.48（前 +2.29 / 後 +2.81）  持有中位  3.5h stop66% time27% flat7%
+  時間 H80 sl1.5 [unlimited]                     n=  82（0.43/天） avg=+1.390R win=34% PF=3.11 總R=+114.0 MDD= 14.5 P/MDD=  7.9 Sharpe=+2.50（前 +3.05 / 後 +1.74）  持有中位  6.1h stop63% time26% flat11%
+  時間 H80 sl1.5 [pyr8]                          n= 110（0.57/天） avg=+1.171R win=32% PF=2.71 總R=+128.8 MDD= 11.5 P/MDD= 11.2 Sharpe=+2.26（前 +2.75 / 後 +1.60）  持有中位  4.5h stop66% time25% flat9%
+  時間 H160 sl3 [one]                            n=  23（0.12/天） avg=+0.865R win=52% PF=2.76 總R= +19.9 MDD=  4.1 P/MDD=  4.9 Sharpe=+1.79（前 +1.72 / 後 +1.87）  持有中位 28.8h stop48% time39% flat13%
+  時間 H160 sl3 [unlimited]                      n=  82（0.43/天） avg=+1.191R win=48% PF=3.27 總R= +97.7 MDD= 11.7 P/MDD=  8.4 Sharpe=+2.07（前 +2.89 / 後 +0.73）  持有中位 15.2h stop51% time29% flat20%
+  時間 H160 sl3 [pyr8]                           n=  93（0.48/天） avg=+0.958R win=46% PF=2.83 總R= +89.1 MDD=  8.8 P/MDD= 10.2 Sharpe=+1.96（前 +2.45 / 後 +1.27）  持有中位 16.0h stop49% time35% flat15%
+  時間 H320 sl5 [one]                            n=  15（0.08/天） avg=+1.146R win=53% PF=3.76 總R= +17.2 MDD=  2.1 P/MDD=  8.3 Sharpe=+1.93（前 +1.77 / 後 +2.15）  持有中位 54.5h stop40% time33% flat27%
+  時間 H320 sl5 [unlimited]                      n=  82（0.43/天） avg=+0.537R win=45% PF=1.98 總R= +44.1 MDD= 11.8 P/MDD=  3.7 Sharpe=+1.12（前 +1.66 / 後 +0.24）  持有中位 26.4h stop51% flat38% time11%
+  時間 H320 sl5 [pyr8]                           n=  67（0.35/天） avg=+0.848R win=48% PF=2.73 總R= +56.8 MDD= 11.8 P/MDD=  4.8 Sharpe=+1.55（前 +1.74 / 後 +1.39）  持有中位 48.5h stop45% flat34% time21%
+  移動4ATR(初始3) H320 [one]                       n=  37（0.19/天） avg=+0.686R win=49% PF=2.78 總R= +25.4 MDD=  3.6 P/MDD=  7.0 Sharpe=+2.03（前 +2.20 / 後 +1.97）  持有中位  7.0h stop95% flat5%
+  移動4ATR(初始3) H320 [unlimited]                 n=  82（0.43/天） avg=+0.886R win=50% PF=3.32 總R= +72.6 MDD=  8.3 P/MDD=  8.8 Sharpe=+2.01（前 +2.58 / 後 +1.16）  持有中位  7.5h stop93% flat7%
+  移動4ATR(初始3) H320 [pyr8]                      n= 106（0.55/天） avg=+0.653R win=48% PF=2.69 總R= +69.2 MDD=  8.0 P/MDD=  8.7 Sharpe=+2.20（前 +2.96 / 後 +0.91）  持有中位  7.6h stop91% flat9%
+  移動6ATR(初始4) H640 [one]                       n=  24（0.12/天） avg=+0.917R win=50% PF=3.59 總R= +22.0 MDD=  2.2 P/MDD=  9.8 Sharpe=+2.57（前 +2.70 / 後 +2.58）  持有中位 23.6h stop79% flat21%
+  移動6ATR(初始4) H640 [unlimited]                 n=  82（0.43/天） avg=+1.002R win=52% PF=3.59 總R= +82.2 MDD= 11.7 P/MDD=  7.0 Sharpe=+2.07（前 +2.71 / 後 +1.07）  持有中位 15.2h stop78% flat22%
+  移動6ATR(初始4) H640 [pyr8]                      n=  96（0.50/天） avg=+0.846R win=49% PF=3.16 總R= +81.2 MDD=  8.3 P/MDD=  9.7 Sharpe=+2.27（前 +2.92 / 後 +1.32）  持有中位 14.6h stop81% flat19%
+  |z|<2 出場 sl3 H320 [one]                      n=  48（0.25/天） avg=+0.266R win=35% PF=1.97 總R= +12.7 MDD=  5.2 P/MDD=  2.5 Sharpe=+1.42（前 +2.15 / 後 +0.35）  持有中位  3.2h z85% flat8% stop6%
+  |z|<2 出場 sl3 H320 [unlimited]                n=  82（0.43/天） avg=+0.288R win=34% PF=2.00 總R= +23.6 MDD= 10.9 P/MDD=  2.2 Sharpe=+1.41（前 +2.52 / 後 +0.09）  持有中位  4.0h z80% flat11% stop9%
+  |z|<2 出場 sl3 H320 [pyr8]                     n= 109（0.57/天） avg=+0.130R win=28% PF=1.38 總R= +14.2 MDD= 13.3 P/MDD=  1.1 Sharpe=+0.72（前 +1.64 / 後 -0.95）  持有中位  3.8h z79% stop12% flat9%
+  |z|<1 出場 sl3 H320 [one]                      n=  24（0.12/天） avg=+0.856R win=50% PF=3.88 總R= +20.5 MDD=  2.5 P/MDD=  8.1 Sharpe=+2.16（前 +1.53 / 後 +3.35）  持有中位 16.2h z71% flat17% stop12%
+  |z|<1 出場 sl3 H320 [unlimited]                n=  82（0.43/天） avg=+0.815R win=45% PF=3.05 總R= +66.8 MDD=  7.0 P/MDD=  9.5 Sharpe=+1.64（前 +2.09 / 後 +0.96）  持有中位 12.9h z56% stop22% flat22%
+  |z|<1 出場 sl3 H320 [pyr8]                     n=  82（0.43/天） avg=+0.884R win=48% PF=3.51 總R= +72.5 MDD=  6.7 P/MDD= 10.9 Sharpe=+1.64（前 +1.86 / 後 +1.73）  持有中位 15.1h z62% flat20% stop18%
+  跌破EMA(L/4) sl3 H320 [one]                    n=  20（0.10/天） avg=+0.879R win=45% PF=2.81 總R= +17.6 MDD=  3.4 P/MDD=  5.1 Sharpe=+1.65（前 +1.43 / 後 +1.92）  持有中位 27.8h stop45% ma35% flat20%
+  跌破EMA(L/4) sl3 H320 [unlimited]              n=  82（0.43/天） avg=+0.812R win=45% PF=2.59 總R= +66.6 MDD= 12.7 P/MDD=  5.3 Sharpe=+1.50（前 +1.95 / 後 +0.83）  持有中位 15.2h stop44% ma29% flat27%
+  跌破EMA(L/4) sl3 H320 [pyr8]                   n=  80（0.42/天） avg=+0.910R win=46% PF=2.82 總R= +72.8 MDD= 10.9 P/MDD=  6.7 Sharpe=+1.55（前 +1.72 / 後 +1.47）  持有中位 19.5h stop44% ma32% flat22% time1%
+  跌破EMA(L/4)+移動4ATR H640 [one]                 n=  37（0.19/天） avg=+0.698R win=49% PF=2.88 總R= +25.8 MDD=  3.6 P/MDD=  7.1 Sharpe=+2.07（前 +2.27 / 後 +1.97）  持有中位  7.0h stop92% flat5% ma3%
+  跌破EMA(L/4)+移動4ATR H640 [unlimited]           n=  82（0.43/天） avg=+0.894R win=50% PF=3.40 總R= +73.3 MDD=  8.0 P/MDD=  9.2 Sharpe=+2.02（前 +2.61 / 後 +1.16）  持有中位  7.5h stop90% flat7% ma2%
+  跌破EMA(L/4)+移動4ATR H640 [pyr8]                n= 106（0.55/天） avg=+0.660R win=48% PF=2.74 總R= +69.9 MDD=  8.0 P/MDD=  8.8 Sharpe=+2.22（前 +2.99 / 後 +0.91）  持有中位  7.6h stop89% flat9% ma2%
+
+--- S3 多週期 ou
+  基準 μ0 sl1.5 H40 [one]                        n= 154（0.80/天） avg=+0.927R win=42% PF=2.60 總R=+142.7 MDD= 20.4 P/MDD=  7.0 Sharpe=+2.70（前 +2.44 / 後 +3.45）  持有中位  3.3h stop56% time40% flat3%
+  基準 μ0 sl1.5 H40 [unlimited]                  n= 255（1.33/天） avg=+0.672R win=39% PF=2.11 總R=+171.3 MDD= 32.1 P/MDD=  5.3 Sharpe=+2.56（前 +2.06 / 後 +3.12）  持有中位  3.3h stop59% time38% flat3%
+  基準 μ0 sl1.5 H40 [pyr8]                       n= 405（2.11/天） avg=+0.482R win=35% PF=1.75 總R=+195.2 MDD= 47.2 P/MDD=  4.1 Sharpe=+2.18（前 +1.45 / 後 +2.85）  持有中位  2.8h stop62% time34% flat4%
+  時間 H80 sl1.5 [one]                           n= 129（0.67/天） avg=+0.742R win=35% PF=2.14 總R= +95.8 MDD= 22.9 P/MDD=  4.2 Sharpe=+2.01（前 +1.72 / 後 +3.10）  持有中位  5.3h stop63% time29% flat9%
+  時間 H80 sl1.5 [unlimited]                     n= 255（1.33/天） avg=+0.834R win=33% PF=2.24 總R=+212.8 MDD= 48.0 P/MDD=  4.4 Sharpe=+2.29（前 +2.00 / 後 +2.75）  持有中位  4.0h stop65% time27% flat7%
+  時間 H80 sl1.5 [pyr8]                          n= 395（2.06/天） avg=+0.516R win=29% PF=1.72 總R=+203.8 MDD= 57.6 P/MDD=  3.5 Sharpe=+1.88（前 +1.39 / 後 +2.39）  持有中位  3.0h stop70% time24% flat7%
+  時間 H160 sl3 [one]                            n= 100（0.52/天） avg=+0.618R win=41% PF=2.09 總R= +61.8 MDD= 14.7 P/MDD=  4.2 Sharpe=+2.07（前 +2.20 / 後 +2.23）  持有中位 10.6h stop55% time26% flat19%
+  時間 H160 sl3 [unlimited]                      n= 255（1.33/天） avg=+0.508R win=36% PF=1.81 總R=+129.6 MDD= 44.8 P/MDD=  2.9 Sharpe=+1.61（前 +1.14 / 後 +2.49）  持有中位 11.2h stop60% time25% flat14%
+  時間 H160 sl3 [pyr8]                           n= 343（1.79/天） avg=+0.426R win=38% PF=1.70 總R=+146.0 MDD= 41.4 P/MDD=  3.5 Sharpe=+1.80（前 +1.44 / 後 +2.22）  持有中位  9.5h stop59% time25% flat16%
+  時間 H320 sl5 [one]                            n=  79（0.41/天） avg=+0.463R win=49% PF=2.00 總R= +36.5 MDD= 13.4 P/MDD=  2.7 Sharpe=+1.79（前 +1.77 / 後 +2.02）  持有中位 26.7h stop43% flat32% time25%
+  時間 H320 sl5 [unlimited]                      n= 255（1.33/天） avg=+0.386R win=40% PF=1.67 總R= +98.4 MDD= 51.7 P/MDD=  1.9 Sharpe=+1.18（前 +0.93 / 後 +1.76）  持有中位 17.8h stop55% flat24% time22%
+  時間 H320 sl5 [pyr8]                           n= 281（1.46/天） avg=+0.266R win=41% PF=1.48 總R= +74.7 MDD= 38.2 P/MDD=  2.0 Sharpe=+1.12（前 +0.95 / 後 +1.47）  持有中位 23.5h stop51% flat26% time23%
+  移動4ATR(初始3) H320 [one]                       n= 130（0.68/天） avg=+0.334R win=45% PF=1.81 總R= +43.5 MDD= 10.2 P/MDD=  4.3 Sharpe=+1.94（前 +1.70 / 後 +2.50）  持有中位  3.5h stop92% flat8%
+  移動4ATR(初始3) H320 [unlimited]                 n= 255（1.33/天） avg=+0.383R win=47% PF=1.99 總R= +97.6 MDD= 17.7 P/MDD=  5.5 Sharpe=+2.10（前 +1.98 / 後 +2.35）  持有中位  3.8h stop94% flat6% time0%
+  移動4ATR(初始3) H320 [pyr8]                      n= 385（2.01/天） avg=+0.206R win=43% PF=1.49 總R= +79.3 MDD= 27.0 P/MDD=  2.9 Sharpe=+1.61（前 +1.02 / 後 +2.13）  持有中位  3.8h stop93% flat6% time0%
+  移動6ATR(初始4) H640 [one]                       n=  97（0.51/天） avg=+0.485R win=51% PF=2.28 總R= +47.0 MDD=  8.9 P/MDD=  5.3 Sharpe=+2.16（前 +2.23 / 後 +2.35）  持有中位 10.4h stop79% flat21%
+  移動6ATR(初始4) H640 [unlimited]                 n= 255（1.33/天） avg=+0.539R win=49% PF=2.38 總R=+137.4 MDD= 27.7 P/MDD=  5.0 Sharpe=+1.99（前 +2.13 / 後 +2.25）  持有中位  7.7h stop89% flat11%
+  移動6ATR(初始4) H640 [pyr8]                      n= 336（1.75/天） avg=+0.419R win=48% PF=2.03 總R=+140.7 MDD= 25.3 P/MDD=  5.6 Sharpe=+1.92（前 +1.96 / 後 +2.09）  持有中位  8.4h stop86% flat14%
+  |z|<2 出場 sl3 H320 [one]                      n= 176（0.92/天） avg=+0.279R win=31% PF=2.10 總R= +49.1 MDD= 12.3 P/MDD=  4.0 Sharpe=+1.59（前 +0.75 / 後 +2.52）  持有中位  1.2h z86% stop8% flat5% time1%
+  |z|<2 出場 sl3 H320 [unlimited]                n= 255（1.33/天） avg=+0.353R win=32% PF=2.32 總R= +90.1 MDD= 17.0 P/MDD=  5.3 Sharpe=+1.74（前 +1.00 / 後 +2.63）  持有中位  1.2h z83% stop9% flat7% time0%
+  |z|<2 出場 sl3 H320 [pyr8]                     n= 352（1.83/天） avg=+0.308R win=34% PF=2.06 總R=+108.3 MDD= 26.8 P/MDD=  4.0 Sharpe=+1.62（前 +0.51 / 後 +2.55）  持有中位  1.8h z80% stop11% flat8% time1%
+  |z|<1 出場 sl3 H320 [one]                      n= 119（0.62/天） avg=+0.427R win=34% PF=2.20 總R= +50.8 MDD= 11.5 P/MDD=  4.4 Sharpe=+1.40（前 +1.00 / 後 +2.67）  持有中位  3.0h z76% stop14% flat7% time3%
+  |z|<1 出場 sl3 H320 [unlimited]                n= 255（1.33/天） avg=+0.357R win=34% PF=1.80 總R= +91.1 MDD= 31.7 P/MDD=  2.9 Sharpe=+1.30（前 +0.58 / 後 +2.32）  持有中位  3.9h z63% stop26% flat9% time2%
+  |z|<1 出場 sl3 H320 [pyr8]                     n= 331（1.72/天） avg=+0.323R win=32% PF=1.73 總R=+107.0 MDD= 37.9 P/MDD=  2.8 Sharpe=+1.26（前 +0.45 / 後 +2.26）  持有中位  4.2h z60% stop26% flat10% time4%
+  跌破EMA(L/4) sl3 H320 [one]                    n= 106（0.55/天） avg=+0.286R win=39% PF=1.62 總R= +30.3 MDD= 12.2 P/MDD=  2.5 Sharpe=+1.36（前 +1.11 / 後 +1.83）  持有中位  7.3h ma49% stop34% flat12% time5%
+  跌破EMA(L/4) sl3 H320 [unlimited]              n= 255（1.33/天） avg=+0.466R win=35% PF=1.85 總R=+118.9 MDD= 44.9 P/MDD=  2.6 Sharpe=+1.31（前 +1.17 / 後 +1.97）  持有中位  8.1h stop44% ma41% flat10% time5%
+  跌破EMA(L/4) sl3 H320 [pyr8]                   n= 324（1.69/天） avg=+0.378R win=36% PF=1.73 總R=+122.6 MDD= 41.3 P/MDD=  3.0 Sharpe=+1.34（前 +1.05 / 後 +1.91）  持有中位  7.8h ma44% stop40% flat12% time5%
+  跌破EMA(L/4)+移動4ATR H640 [one]                 n= 141（0.73/天） avg=+0.264R win=43% PF=1.72 總R= +37.2 MDD=  9.9 P/MDD=  3.7 Sharpe=+1.82（前 +1.75 / 後 +2.14）  持有中位  2.7h stop74% ma21% flat4%
+  跌破EMA(L/4)+移動4ATR H640 [unlimited]           n= 255（1.33/天） avg=+0.286R win=45% PF=1.78 總R= +72.8 MDD= 16.8 P/MDD=  4.3 Sharpe=+1.98（前 +2.10 / 後 +1.99）  持有中位  2.8h stop82% ma14% flat4%
+  跌破EMA(L/4)+移動4ATR H640 [pyr8]                n= 388（2.02/天） avg=+0.157R win=43% PF=1.40 總R= +61.0 MDD= 25.8 P/MDD=  2.4 Sharpe=+1.55（前 +1.14 / 後 +2.02）  持有中位  2.9h stop80% ma16% flat4%
+
+--- S4 多週期 ou_ew
+  基準 μ0 sl1.5 H40 [one]                        n= 153（0.80/天） avg=+0.735R win=37% PF=2.18 總R=+112.4 MDD= 15.0 P/MDD=  7.5 Sharpe=+2.55（前 +2.38 / 後 +3.14）  持有中位  3.0h stop60% time38% flat2%
+  基準 μ0 sl1.5 H40 [unlimited]                  n= 264（1.38/天） avg=+0.833R win=38% PF=2.38 總R=+220.0 MDD= 32.6 P/MDD=  6.8 Sharpe=+2.56（前 +2.85 / 後 +2.23）  持有中位  3.3h stop58% time39% flat2%
+  基準 μ0 sl1.5 H40 [pyr8]                       n= 419（2.18/天） avg=+0.761R win=35% PF=2.18 總R=+318.9 MDD= 34.6 P/MDD=  9.2 Sharpe=+2.46（前 +2.47 / 後 +2.80）  持有中位  2.5h stop62% time36% flat3%
+  時間 H80 sl1.5 [one]                           n= 132（0.69/天） avg=+0.808R win=30% PF=2.16 總R=+106.7 MDD= 15.1 P/MDD=  7.1 Sharpe=+2.44（前 +2.34 / 後 +2.82）  持有中位  2.6h stop68% time26% flat6%
+  時間 H80 sl1.5 [unlimited]                     n= 264（1.38/天） avg=+1.145R win=32% PF=2.68 總R=+302.3 MDD= 41.0 P/MDD=  7.4 Sharpe=+2.49（前 +2.81 / 後 +2.10）  持有中位  3.5h stop66% time28% flat6%
+  時間 H80 sl1.5 [pyr8]                          n= 406（2.11/天） avg=+1.013R win=29% PF=2.41 總R=+411.2 MDD= 44.9 P/MDD=  9.2 Sharpe=+2.26（前 +2.69 / 後 +1.75）  持有中位  2.5h stop69% time25% flat6%
+  時間 H160 sl3 [one]                            n=  77（0.40/天） avg=+0.831R win=48% PF=2.71 總R= +64.0 MDD=  9.3 P/MDD=  6.9 Sharpe=+2.27（前 +2.42 / 後 +2.18）  持有中位 13.3h stop44% time42% flat14%
+  時間 H160 sl3 [unlimited]                      n= 264（1.38/天） avg=+1.034R win=40% PF=2.82 總R=+272.9 MDD= 33.1 P/MDD=  8.3 Sharpe=+2.43（前 +3.36 / 後 +1.07）  持有中位 13.2h stop53% time33% flat13%
+  時間 H160 sl3 [pyr8]                           n= 317（1.65/天） avg=+0.959R win=43% PF=2.75 總R=+303.9 MDD= 28.6 P/MDD= 10.6 Sharpe=+2.52（前 +3.13 / 後 +1.71）  持有中位 12.5h stop52% time34% flat14%
+  時間 H320 sl5 [one]                            n=  56（0.29/天） avg=+0.761R win=55% PF=2.89 總R= +42.6 MDD=  6.6 P/MDD=  6.5 Sharpe=+2.40（前 +1.72 / 後 +3.51）  持有中位 26.7h stop38% time36% flat27%
+  時間 H320 sl5 [unlimited]                      n= 264（1.38/天） avg=+0.836R win=48% PF=2.66 總R=+220.7 MDD= 27.6 P/MDD=  8.0 Sharpe=+2.06（前 +2.58 / 後 +1.34）  持有中位 24.5h stop46% time27% flat27%
+  時間 H320 sl5 [pyr8]                           n= 221（1.15/天） avg=+0.836R win=52% PF=2.91 總R=+184.7 MDD= 23.7 P/MDD=  7.8 Sharpe=+2.14（前 +2.12 / 後 +2.37）  持有中位 26.7h stop40% time32% flat28%
+  移動4ATR(初始3) H320 [one]                       n= 107（0.56/天） avg=+0.557R win=48% PF=2.46 總R= +59.6 MDD= 11.2 P/MDD=  5.3 Sharpe=+2.32（前 +2.38 / 後 +2.37）  持有中位  5.1h stop91% flat7% time2%
+  移動4ATR(初始3) H320 [unlimited]                 n= 264（1.38/天） avg=+0.685R win=49% PF=2.76 總R=+180.9 MDD= 22.4 P/MDD=  8.1 Sharpe=+2.37（前 +2.93 / 後 +1.61）  持有中位  4.5h stop92% flat7% time1%
+  移動4ATR(初始3) H320 [pyr8]                      n= 383（1.99/天） avg=+0.482R win=46% PF=2.19 總R=+184.7 MDD= 24.6 P/MDD=  7.5 Sharpe=+2.44（前 +2.92 / 後 +1.83）  持有中位  3.8h stop93% flat7% time1%
+  移動6ATR(初始4) H640 [one]                       n=  74（0.39/天） avg=+0.740R win=51% PF=3.05 總R= +54.8 MDD=  7.3 P/MDD=  7.5 Sharpe=+2.53（前 +2.40 / 後 +2.96）  持有中位 15.4h stop82% flat18%
+  移動6ATR(初始4) H640 [unlimited]                 n= 264（1.38/天） avg=+0.826R win=51% PF=3.15 總R=+218.1 MDD= 26.0 P/MDD=  8.4 Sharpe=+2.31（前 +3.07 / 後 +1.10）  持有中位 10.0h stop87% flat13%
+  移動6ATR(初始4) H640 [pyr8]                      n= 313（1.63/天） avg=+0.671R win=49% PF=2.71 總R=+210.0 MDD= 23.7 P/MDD=  8.9 Sharpe=+2.41（前 +3.03 / 後 +1.55）  持有中位  9.2h stop87% flat13%
+  |z|<2 出場 sl3 H320 [one]                      n= 124（0.65/天） avg=+0.443R win=35% PF=2.55 總R= +54.9 MDD=  9.9 P/MDD=  5.5 Sharpe=+1.87（前 +2.20 / 後 +1.45）  持有中位  4.1h z81% flat8% stop7% time3%
+  |z|<2 出場 sl3 H320 [unlimited]                n= 264（1.38/天） avg=+0.854R win=33% PF=3.41 總R=+225.5 MDD= 35.6 P/MDD=  6.3 Sharpe=+2.21（前 +2.82 / 後 +1.35）  持有中位  3.2h z72% stop12% flat11% time5%
+  |z|<2 出場 sl3 H320 [pyr8]                     n= 336（1.75/天） avg=+0.653R win=31% PF=2.63 總R=+219.3 MDD= 41.1 P/MDD=  5.3 Sharpe=+1.87（前 +2.42 / 後 +1.03）  持有中位  3.9h z67% stop18% flat10% time5%
+  |z|<1 出場 sl3 H320 [one]                      n=  72（0.38/天） avg=+0.927R win=47% PF=3.83 總R= +66.8 MDD=  6.8 P/MDD=  9.9 Sharpe=+2.78（前 +2.30 / 後 +3.53）  持有中位 15.4h z62% stop14% flat12% time11%
+  |z|<1 出場 sl3 H320 [unlimited]                n= 264（1.38/天） avg=+1.083R win=39% PF=3.26 總R=+286.0 MDD= 24.3 P/MDD= 11.8 Sharpe=+2.17（前 +2.64 / 後 +1.57）  持有中位 11.7h z41% stop34% flat15% time9%
+  |z|<1 出場 sl3 H320 [pyr8]                     n= 271（1.41/天） avg=+0.921R win=42% PF=3.03 總R=+249.6 MDD= 18.8 P/MDD= 13.3 Sharpe=+2.19（前 +2.40 / 後 +2.08）  持有中位 11.0h z43% stop33% flat14% time10%
+  跌破EMA(L/4) sl3 H320 [one]                    n=  64（0.33/天） avg=+0.913R win=48% PF=2.94 總R= +58.4 MDD=  8.1 P/MDD=  7.2 Sharpe=+2.40（前 +2.07 / 後 +2.88）  持有中位 24.5h stop39% ma28% time19% flat14%
+  跌破EMA(L/4) sl3 H320 [unlimited]              n= 264（1.38/天） avg=+1.032R win=39% PF=2.79 總R=+272.4 MDD= 29.3 P/MDD=  9.3 Sharpe=+1.98（前 +2.48 / 後 +1.29）  持有中位 12.7h stop50% ma21% flat17% time11%
+  跌破EMA(L/4) sl3 H320 [pyr8]                   n= 268（1.40/天） avg=+0.898R win=42% PF=2.63 總R=+240.6 MDD= 24.5 P/MDD=  9.8 Sharpe=+2.01（前 +2.24 / 後 +1.77）  持有中位 15.0h stop49% ma21% flat16% time14%
+  跌破EMA(L/4)+移動4ATR H640 [one]                 n= 107（0.56/天） avg=+0.572R win=48% PF=2.55 總R= +61.2 MDD= 10.6 P/MDD=  5.8 Sharpe=+2.38（前 +2.45 / 後 +2.46）  持有中位  5.1h stop87% flat7% ma6%
+  跌破EMA(L/4)+移動4ATR H640 [unlimited]           n= 264（1.38/天） avg=+0.686R win=48% PF=2.80 總R=+181.0 MDD= 21.3 P/MDD=  8.5 Sharpe=+2.39（前 +2.93 / 後 +1.67）  持有中位  4.4h stop89% flat6% ma5%
+  跌破EMA(L/4)+移動4ATR H640 [pyr8]                n= 383（1.99/天） avg=+0.484R win=46% PF=2.22 總R=+185.5 MDD= 23.6 P/MDD=  7.8 Sharpe=+2.46（前 +2.91 / 後 +1.91）  持有中位  3.8h stop90% flat6% ma3%
+
+  各出場在 4 組設定 × 4 種模式（16 組）裡的平均 Sharpe / 前半 / 後半 / 每天筆數
+                        Sharpe  前Sharpe  後Sharpe  per_day   avg  P/MDD
+exit                                                                  
+移動6ATR(初始4) H640          2.11     2.37     1.93     0.90  0.67   7.03
+基準 μ0 sl1.5 H40           2.45     2.36     2.69     1.02  0.89   7.72
+跌破EMA(L/4)+移動4ATR H640    1.93     2.17     1.61     0.98  0.43   5.67
+時間 H80 sl1.5              2.22     2.13     2.39     1.00  0.95   6.87
+移動4ATR(初始3) H320          1.99     2.08     1.81     0.97  0.47   6.00
+時間 H160 sl3               1.76     1.84     1.68     0.91  0.70   5.73
+|z|<1 出場 sl3 H320         1.70     1.49     2.02     0.89  0.66   7.91
+時間 H320 sl5               1.31     1.48     1.07     0.82  0.52   3.76
+|z|<2 出場 sl3 H320         1.52     1.40     1.35     0.98  0.34   3.79
+跌破EMA(L/4) sl3 H320       1.41     1.38     1.53     0.88  0.59   4.64
+
+  各部位模式（40 組平均）
+           Sharpe  前Sharpe  後Sharpe  per_day   avg    MDD  P/MDD
+mode                                                            
+one          2.01     1.90     2.34     0.37  0.67   8.10   5.71
+pyr8         1.78     1.76     1.76     1.14  0.57  21.59   6.00
+pyr8u        1.65     1.70     1.42     1.35  0.53  26.08   5.60
+unlimited    1.92     2.11     1.72     0.88  0.73  20.64   6.33
+
+============================================================================================================================================
+2. 只用前半段 Sharpe 選出的版本：S4 多週期 ou_ew / 時間 H160 sl3 / unlimited（前半 +3.36 → 後半 +1.07）
+   前半段前 10 名與其後半段：
+              set                   exit      mode   n  avg  前Sharpe  後Sharpe  P/MDD
+     S4 多週期 ou_ew            時間 H160 sl3 unlimited 264 1.03     3.36     1.07   8.25
+     S4 多週期 ou_ew            時間 H160 sl3      pyr8 317 0.96     3.13     1.71  10.62
+     S4 多週期 ou_ew       移動6ATR(初始4) H640 unlimited 264 0.83     3.07     1.10   8.38
+S2 M15 ou_ew L800           時間 H80 sl1.5 unlimited  82 1.39     3.05     1.74   7.86
+     S4 多週期 ou_ew       移動6ATR(初始4) H640      pyr8 313 0.67     3.03     1.55   8.87
+S2 M15 ou_ew L800 跌破EMA(L/4)+移動4ATR H640      pyr8 106 0.66     2.99     0.91   8.79
+S2 M15 ou_ew L800 跌破EMA(L/4)+移動4ATR H640     pyr8u 112 0.63     2.99     0.60   8.94
+     S4 多週期 ou_ew       移動6ATR(初始4) H640     pyr8u 419 0.62     2.98     1.16   8.32
+     S4 多週期 ou_ew            時間 H160 sl3     pyr8u 419 0.87     2.97     0.71   9.33
+S2 M15 ou_ew L800       移動4ATR(初始3) H320      pyr8 106 0.65     2.96     0.91   8.70
+
+============================================================================================================================================
+3. 與 ER 回檔順勢策略（第 29 部分，1 單位）比較 —— 都以每筆 1R 風險計
+  ER 順勢（A+B+C）                                 n= 489（2.55/天） avg=+0.224R win=51% PF=1.58 總R=+109.8 MDD=  9.7 P/MDD= 11.4 Sharpe=+3.28（前 +2.06 / 後 +4.45）
+  OU 前半選出版                                     n= 264（1.38/天） avg=+1.034R win=40% PF=2.82 總R=+272.9 MDD= 33.1 P/MDD=  8.3 Sharpe=+2.43（前 +3.36 / 後 +1.07）
+  OU 多週期 基準出場 [one]                            n= 154（0.80/天） avg=+0.927R win=42% PF=2.60 總R=+142.7 MDD= 20.4 P/MDD=  7.0 Sharpe=+2.70（前 +2.44 / 後 +3.45）
+
+  [前半選出版] 每日 R 相關係數 +0.11；兩者同一天都有出場的天數 39 / ER 133 天、OU 51 天
+  OU 進場當下 ER 有同向單 95、只有反向單 12、沒有單 157（共 264 筆）
+  逐月 R：
+xtime     01   02    03   04    05    06    07    08   09   10
+ER       8.5 -1.0   1.4  8.5  15.8  27.8  21.0  16.5  8.2  3.0
+OU     174.0 -5.0  72.9 -1.0 -13.1   6.3   0.0  46.5 -7.7  0.0
+  合併 1:1                                       n= 753（3.92/天） avg=+0.508R win=47% PF=2.13 總R=+382.6 MDD= 39.8 P/MDD=  9.6 Sharpe=+3.17（前 +3.67 / 後 +2.54）
+  合併 ER 1 : OU 0.5                             n= 753（3.92/天） avg=+0.327R win=47% PF=1.93 總R=+246.2 MDD= 23.2 P/MDD= 10.6 Sharpe=+3.60（前 +3.78 / 後 +3.39）
+
+  [基準版] 每日 R 相關係數 +0.19；兩者同一天都有出場的天數 34 / ER 133 天、OU 53 天
+  OU 進場當下 ER 有同向單 68、只有反向單 7、沒有單 79（共 154 筆）
+  逐月 R：
+xtime    01    02    03    04    05    06    07    08    09   10
+ER      8.5  -1.0   1.4   8.5  15.8  27.8  21.0  16.5   8.2  3.0
+OU     29.5  10.9  59.9 -11.9  -7.4  26.2  -2.0  18.8  18.9  0.0
+  合併 1:1                                       n= 643（3.35/天） avg=+0.393R win=49% PF=1.91 總R=+252.5 MDD= 11.3 P/MDD= 22.4 Sharpe=+3.73（前 +2.87 / 後 +5.07）
+  合併 ER 1 : OU 0.5                             n= 643（3.35/天） avg=+0.282R win=49% PF=1.77 總R=+181.1 MDD=  9.5 P/MDD= 19.2 Sharpe=+3.90（前 +2.90 / 後 +5.13）
