@@ -57,7 +57,7 @@ def outcomes(m5, ev):
     h, l, c = (m5[k].to_numpy(float) for k in ("high", "low", "close"))
     spr = m5.spread.to_numpy(float) * 0.01
     n = len(c)
-    out = {k: [] for k in ("race1", "race2", "f3", "f12", "f24", "tp1", "tp2")}
+    out = {k: [] for k in ("race1", "race2", "f3", "f12", "f24", "tp1", "tp2", "res_t")}
     for t, d, L, a in zip(ev.t.to_numpy(), ev.dir.to_numpy(), ev.L.to_numpy(), ev.atr.to_numpy()):
         ref = L + d * TOL * a
         end = min(t + H, n - 1)
@@ -71,6 +71,8 @@ def outcomes(m5, ev):
             ib = fb[0] if len(fb) else 10 ** 9
             ig = fg[0] if len(fg) else 10 ** 9
             out[key].append(np.nan if ib == ig == 10 ** 9 else float(ig < ib))
+            if k == 1:  # race1 結果揭曉的那根（之後才能用來更新價位狀態）
+                out["res_t"].append(t + min(ib, ig) if min(ib, ig) < 10 ** 9 else end)
         for k, key in ((3, "f3"), (12, "f12"), (24, "f24")):
             out[key].append((c[t + k] - ref) * d / a if t + k < n else np.nan)
         # 交易：碰觸棒以參考價成交，停損 1 ATR，停利 tp×1 ATR，同棒停損優先
