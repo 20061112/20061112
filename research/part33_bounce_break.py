@@ -112,13 +112,11 @@ def features(x, A, ev):
     f["htf_slope"] = (ema[p] - ema[np.maximum(p - 48, 0)]) * d / a
     f["day_ext"] = (o[first[t]] - c[p]) * d / a
     f["vol_ratio"] = A[p] / a_day[p]
-    f["tv_ratio"] = tv[np.maximum(p - 2, 0):p + 1].mean() if False else (
-        (tv[p] + tv[np.maximum(p - 1, 0)] + tv[np.maximum(p - 2, 0)]) / 3 / tvm[p])
+    f["tv_ratio"] = (tv[p] + tv[np.maximum(p - 1, 0)] + tv[np.maximum(p - 2, 0)]) / 3 / tvm[p]
     hr = x.index[t].hour
     f["session"] = np.select([hr < 9, hr < 15, hr < 20], ["asia", "london", "ny"], "late")
     key = pd.Series(list(zip(day[t], np.round(L, 2))), index=ev.index)
     f["ntouch"] = key.groupby(key).cumcount().to_numpy() + 1
-    f["strength"] = ev.strength.to_numpy()
     return f
 
 
