@@ -8,6 +8,7 @@ POC：TPO 最多的格子；同票時取離區間中心最近的。
 價值區（VA）：標準 CBOT 做法，從 POC 往上下各看兩格，取 TPO 較多的一邊加入，直到 ≥ 70%。
 IB：交易日的前 60 分鐘（A+B 期）。另外提供倫敦 / 紐約 IB（任意起點 60 分鐘）。
 """
+import os
 import numpy as np
 import pandas as pd
 from load import load
@@ -19,6 +20,7 @@ LETTERS = [chr(c) for c in range(ord("A"), ord("Z") + 1)] + [chr(c) for c in ran
 
 
 def load_m1(path="data/XAUUSD_M1_2026.csv"):
+    path = os.environ.get("XAU_M1_PATH", path)       # 第五十三部分：可改用由 M5 展開的偽 M1 重跑
     d = load(path)
     d["day"] = (d.index - pd.Timedelta(hours=DAY_START_H)).normalize()
     mins = (d.index.hour - DAY_START_H) * 60 + d.index.minute
