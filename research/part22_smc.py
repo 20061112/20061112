@@ -172,24 +172,27 @@ def poc_zones(m1, df, A):
 # ---------------------------------------------------------------- 觸碰 + M1 模擬
 def make_placebos(zones, c):
     out = []
-    for kind, d, lo, hi, i in zones:
+    for z in zones:
+        kind, d, lo, hi, i = z[:5]
         for _ in range(N_PLACEBO):
             for _try in range(10):
                 sh = RNG.uniform(0.5, 3.0) * RNG.choice([-1, 1]) * A_glob[i]
                 nlo, nhi = lo + sh, hi + sh
                 if (d == 1 and nhi < c[i]) or (d == -1 and nlo > c[i]):
-                    out.append((kind, d, nlo, nhi, i))
+                    out.append((kind, d, nlo, nhi, i) + tuple(z[5:]))
                     break
     return out
 
 
-def run(zones, df, A, trend_arr, m1a, m1_start, tf_min, placebo):
+def run(zones, df, A, trend_arr, m1a, m1_start, tf_min, placebo, rev=False):
+    """rev=True：觸碰時改做「穿越」方向（停損單在同一價位成交），停損 1 ATR、停利 1/2 ATR。"""
     o, h, l, c = (df[k].to_numpy(float) for k in ("open", "high", "low", "close"))
     mo, mh, ml, mc, msp = m1a
     N = len(df)
     W = HOLD * tf_min
     rows = []
-    for kind, d, lo, hi, i in zones:
+    for z in zones:
+        kind, d, lo, hi, i = z[:5]
         a = A[i]
         # 成立當下必須在區域外
         if (d == 1 and c[i] <= hi) or (d == -1 and c[i] >= lo):
@@ -206,6 +209,9 @@ def run(zones, df, A, trend_arr, m1a, m1_start, tf_min, placebo):
         k = k0 + int(np.argmax(ms))
         entry = min(mo[k], hi) if d == 1 else max(mo[k], lo)
         sl = lo - 0.1 * a if d == 1 else hi + 0.1 * a
+        if rev:
+            d = -d
+            sl = entry - d * a
         risk = d * (entry - sl)
         if risk <= 0.02 * a:
             continue
@@ -214,7 +220,7 @@ def run(zones, df, A, trend_arr, m1a, m1_start, tf_min, placebo):
         spr = msp[k]
         res = dict(kind=kind, d=d, t=j, age=j - i, atr=a, width=(hi - lo) / a, risk_atr=risk / a,
                    aligned=int(trend_arr[j - 1] == d), placebo=placebo,
-                   year=df.index[j].year)
+                   year=df.index[j].year, zid=z[5] if len(z) > 5 else -1)
         # A：±1 ATR 誰先到（也做 ±0.5 ATR）
         for m, tag in ((1.0, "b1"), (0.5, "b05")):
             up = entry + d * m * a
