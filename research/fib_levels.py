@@ -13,13 +13,15 @@ D = Data()
 pd.set_option("display.width", 250); pd.set_option("display.float_format", "{:.3f}".format)
 pd.set_option("display.max_rows", 500)
 tfs = sys.argv[1].split(",") if len(sys.argv) > 1 else ["M1", "M5", "M15", "H1"]
+FILTS = sys.argv[2].split(",") if len(sys.argv) > 2 else ["none", "hhhl+ema"]
+MODES = sys.argv[3].split(",") if len(sys.argv) > 3 else ["A", "B"]
 rows, allt = [], []
 for tf in tfs:
     t0 = time.time()
     legs = D.legs(tf, 3)
     C = Conf(D, CONF_TF[tf])
-    for filt in ["none", "hhhl+ema"]:
-        for mode in ["A", "B"]:
+    for filt in FILTS:
+        for mode in MODES:
             for arm in [0.382, 0.5, 0.618, 0.786]:
                 tr = pd.DataFrame([r for lg in legs if (r := run_leg(D, C, lg, filt, "TP127", mode, arm))])
                 tr = tr.sort_values("t")
@@ -31,4 +33,4 @@ for tf in tfs:
     print(f"{tf}: {len(legs)} 段行情, {time.time()-t0:.0f}s", flush=True)
 res = pd.DataFrame(rows)
 print(res.to_string(index=False))
-pd.concat(allt).to_csv("fib_levels_trades.csv", index=False)
+pd.concat(allt).to_csv(f"fib_levels_trades_{'_'.join(tfs + FILTS + MODES)}.csv", index=False)
