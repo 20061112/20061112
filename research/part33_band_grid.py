@@ -1,4 +1,4 @@
-"""第三十三部分：布林 / 肯特納通道的回歸網格 —— 每離中線 1 個單位（σ 或 ATR）加一層，往中線回歸平倉。
+"""第三十三部分（rev=-1 為反向版，見 part34_band_trend.py）：布林 / 肯特納通道的回歸網格 —— 每離中線 1 個單位（σ 或 ATR）加一層，往中線回歸平倉。
 
 通道（只用「上一根已收完」的 K 棒，沒有未來函數）：
   BB：中線 = SMA20(收盤)，單位 u = 20 根收盤標準差
@@ -47,7 +47,7 @@ def bands(ohlc, tf, kind):
     return s.mid.values, s.u.values
 
 
-def sim(ohlc, mid, u, K, exit_kind):
+def sim(ohlc, mid, u, K, exit_kind, rev=1):
     cash = 0.0; nopen = 0; out = []
     for w0, w1 in zip(WSTART, WEND):
         a = ATRD.asof(IDX[w0].normalize())
@@ -67,24 +67,24 @@ def sim(ohlc, mid, u, K, exit_kind):
                     if K < 10 and dep >= K + 1:
                         px = x if q == 0 else m - sd * (K + 1) * uu
                         if n[sd]:
-                            cw += sd * n[sd] * px - (s * n[sd] if sd == -1 else 0); n[sd] = 0
+                            cw += sd * rev * n[sd] * px - (s * n[sd] if sd * rev == -1 else 0); n[sd] = 0
                         lock[sd] = True; continue
                     # 出場
                     if exit_kind == "mean":
                         if n[sd] and dep <= 0:
                             px = x if q == 0 else m
-                            cw += sd * n[sd] * px - (s * n[sd] if sd == -1 else 0); n[sd] = 0
+                            cw += sd * rev * n[sd] * px - (s * n[sd] if sd * rev == -1 else 0); n[sd] = 0
                     else:
                         while n[sd] and dep <= n[sd] - 1:
                             px = x if q == 0 else m - sd * (n[sd] - 1) * uu
-                            cw += sd * px - (s if sd == -1 else 0); n[sd] -= 1
+                            cw += sd * rev * px - (s if sd * rev == -1 else 0); n[sd] -= 1
                     # 進場
                     while n[sd] < K and dep >= n[sd] + 1:
                         px = x if q == 0 else m - sd * (n[sd] + 1) * uu
-                        cw += -sd * px - (s if sd == 1 else 0); n[sd] += 1; trades += 1
+                        cw += -sd * rev * px - (s if sd * rev == 1 else 0); n[sd] += 1; trades += 1
         c = ohlc[w1, 3]; s = SP[w1]
         for sd in (1, -1):
-            if n[sd]: cw += sd * n[sd] * c - (s * n[sd] if sd == -1 else 0)
+            if n[sd]: cw += sd * rev * n[sd] * c - (s * n[sd] if sd * rev == -1 else 0)
         out.append(dict(week=IDX[w0], year=IDX[w0].year, atr=a, pnl=cw, trades=trades))
     return pd.DataFrame(out)
 
