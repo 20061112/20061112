@@ -15,7 +15,7 @@ import pandas as pd
 from fib_pullback import Data, resample, ema_ok, stats, TFLEN, MINLEG, MAXHOLD
 
 LV = [0.382, 0.5, 0.618, 0.786, 1.0]
-CONF_TF = {"M15": "5min", "H1": "15min"}
+CONF_TF = {"M1": "1min", "M5": "1min", "M15": "5min", "H1": "15min"}
 
 
 def exit_sim(D, i, s, entry, sl, tp, cost):
@@ -45,7 +45,7 @@ class Conf:
         self.o, self.h, self.l, self.c = (c[x].values for x in ("open", "high", "low", "close"))
 
 
-def run_leg(D, C, lg, filt, tp_mode, mode):
+def run_leg(D, C, lg, filt, tp_mode, mode, arm=0.382):
     s, L = lg["s"], lg["L"]
     Ls = L * s
     ch, cl = (C.h, C.l) if s == 1 else (-C.l, -C.h)
@@ -64,7 +64,7 @@ def run_leg(D, C, lg, filt, tp_mode, mode):
     for b in range(b0, min(b1, len(C.start))):
         if not anchored:
             rng = H - Ls
-            if rng >= MINLEG * lg["atr"] and cl[b] <= H - 0.382 * rng:
+            if rng >= MINLEG * lg["atr"] and cl[b] <= H - arm * rng:
                 if filt in ("hhhl", "hhhl+ema") and not (H > lg["prevH"] * s):
                     return None
                 anchored = True
@@ -110,7 +110,8 @@ def run_leg(D, C, lg, filt, tp_mode, mode):
             return None
         R, out = exit_sim(D, i_next, s, entry, sl, tp, D.sp[cost_i])
         return dict(t=t_fill, s=s, 區=LV[z], R=R, out=out,
-                    進場位=(H - entry) / rng, 風險佔段=(entry - sl) / rng)
+                    進場位=(H - entry) / rng, 風險佔段=(entry - sl) / rng,
+                    風險=entry - sl, 點差=D.sp[cost_i])
     return None
 
 

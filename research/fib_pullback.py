@@ -23,7 +23,7 @@ from harmonic import atr
 LEVELS = [(0.382, 0.5), (0.5, 0.618), (0.618, 0.786), (0.786, 1.0)]
 MINLEG = 3.0
 MAXHOLD = 60 * 24 * 10   # 最長持有 10 天（M1 根數）
-TFLEN = {"M15": "15min", "H1": "1h", "H4": "4h"}
+TFLEN = {"M1": "1min", "M5": "5min", "M15": "15min", "H1": "1h", "H4": "4h"}
 
 
 def zigzag_conf(h, l, a, k):
