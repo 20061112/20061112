@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from load import load
 
-DATA = "data/pseudo/XAUUSD_M1_2024_2026.csv"
+DATA = os.environ.get("CORE_IB_DATA", "data/pseudo/XAUUSD_M1_2024_2026.csv")   # 第六十八部分起可用環境變數換資料
 RESEARCH = ("2024-11-01", "2026-01-01")
 VALID = ("2026-01-01", "2026-11-01")
 SUBS = [("24/11~12", "2024-11-01", "2025-01-01"), ("25H1", "2025-01-01", "2025-07-01"), ("25H2", "2025-07-01", "2026-01-01")]
