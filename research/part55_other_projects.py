@@ -120,7 +120,7 @@ atr = pd.Series(tr).rolling(14).mean().values
 net48 = C15 - np.r_[np.full(48, np.nan), C15[:-48]]
 tan = np.abs(net48) / (atr * np.sqrt(48))
 cos = pd.Series(1 / np.sqrt(1 + tan ** 2))
-z = ((cos - cos.ewm(span=1000, adjust=False).mean()) / cos.ewm(span=1000, adjust=False).std()).values
+z = ((cos - cos.ewm(span=1000, adjust=False).mean()) / cos.ewm(span=1000, adjust=False).std()).to_numpy().copy()
 z[:1100] = np.nan
 O1, H1, L1, C1 = (P54.P.W.B.d[c].values for c in ["open", "high", "low", "close"])
 SP1 = P54.P.SP
@@ -157,7 +157,8 @@ k_r = 1 / np.mean(1 / S.risk.values)
 qr = k_r / S.risk.values
 st_d1 = daily(S.assign(gi=S.gi, gj=S.gj), 1)
 st_dr = (S.net * qr).groupby(S.day).sum().reindex(idx, fill_value=0)
-ib_best = VAR["IB + W + BE"]
+ib_best = VAR["IB + BE 2R保本"]
+ib_wbe = VAR["IB + W + BE"]
 ib_d = daily(ib_best, 1)
 me_d = P54.me_d / 2              # P54.me_d 是 0.02 口（2 盎司）
 d_all = pd.DataFrame({"IB": ib_d, "M15熵": me_d, "陡固定": st_d1, "陡風險": st_dr})
@@ -173,10 +174,11 @@ ib0 = VAR["IB 核心"]
 ib_part = lambda X, q: (X.gi.values, X.gj.values, X.side.values, X.lvl.values, X.net.values, q)
 st_part = lambda q: (S.gi.values, S.gj.values, S.side.values, S.lvl.values, S.net.values, q)
 show("目前：IB 1 + M15熵 2", [ib_part(ib0, 1), me_part(2)], daily(ib0, 1) + 2 * me_d)
-show("IB(W+BE) 1 + M15熵 2", [ib_part(ib_best, 1), me_part(2)], ib_d + 2 * me_d)
-show("IB(W+BE) 2 + M15熵 2", [ib_part(ib_best, 2), me_part(2)], 2 * ib_d + 2 * me_d)
+show("IB(W+BE) 1 + M15熵 2", [ib_part(ib_wbe, 1), me_part(2)], daily(ib_wbe, 1) + 2 * me_d)
+show("IB(BE) 1 + M15熵 2", [ib_part(ib_best, 1), me_part(2)], ib_d + 2 * me_d)
+show("IB(BE) 2 + M15熵 2", [ib_part(ib_best, 2), me_part(2)], 2 * ib_d + 2 * me_d)
 show("IB 1 + M15熵 2 + 很陡 1", [ib_part(ib0, 1), me_part(2), st_part(1)], daily(ib0, 1) + 2 * me_d + st_d1)
-show("IB(W+BE) 1 + M15熵 2 + 很陡 1", [ib_part(ib_best, 1), me_part(2), st_part(1)], ib_d + 2 * me_d + st_d1)
-show("IB(W+BE) 2 + M15熵 2 + 很陡 1", [ib_part(ib_best, 2), me_part(2), st_part(1)], 2 * ib_d + 2 * me_d + st_d1)
-show("IB(W+BE) 2 + M15熵 2 + 很陡 2", [ib_part(ib_best, 2), me_part(2), st_part(2)], 2 * ib_d + 2 * me_d + 2 * st_d1)
+show("IB(BE) 1 + M15熵 2 + 很陡 1", [ib_part(ib_best, 1), me_part(2), st_part(1)], ib_d + 2 * me_d + st_d1)
+show("IB(BE) 2 + M15熵 2 + 很陡 1", [ib_part(ib_best, 2), me_part(2), st_part(1)], 2 * ib_d + 2 * me_d + st_d1)
+show("IB(BE) 2 + M15熵 2 + 很陡 2", [ib_part(ib_best, 2), me_part(2), st_part(2)], 2 * ib_d + 2 * me_d + 2 * st_d1)
 open("results_part55.txt", "w").write("\n".join(lines) + "\n")
