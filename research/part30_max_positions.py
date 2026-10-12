@@ -26,20 +26,21 @@ def max_conc(df):
     return int(ev.cumsum().max())
 
 
-evs = [e for e, k in zip(G.ev, G.mA & G.mB) if k]
-lines = ["第三十部分：A+B 過濾的 M15 突破 —— 限制最高同時持倉筆數（多空合計，每單 1 盎司）", ""]
-hdr = (f"{'上限':>4s} {'筆/天':>6s} {'實際最多':>6s} {'訓練R':>7s} {'驗證R':>7s} {'全期R':>7s} {'每筆$':>7s} {'PF':>5s} "
-       f"{'日t':>6s} {'總$':>8s} {'回撤$':>7s} {'總/回撤':>7s} | 逐年 R 2023 2024 2025 2026")
-for s, t in ((2.0, 3.0), (2.0, 4.0), (2.0, None), (3.0, 3.0)):
-    T = G.simulate(evs, s, t).sort_values("進場時間").reset_index(drop=True)
-    lines.append(f"=== 停損 {s:g} ATR15，RR {t:g} ===" if t else f"=== 停損 {s:g} ATR15，抱到收盤 ===")
-    lines.append(hdr)
-    for n in (1, 2, 3, 5, 8, 10, 15, 20, None):
-        x = cap_total(T, n)
-        a, b, c = G.st(x[x.train]), G.st(x[~x.train]), G.st(x)
-        yr = " ".join(f"{x.R[x.進場時間.dt.year == y].mean():+.3f}" for y in (2023, 2024, 2025, 2026))
-        lines.append(f"{str(n) if n else '不限':>4s} {c['n']:6.1f} {max_conc(x):6d} {a['R']:+7.3f} {b['R']:+7.3f} {c['R']:+7.3f} "
-                     f"{c['usd']:+7.2f} {c['pf']:5.2f} {c['t']:+6.2f} {c['tot']:+8,.0f} {c['dd']:7,.0f} {c['tot'] / c['dd']:7.1f} | {yr}")
-    lines.append("")
-print("\n".join(lines))
-open("results_part30.txt", "w").write("\n".join(lines) + "\n")
+if __name__ == "__main__":
+    evs = [e for e, k in zip(G.ev, G.mA & G.mB) if k]
+    lines = ["第三十部分：A+B 過濾的 M15 突破 —— 限制最高同時持倉筆數（多空合計，每單 1 盎司）", ""]
+    hdr = (f"{'上限':>4s} {'筆/天':>6s} {'實際最多':>6s} {'訓練R':>7s} {'驗證R':>7s} {'全期R':>7s} {'每筆$':>7s} {'PF':>5s} "
+           f"{'日t':>6s} {'總$':>8s} {'回撤$':>7s} {'總/回撤':>7s} | 逐年 R 2023 2024 2025 2026")
+    for s, t in ((2.0, 3.0), (2.0, 4.0), (2.0, None), (3.0, 3.0)):
+        T = G.simulate(evs, s, t).sort_values("進場時間").reset_index(drop=True)
+        lines.append(f"=== 停損 {s:g} ATR15，RR {t:g} ===" if t else f"=== 停損 {s:g} ATR15，抱到收盤 ===")
+        lines.append(hdr)
+        for n in (1, 2, 3, 5, 8, 10, 15, 20, None):
+            x = cap_total(T, n)
+            a, b, c = G.st(x[x.train]), G.st(x[~x.train]), G.st(x)
+            yr = " ".join(f"{x.R[x.進場時間.dt.year == y].mean():+.3f}" for y in (2023, 2024, 2025, 2026))
+            lines.append(f"{str(n) if n else '不限':>4s} {c['n']:6.1f} {max_conc(x):6d} {a['R']:+7.3f} {b['R']:+7.3f} {c['R']:+7.3f} "
+                         f"{c['usd']:+7.2f} {c['pf']:5.2f} {c['t']:+6.2f} {c['tot']:+8,.0f} {c['dd']:7,.0f} {c['tot'] / c['dd']:7.1f} | {yr}")
+        lines.append("")
+    print("\n".join(lines))
+    open("results_part30.txt", "w").write("\n".join(lines) + "\n")
