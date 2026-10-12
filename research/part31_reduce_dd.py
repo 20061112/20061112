@@ -115,88 +115,89 @@ def row(x, lab):
 HDR = (f"{'設定':34s} {'筆/天':>5s} {'每筆R':>6s} | {'訓練總R':>6s} {'MDD':>5s} {'比值':>5s} | {'驗證總R':>6s} {'MDD':>5s} {'比值':>5s} | "
        f"{'全期總R':>6s} {'MDD':>5s} {'比值':>5s}")
 
-# ---------- 基準 ----------
-T = build()
-base = cap_total(T, 8)
-p("第三十一部分：降低回撤、提高 總獲利/MDD（A+B，停損 2 ATR15，RR 3，上限 8，每筆 1R）")
-p("比值 = 總 R / MDD（R，日結）；訓練 / 驗證 各自計算\n")
-p(HDR)
-p(row(base, "基準"))
+if __name__ == "__main__":
+    # ---------- 基準 ----------
+    T = build()
+    base = cap_total(T, 8)
+    p("第三十一部分：降低回撤、提高 總獲利/MDD（A+B，停損 2 ATR15，RR 3，上限 8，每筆 1R）")
+    p("比值 = 總 R / MDD（R，日結）；訓練 / 驗證 各自計算\n")
+    p(HDR)
+    p(row(base, "基準"))
 
-# ---------- 1. 趨勢狀態：訓練期分組 ----------
-p("\n=== 1. 日線趨勢狀態（先看訓練期每筆 R 分組；驗證期同切點）===")
-for f in ("er10", "dist_al"):
-    tr = T[T.train]
-    qs = np.nanquantile(tr[f], [0.2, 0.4, 0.6, 0.8])
-    bins = [-np.inf, *qs, np.inf]
-    a = tr.groupby(pd.cut(tr[f], bins), observed=True).R.mean()
-    b = T[~T.train].groupby(pd.cut(T[~T.train][f], bins), observed=True).R.mean()
-    p(f"  {f:8s} 切點 {np.round(qs, 2)}  訓練 " + " ".join(f"{v:+.3f}" for v in a) + "  | 驗證 " + " ".join(f"{v:+.3f}" for v in b))
-for f, lab in (("ma20_al", "也在 20 日均線同側"), ("slope_al", "50 日均線斜率同向")):
-    for v in (True, False):
-        a, b = T[T.train & (T[f] == v)].R, T[~T.train & (T[f] == v)].R
-        p(f"  {lab}={'是' if v else '否'}：訓練 {a.mean():+.3f}（{len(a)}） 驗證 {b.mean():+.3f}（{len(b)}）")
+    # ---------- 1. 趨勢狀態：訓練期分組 ----------
+    p("\n=== 1. 日線趨勢狀態（先看訓練期每筆 R 分組；驗證期同切點）===")
+    for f in ("er10", "dist_al"):
+        tr = T[T.train]
+        qs = np.nanquantile(tr[f], [0.2, 0.4, 0.6, 0.8])
+        bins = [-np.inf, *qs, np.inf]
+        a = tr.groupby(pd.cut(tr[f], bins), observed=True).R.mean()
+        b = T[~T.train].groupby(pd.cut(T[~T.train][f], bins), observed=True).R.mean()
+        p(f"  {f:8s} 切點 {np.round(qs, 2)}  訓練 " + " ".join(f"{v:+.3f}" for v in a) + "  | 驗證 " + " ".join(f"{v:+.3f}" for v in b))
+    for f, lab in (("ma20_al", "也在 20 日均線同側"), ("slope_al", "50 日均線斜率同向")):
+        for v in (True, False):
+            a, b = T[T.train & (T[f] == v)].R, T[~T.train & (T[f] == v)].R
+            p(f"  {lab}={'是' if v else '否'}：訓練 {a.mean():+.3f}（{len(a)}） 驗證 {b.mean():+.3f}（{len(b)}）")
 
-p("\n" + HDR)
-er_cut = np.nanquantile(T[T.train].er10, 0.2)
-dist_hi = np.nanquantile(T[T.train].dist_al, 0.8)
-for lab, m in [("er10 > 訓練期 20% 分位", T.er10 > er_cut),
-               ("也在 20 日均線同側", T.ma20_al),
-               ("50 日均線斜率同向", T.slope_al),
-               ("離 50MA 不太遠（< 訓練期 80% 分位）", T.dist_al < dist_hi),
-               ("20MA 同側 + 斜率同向", T.ma20_al & T.slope_al)]:
-    p(row(cap_total(T[m.values], 8), lab))
+    p("\n" + HDR)
+    er_cut = np.nanquantile(T[T.train].er10, 0.2)
+    dist_hi = np.nanquantile(T[T.train].dist_al, 0.8)
+    for lab, m in [("er10 > 訓練期 20% 分位", T.er10 > er_cut),
+                   ("也在 20 日均線同側", T.ma20_al),
+                   ("50 日均線斜率同向", T.slope_al),
+                   ("離 50MA 不太遠（< 訓練期 80% 分位）", T.dist_al < dist_hi),
+                   ("20MA 同側 + 斜率同向", T.ma20_al & T.slope_al)]:
+        p(row(cap_total(T[m.values], 8), lab))
 
-# ---------- 2. 保本停損 ----------
-p("\n=== 2. 保本停損 ===")
-for be in (1.0, 1.5, 2.0):
-    p(row(cap_total(build(be=be), 8), f"浮盈 {be}R 後移到保本"))
-
-
-# ---------- 3. 部位控制 ----------
-def daily_stop(df, lim, n=8):
-    keep, open_ = [], []
-    real = {}
-    for r in df.itertuples():
-        open_ = [(x, rr) for x, rr in open_ if x > r.進場時間]
-        dloss = sum(v for (x, v, d) in real.get(r.day, []) if x <= r.進場時間)
-        if dloss <= -lim or len(open_) >= n:
-            continue
-        open_.append((r.出場時間, r.R))
-        real.setdefault(r.day, []).append((r.出場時間, r.R, r.day))
-        keep.append(r.Index)
-    return df.loc[keep]
+    # ---------- 2. 保本停損 ----------
+    p("\n=== 2. 保本停損 ===")
+    for be in (1.0, 1.5, 2.0):
+        p(row(cap_total(build(be=be), 8), f"浮盈 {be}R 後移到保本"))
 
 
-def eq_filter(df, look, mode, n=8):
-    """策略本身（上限 n 下的影子交易）的已實現累積 R 低於其最近 look 筆的均值 → 新單權重 0.5 或 0。"""
-    sh = cap_total(df, n).copy()
-    ex = sh.sort_values("出場時間")
-    cum = ex.R.cumsum().values
-    ma = pd.Series(cum).rolling(look, min_periods=look).mean().values
-    ex_t = ex.出場時間.values
-    w = []
-    for r in sh.itertuples():
-        k = np.searchsorted(ex_t, np.datetime64(r.進場時間), side="right") - 1
-        below = k >= look and cum[k] < ma[k]
-        w.append((0.5 if mode == "half" else 0.0) if below else 1.0)
-    sh["w"] = w
-    return sh[sh.w > 0] if mode == "skip" else sh
+    # ---------- 3. 部位控制 ----------
+    def daily_stop(df, lim, n=8):
+        keep, open_ = [], []
+        real = {}
+        for r in df.itertuples():
+            open_ = [(x, rr) for x, rr in open_ if x > r.進場時間]
+            dloss = sum(v for (x, v, d) in real.get(r.day, []) if x <= r.進場時間)
+            if dloss <= -lim or len(open_) >= n:
+                continue
+            open_.append((r.出場時間, r.R))
+            real.setdefault(r.day, []).append((r.出場時間, r.R, r.day))
+            keep.append(r.Index)
+        return df.loc[keep]
 
 
-p("\n=== 3. 部位控制 ===")
-for lim in (2, 3, 5):
-    p(row(daily_stop(T, lim), f"當日已實現虧損 −{lim}R 後停止開新單"))
-for look in (20, 50, 100):
-    for mode in ("half", "skip"):
-        p(row(eq_filter(T, look, mode), f"權益 < {look} 筆均線時{'減半' if mode == 'half' else '不下'}"))
-p("\n=== 4. 組合 + 參數敏感度 ===")
-p(HDR)
-TS = T[T.slope_al.values]
-p(row(cap_total(TS, 8), "斜率同向"))
-for look in (30, 40, 50, 60, 75):
-    p(row(eq_filter(T, look, "skip"), f"權益 < {look} 筆均線不下"))
-    p(row(eq_filter(TS, look, "skip"), f"斜率同向 + 權益 < {look} 筆均線不下"))
-for n in (3, 5, 12):
-    p(row(eq_filter(TS, 50, "skip", n=n), f"斜率同向 + 權益<50 不下，上限 {n}"))
-open("results_part31.txt", "w").write("\n".join(lines) + "\n")
+    def eq_filter(df, look, mode, n=8):
+        """策略本身（上限 n 下的影子交易）的已實現累積 R 低於其最近 look 筆的均值 → 新單權重 0.5 或 0。"""
+        sh = cap_total(df, n).copy()
+        ex = sh.sort_values("出場時間")
+        cum = ex.R.cumsum().values
+        ma = pd.Series(cum).rolling(look, min_periods=look).mean().values
+        ex_t = ex.出場時間.values
+        w = []
+        for r in sh.itertuples():
+            k = np.searchsorted(ex_t, np.datetime64(r.進場時間), side="right") - 1
+            below = k >= look and cum[k] < ma[k]
+            w.append((0.5 if mode == "half" else 0.0) if below else 1.0)
+        sh["w"] = w
+        return sh[sh.w > 0] if mode == "skip" else sh
+
+
+    p("\n=== 3. 部位控制 ===")
+    for lim in (2, 3, 5):
+        p(row(daily_stop(T, lim), f"當日已實現虧損 −{lim}R 後停止開新單"))
+    for look in (20, 50, 100):
+        for mode in ("half", "skip"):
+            p(row(eq_filter(T, look, mode), f"權益 < {look} 筆均線時{'減半' if mode == 'half' else '不下'}"))
+    p("\n=== 4. 組合 + 參數敏感度 ===")
+    p(HDR)
+    TS = T[T.slope_al.values]
+    p(row(cap_total(TS, 8), "斜率同向"))
+    for look in (30, 40, 50, 60, 75):
+        p(row(eq_filter(T, look, "skip"), f"權益 < {look} 筆均線不下"))
+        p(row(eq_filter(TS, look, "skip"), f"斜率同向 + 權益 < {look} 筆均線不下"))
+    for n in (3, 5, 12):
+        p(row(eq_filter(TS, 50, "skip", n=n), f"斜率同向 + 權益<50 不下，上限 {n}"))
+    open("results_part31.txt", "w").write("\n".join(lines) + "\n")
