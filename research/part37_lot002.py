@@ -14,6 +14,8 @@ from part30_max_positions import cap_total
 
 W, IDX = G.W, G.IDX
 C, SP, dayv = W.C, W.SP, W.dayv
+import sys
+GROSS = "gross" in sys.argv  # python3 part37_lot002.py gross → 不扣點差、不扣滑價
 SLIP = 0.3
 dl = W.B.daily
 sma50 = dl.C.rolling(50).mean()
@@ -35,7 +37,7 @@ for i, L, side, a in G.ev:
         continue
     j, px, why = r
     net = (px - L) * side - SP[i]
-    rows.append(dict(進場時間=IDX[i], 出場時間=IDX[j], i=i, j=j, dir=side, entry=L, usd=net - SLIP, R=(net - SLIP) / risk,
+    rows.append(dict(進場時間=IDX[i], 出場時間=IDX[j], i=i, j=j, dir=side, entry=L, usd=(net + SP[i]) if GROSS else net - SLIP, R=((net + SP[i]) if GROSS else net - SLIP) / risk,
                      slope=(s.ma - s.ma10) * side > 0))
 ALL = pd.DataFrame(rows).sort_values("進場時間").reset_index(drop=True)
 
@@ -100,7 +102,7 @@ def p(s=""):
     lines.append(s)
 
 
-p("第三十七部分：0.02 口，防回撤措施前後（2023/8 ~ 2026/10，美元，已扣點差 + 每筆 0.3 美元/盎司滑價）\n")
+p("第三十七部分：0.02 口，防回撤措施前後（2023/8 ~ 2026/10，美元，" + ("不扣點差、不扣滑價" if GROSS else "已扣點差 + 每筆 0.3 美元/盎司滑價") + "）\n")
 summ = []
 for lab, v in (("V0 A+B，上限 8（未防回撤）", V0), ("V1 + 50MA 斜率同向", V1), ("V2 + 權益濾網（最終版）", V2), ("V3 + 持倉 ≥4 新單 0.01 口", V3), ("V4 加權 0.01/0.02/0.03（順時 0.03、持倉≥4 0.01）", V4)):
     v = v[v.進場時間 >= "2023-08-24"]  # 與最終版同一起點（SMA50 暖機後）
@@ -122,4 +124,4 @@ for lab, v in (("V0 A+B，上限 8（未防回撤）", V0), ("V1 + 50MA 斜率�
     p(f"  逐年損益 2023/2024/2025/2026：{yr}；逐年 MDD：{' / '.join(yr_dd)}")
     p(f"  年獲利 / 逐分鐘 MDD = {pnl.sum() / yrs / mdd_m:.2f}；MDD ≤ 20% 需本金 ≥ {mdd_m / 0.2:,.0f}（對應年報酬約 {pnl.sum() / yrs / (mdd_m / 0.2):.0%}，單利）\n")
     summ.append((lab, len(v), pnl.sum(), pnl.sum() / yrs, mdd_m, d.min()))
-open("results_part37.txt", "w").write("\n".join(lines) + "\n")
+open("results_part37_gross.txt" if GROSS else "results_part37.txt", "w").write("\n".join(lines) + "\n")
