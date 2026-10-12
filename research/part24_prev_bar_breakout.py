@@ -117,31 +117,32 @@ def yearly(T):
     return " / ".join(f"{T.R[T.year == y].mean():+.2f}" for y in (2023, 2024, 2025, 2026))
 
 
-p("第二十四部分：前一根 K 棒高/低點突破，週期縮小（XAUUSD M1 2023/6~2026/10）")
-p("停損 0.2 ATR_P，停利 2R；每筆已扣點差；逐年 = 2023 / 2024 / 2025 / 2026 平均 R\n")
-PER = [(1440, "D1"), (240, "H4"), (60, "H1"), (30, "M30"), (15, "M15")]
-summary = {}
-for P, nm in PER:
-    T = run(P, offs=(0.0, 0.15, 0.3))
-    real, fake = T[T.off == 0], T[T.off != 0]
-    summary[nm] = real
-    p(f"=== {nm}：每天約 {len(real) / len(DAYS):.1f} 筆，停損中位數 {real.risk.median():.2f} 美元，點差平均 {real.cost.mean():.3f}R ===")
-    for dir_, lab in ((1, "做多（突破前高）"), (-1, "做空（跌破前低）")):
-        r, f = real[real.dir == dir_], fake[fake.dir == dir_]
-        p(f"  {lab}  真 {st(r.R)} | 假點位 {f.R.mean():+.3f}R | 逐年 {yearly(r)}")
-        p(f"      50日均線上方 {st(r[r.up50 == True].R)} | 下方 {st(r[r.up50 == False].R)}")
-        p(f"      未扣點差 {(r.R + r.cost).mean():+.3f}R")
-    both = real
-    p(f"  多空合計 {st(both.R)}；順勢版（均線上方只做多、下方只做空）"
-      f"{st(both[((both.dir == 1) & (both.up50 == True)) | ((both.dir == -1) & (both.up50 == False))].R)}")
-    p()
+if __name__ == "__main__":
+    p("第二十四部分：前一根 K 棒高/低點突破，週期縮小（XAUUSD M1 2023/6~2026/10）")
+    p("停損 0.2 ATR_P，停利 2R；每筆已扣點差；逐年 = 2023 / 2024 / 2025 / 2026 平均 R\n")
+    PER = [(1440, "D1"), (240, "H4"), (60, "H1"), (30, "M30"), (15, "M15")]
+    summary = {}
+    for P, nm in PER:
+        T = run(P, offs=(0.0, 0.15, 0.3))
+        real, fake = T[T.off == 0], T[T.off != 0]
+        summary[nm] = real
+        p(f"=== {nm}：每天約 {len(real) / len(DAYS):.1f} 筆，停損中位數 {real.risk.median():.2f} 美元，點差平均 {real.cost.mean():.3f}R ===")
+        for dir_, lab in ((1, "做多（突破前高）"), (-1, "做空（跌破前低）")):
+            r, f = real[real.dir == dir_], fake[fake.dir == dir_]
+            p(f"  {lab}  真 {st(r.R)} | 假點位 {f.R.mean():+.3f}R | 逐年 {yearly(r)}")
+            p(f"      50日均線上方 {st(r[r.up50 == True].R)} | 下方 {st(r[r.up50 == False].R)}")
+            p(f"      未扣點差 {(r.R + r.cost).mean():+.3f}R")
+        both = real
+        p(f"  多空合計 {st(both.R)}；順勢版（均線上方只做多、下方只做空）"
+          f"{st(both[((both.dir == 1) & (both.up50 == True)) | ((both.dir == -1) & (both.up50 == False))].R)}")
+        p()
 
-# 小週期換較寬的停損（點差佔比降低）
-p("=== 較小週期改用較寬停損（s = 0.5 / 1.0 ATR_P，停利 2R）===")
-for P, nm in PER[2:]:
-    for s in (0.5, 1.0):
-        T = run(P, s=s)
-        for dir_, lab in ((1, "多"), (-1, "空")):
-            r = T[T.dir == dir_]
-            p(f"  {nm:4s} s={s:<4} {lab} {st(r.R)} 點差 {r.cost.mean():.3f}R | 均線上 {r[r.up50 == True].R.mean():+.3f} 下 {r[r.up50 == False].R.mean():+.3f} | 逐年 {yearly(r)}")
-open(OUT, "w").write("\n".join(lines) + "\n")
+    # 小週期換較寬的停損（點差佔比降低）
+    p("=== 較小週期改用較寬停損（s = 0.5 / 1.0 ATR_P，停利 2R）===")
+    for P, nm in PER[2:]:
+        for s in (0.5, 1.0):
+            T = run(P, s=s)
+            for dir_, lab in ((1, "多"), (-1, "空")):
+                r = T[T.dir == dir_]
+                p(f"  {nm:4s} s={s:<4} {lab} {st(r.R)} 點差 {r.cost.mean():.3f}R | 均線上 {r[r.up50 == True].R.mean():+.3f} 下 {r[r.up50 == False].R.mean():+.3f} | 逐年 {yearly(r)}")
+    open(OUT, "w").write("\n".join(lines) + "\n")
