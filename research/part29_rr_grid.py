@@ -68,30 +68,31 @@ def st(x):
                 pf=gp / gl, dd=(eq.cummax() - eq).max(), tot=x.usd.sum(), t=d.mean() / d.std() * np.sqrt(len(d)))
 
 
-p("第二十九部分：M15 突破 —— 過濾 A / A+B 下的停損與 RR 掃描")
-p("每格：訓練 R / 驗證 R；括號為全期每筆美元(每盎司)。t='收' = 不設停利、當天收盤出場\n")
-store = {}
-for fname, m in (("A", mA), ("A+B", mA & mB)):
-    evs = [e for e, k in zip(ev, m) if k]
-    for capn in (None, 1):
-        p(f"=== 過濾 {fname}，{'疊單不限' if capn is None else '同方向一次 1 筆'} ===")
-        p(f"{'':8s}" + "".join(f"{('t=' + (f'{t:g}' if t else '收')):>22s}" for t in TG))
-        for s in SG:
-            cells = []
-            for t in TG:
-                T = cap(simulate(evs, s, t).sort_values("進場時間").reset_index(drop=True), capn)
-                a, b, c = st(T[T.train]), st(T[~T.train]), st(T)
-                store[(fname, capn, s, t)] = (a, b, c, T)
-                cells.append(f"{a['R']:+.3f}/{b['R']:+.3f}({c['usd']:+.2f})")
-            p(f"s={s:<5}" + "".join(f"{x:>22s}" for x in cells))
-        p()
+if __name__ == "__main__":
+    p("第二十九部分：M15 突破 —— 過濾 A / A+B 下的停損與 RR 掃描")
+    p("每格：訓練 R / 驗證 R；括號為全期每筆美元(每盎司)。t='收' = 不設停利、當天收盤出場\n")
+    store = {}
+    for fname, m in (("A", mA), ("A+B", mA & mB)):
+        evs = [e for e, k in zip(ev, m) if k]
+        for capn in (None, 1):
+            p(f"=== 過濾 {fname}，{'疊單不限' if capn is None else '同方向一次 1 筆'} ===")
+            p(f"{'':8s}" + "".join(f"{('t=' + (f'{t:g}' if t else '收')):>22s}" for t in TG))
+            for s in SG:
+                cells = []
+                for t in TG:
+                    T = cap(simulate(evs, s, t).sort_values("進場時間").reset_index(drop=True), capn)
+                    a, b, c = st(T[T.train]), st(T[~T.train]), st(T)
+                    store[(fname, capn, s, t)] = (a, b, c, T)
+                    cells.append(f"{a['R']:+.3f}/{b['R']:+.3f}({c['usd']:+.2f})")
+                p(f"s={s:<5}" + "".join(f"{x:>22s}" for x in cells))
+            p()
 
-p("=== 細節：同方向一次 1 筆，各 RR（停損 2 ATR15）===")
-p(f"{'過濾':4s} {'t':>4s} {'筆/天':>6s} {'勝率':>6s} {'訓練R':>7s} {'驗證R':>7s} {'全期R':>7s} {'每筆$':>7s} {'PF':>5s} {'日t':>6s} {'總$':>8s} {'回撤$':>7s} | 逐年 R")
-for fname in ("A", "A+B"):
-    for t in TG:
-        a, b, c, T = store[(fname, 1, 2.0, t)]
-        yr = " ".join(f"{T.R[T.進場時間.dt.year == y].mean():+.3f}" for y in (2023, 2024, 2025, 2026))
-        p(f"{fname:4s} {(f'{t:g}' if t else '收'):>4s} {c['n']:6.1f} {c['win']:6.0%} {a['R']:+7.3f} {b['R']:+7.3f} {c['R']:+7.3f} "
-          f"{c['usd']:+7.2f} {c['pf']:5.2f} {c['t']:+6.2f} {c['tot']:+8,.0f} {c['dd']:7,.0f} | {yr}")
-open("results_part29.txt", "w").write("\n".join(lines) + "\n")
+    p("=== 細節：同方向一次 1 筆，各 RR（停損 2 ATR15）===")
+    p(f"{'過濾':4s} {'t':>4s} {'筆/天':>6s} {'勝率':>6s} {'訓練R':>7s} {'驗證R':>7s} {'全期R':>7s} {'每筆$':>7s} {'PF':>5s} {'日t':>6s} {'總$':>8s} {'回撤$':>7s} | 逐年 R")
+    for fname in ("A", "A+B"):
+        for t in TG:
+            a, b, c, T = store[(fname, 1, 2.0, t)]
+            yr = " ".join(f"{T.R[T.進場時間.dt.year == y].mean():+.3f}" for y in (2023, 2024, 2025, 2026))
+            p(f"{fname:4s} {(f'{t:g}' if t else '收'):>4s} {c['n']:6.1f} {c['win']:6.0%} {a['R']:+7.3f} {b['R']:+7.3f} {c['R']:+7.3f} "
+              f"{c['usd']:+7.2f} {c['pf']:5.2f} {c['t']:+6.2f} {c['tot']:+8,.0f} {c['dd']:7,.0f} | {yr}")
+    open("results_part29.txt", "w").write("\n".join(lines) + "\n")
