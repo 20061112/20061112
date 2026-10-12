@@ -162,24 +162,6 @@ def show(lab, parts, daily, n=None):
     return daily
 
 
-p("第五十六部分：不扣滑價（只扣點差）+ 每層加益 + M30 / H1（0.02 口 = 每筆 2 盎司）")
-p("ATR 熵門檻（訓練期 80% 分位）：" + "、".join(f"{ {15: 'M15', 30: 'M30', 60: 'H1'}[k]} {v:+.3f}" for k, v in CUT.items()))
-FULL = {}
-for tf, nm in ((15, "M15"), (30, "M30"), (60, "H1")):
-    p(f"\n=== {nm}：(a) 一層層疊上去（只扣點差）===")
-    acc = []
-    steps = [("L0 前一根突破（無篩選）", [])] + [(f"+ {f}", None) for f in ALL]
-    for lab, _ in steps:
-        if lab.startswith("+ "):
-            acc = acc + [lab[2:]]
-        x = pipeline(tf, acc)
-        show(f"{lab}（{len(x) / x.進場時間.dt.normalize().nunique():.1f}筆/天 PF {pf(x.net):.2f}）", [mpart(x, 2)], daily_of(x, 2), len(x))
-    FULL[tf] = pipeline(tf, ALL)
-    p(f"=== {nm}：(b) 從完整版拿掉一層（拿掉後變差越多 = 這層越有用）===")
-    for f in ALL:
-        x = pipeline(tf, [g for g in ALL if g != f])
-        show(f"完整版 − {f}", [mpart(x, 2)], daily_of(x, 2), len(x))
-
 # ---------------- IB 核心 ----------------
 def ib_prep(X, slip):
     X = X[(X.peff <= CI.PEFF_MAX) & (X.day >= "2023-06-15")].copy()
@@ -194,46 +176,67 @@ def ib_prep(X, slip):
     return X
 
 
-Eib = CI.events()
-IB = {(be, s): ib_prep(CI.simulate(Eib, be=be), s) for be in (None, 2) for s in (0.0, 0.3)}
-p("\n=== IB 核心（0.02 口，只扣點差）===")
-show("IB 核心", [mpart(IB[(None, 0.0)], 2)], daily_of(IB[(None, 0.0)], 2), len(IB[(None, 0.0)]))
-show("IB + 2R 保本", [mpart(IB[(2, 0.0)], 2)], daily_of(IB[(2, 0.0)], 2), len(IB[(2, 0.0)]))
-
-# ---------------- 組合 ----------------
-D = pd.DataFrame({"IB": daily_of(IB[(2, 0.0)], 1), "M15": daily_of(FULL[15], 1), "M30": daily_of(FULL[30], 1),
-                  "H1": daily_of(FULL[60], 1)}).fillna(0)
-p("\n日損益相關（每筆 1 盎司，只扣點差）：\n" + D.corr().round(2).to_string())
-both = {}
-for a, b_ in (("M15", "M30"), ("M15", "H1"), ("M30", "H1")):
-    xa, xb = FULL[{"M15": 15, "M30": 30, "H1": 60}[a]], FULL[{"M15": 15, "M30": 30, "H1": 60}[b_]]
-    same = pd.merge(xa[["進場時間", "dir"]].assign(d=xa.進場時間.dt.normalize()), xb[["進場時間", "dir"]].assign(d=xb.進場時間.dt.normalize()),
-                    on=["d", "dir"]).d.nunique()
-    both[(a, b_)] = same
-p("同一天同方向都有單的天數：" + "、".join(f"{a}&{b_} {v}" for (a, b_), v in both.items()))
 
 
-def combo(lab, spec, slip=0.0):
-    src = {"IB": IB[(2, slip)], "M15": FULL[15] if slip == 0 else FULL_S[15], "M30": FULL[30] if slip == 0 else FULL_S[30],
-           "H1": FULL[60] if slip == 0 else FULL_S[60]}
-    parts = [mpart(src[k], q) for k, q in spec.items() if q]
-    daily = pd.concat([daily_of(src[k], q) for k, q in spec.items() if q], axis=1).fillna(0).sum(1)
-    show(lab, parts, daily)
+if __name__ == "__main__":
+    p("第五十六部分：不扣滑價（只扣點差）+ 每層加益 + M30 / H1（0.02 口 = 每筆 2 盎司）")
+    p("ATR 熵門檻（訓練期 80% 分位）：" + "、".join(f"{ {15: 'M15', 30: 'M30', 60: 'H1'}[k]} {v:+.3f}" for k, v in CUT.items()))
+    FULL = {}
+    for tf, nm in ((15, "M15"), (30, "M30"), (60, "H1")):
+        p(f"\n=== {nm}：(a) 一層層疊上去（只扣點差）===")
+        acc = []
+        steps = [("L0 前一根突破（無篩選）", [])] + [(f"+ {f}", None) for f in ALL]
+        for lab, _ in steps:
+            if lab.startswith("+ "):
+                acc = acc + [lab[2:]]
+            x = pipeline(tf, acc)
+            show(f"{lab}（{len(x) / x.進場時間.dt.normalize().nunique():.1f}筆/天 PF {pf(x.net):.2f}）", [mpart(x, 2)], daily_of(x, 2), len(x))
+        FULL[tf] = pipeline(tf, ALL)
+        p(f"=== {nm}：(b) 從完整版拿掉一層（拿掉後變差越多 = 這層越有用）===")
+        for f in ALL:
+            x = pipeline(tf, [g for g in ALL if g != f])
+            show(f"完整版 − {f}", [mpart(x, 2)], daily_of(x, 2), len(x))
+
+    Eib = CI.events()
+    IB = {(be, s): ib_prep(CI.simulate(Eib, be=be), s) for be in (None, 2) for s in (0.0, 0.3)}
+    p("\n=== IB 核心（0.02 口，只扣點差）===")
+    show("IB 核心", [mpart(IB[(None, 0.0)], 2)], daily_of(IB[(None, 0.0)], 2), len(IB[(None, 0.0)]))
+    show("IB + 2R 保本", [mpart(IB[(2, 0.0)], 2)], daily_of(IB[(2, 0.0)], 2), len(IB[(2, 0.0)]))
+
+    # ---------------- 組合 ----------------
+    D = pd.DataFrame({"IB": daily_of(IB[(2, 0.0)], 1), "M15": daily_of(FULL[15], 1), "M30": daily_of(FULL[30], 1),
+                      "H1": daily_of(FULL[60], 1)}).fillna(0)
+    p("\n日損益相關（每筆 1 盎司，只扣點差）：\n" + D.corr().round(2).to_string())
+    both = {}
+    for a, b_ in (("M15", "M30"), ("M15", "H1"), ("M30", "H1")):
+        xa, xb = FULL[{"M15": 15, "M30": 30, "H1": 60}[a]], FULL[{"M15": 15, "M30": 30, "H1": 60}[b_]]
+        same = pd.merge(xa[["進場時間", "dir"]].assign(d=xa.進場時間.dt.normalize()), xb[["進場時間", "dir"]].assign(d=xb.進場時間.dt.normalize()),
+                        on=["d", "dir"]).d.nunique()
+        both[(a, b_)] = same
+    p("同一天同方向都有單的天數：" + "、".join(f"{a}&{b_} {v}" for (a, b_), v in both.items()))
 
 
-p("\n=== 組合（份數 = 0.01 口；只扣點差）===")
-SPECS = [("M15 2", {"M15": 2}), ("M30 2", {"M30": 2}), ("H1 2", {"H1": 2}),
-         ("M15 1 + M30 1", {"M15": 1, "M30": 1}), ("M15 1 + H1 1", {"M15": 1, "H1": 1}),
-         ("M15 2 + M30 1", {"M15": 2, "M30": 1}), ("M15 2 + H1 1", {"M15": 2, "H1": 1}), ("M15 2 + M30 1 + H1 1", {"M15": 2, "M30": 1, "H1": 1}),
-         ("IB 1 + M15 2（目前）", {"IB": 1, "M15": 2}),
-         ("IB 1 + M15 2 + M30 1", {"IB": 1, "M15": 2, "M30": 1}), ("IB 1 + M15 2 + H1 1", {"IB": 1, "M15": 2, "H1": 1}),
-         ("IB 1 + M15 2 + M30 1 + H1 1", {"IB": 1, "M15": 2, "M30": 1, "H1": 1}),
-         ("IB 1 + M15 1 + M30 1 + H1 1", {"IB": 1, "M15": 1, "M30": 1, "H1": 1}),
-         ("IB 2 + M15 2 + M30 1 + H1 1", {"IB": 2, "M15": 2, "M30": 1, "H1": 1})]
-for lab, spec in SPECS:
-    combo(lab, spec)
-FULL_S = {tf: pipeline(tf, ALL, slip=0.3) for tf in (15, 30, 60)}
-p("\n=== 對照：同樣組合扣 0.3 滑價 ===")
-for lab, spec in SPECS:
-    combo(lab, spec, slip=0.3)
-open("results_part56.txt", "w").write("\n".join(lines) + "\n")
+    def combo(lab, spec, slip=0.0):
+        src = {"IB": IB[(2, slip)], "M15": FULL[15] if slip == 0 else FULL_S[15], "M30": FULL[30] if slip == 0 else FULL_S[30],
+               "H1": FULL[60] if slip == 0 else FULL_S[60]}
+        parts = [mpart(src[k], q) for k, q in spec.items() if q]
+        daily = pd.concat([daily_of(src[k], q) for k, q in spec.items() if q], axis=1).fillna(0).sum(1)
+        show(lab, parts, daily)
+
+
+    p("\n=== 組合（份數 = 0.01 口；只扣點差）===")
+    SPECS = [("M15 2", {"M15": 2}), ("M30 2", {"M30": 2}), ("H1 2", {"H1": 2}),
+             ("M15 1 + M30 1", {"M15": 1, "M30": 1}), ("M15 1 + H1 1", {"M15": 1, "H1": 1}),
+             ("M15 2 + M30 1", {"M15": 2, "M30": 1}), ("M15 2 + H1 1", {"M15": 2, "H1": 1}), ("M15 2 + M30 1 + H1 1", {"M15": 2, "M30": 1, "H1": 1}),
+             ("IB 1 + M15 2（目前）", {"IB": 1, "M15": 2}),
+             ("IB 1 + M15 2 + M30 1", {"IB": 1, "M15": 2, "M30": 1}), ("IB 1 + M15 2 + H1 1", {"IB": 1, "M15": 2, "H1": 1}),
+             ("IB 1 + M15 2 + M30 1 + H1 1", {"IB": 1, "M15": 2, "M30": 1, "H1": 1}),
+             ("IB 1 + M15 1 + M30 1 + H1 1", {"IB": 1, "M15": 1, "M30": 1, "H1": 1}),
+             ("IB 2 + M15 2 + M30 1 + H1 1", {"IB": 2, "M15": 2, "M30": 1, "H1": 1})]
+    for lab, spec in SPECS:
+        combo(lab, spec)
+    FULL_S = {tf: pipeline(tf, ALL, slip=0.3) for tf in (15, 30, 60)}
+    p("\n=== 對照：同樣組合扣 0.3 滑價 ===")
+    for lab, spec in SPECS:
+        combo(lab, spec, slip=0.3)
+    open("results_part56.txt", "w").write("\n".join(lines) + "\n")
