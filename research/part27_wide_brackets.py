@@ -122,21 +122,22 @@ def t_(x):
     return x.mean() / x.std() * np.sqrt(len(x))
 
 
-p("第二十七部分：前一根 K 棒高/低點，放大停損停利（K 棒顏色推估同根順序；持有到當天收盤；每筆扣點差）")
-p("格子內：每筆 R（扣點差）[t]；括號 = 真點位 − 同方向隨機進場（點位本身的效果）\n")
-for P, nm in ((15, "M15"), (30, "M30"), (60, "H1"), (240, "H4"), (1440, "D1")):
-    ev = events(P)
-    if P < 240:  # 小週期抽樣 1/3 以節省時間（仍有上萬筆）
-        ev = ev[::3]
-    p(f"=== {nm}（{len(ev)} 筆）===")
-    for mode, lab in (("brk", "突破"), ("fade", "逆勢")):
-        p(f"  [{lab}]  {'':6s}" + "".join(f"{'t=' + str(t):>26s}" for t in TG))
-        for s in SG:
-            cells = []
-            for t in TG:
-                r, c = run(ev, s, t, mode)
-                rr, _ = run(ev, s, t, "rnd_" + mode)
-                cells.append(f"{r.mean():+.3f}[{t_(r):+.1f}]({r.mean() - rr.mean():+.3f})")
-            p(f"  s={s:<4} 點差{c.mean():.3f}R " + "".join(f"{x:>26s}" for x in cells))
-    p()
-open(OUT, "w").write("\n".join(lines) + "\n")
+if __name__ == "__main__":
+    p("第二十七部分：前一根 K 棒高/低點，放大停損停利（K 棒顏色推估同根順序；持有到當天收盤；每筆扣點差）")
+    p("格子內：每筆 R（扣點差）[t]；括號 = 真點位 − 同方向隨機進場（點位本身的效果）\n")
+    for P, nm in ((15, "M15"), (30, "M30"), (60, "H1"), (240, "H4"), (1440, "D1")):
+        ev = events(P)
+        if P < 240:  # 小週期抽樣 1/3 以節省時間（仍有上萬筆）
+            ev = ev[::3]
+        p(f"=== {nm}（{len(ev)} 筆）===")
+        for mode, lab in (("brk", "突破"), ("fade", "逆勢")):
+            p(f"  [{lab}]  {'':6s}" + "".join(f"{'t=' + str(t):>26s}" for t in TG))
+            for s in SG:
+                cells = []
+                for t in TG:
+                    r, c = run(ev, s, t, mode)
+                    rr, _ = run(ev, s, t, "rnd_" + mode)
+                    cells.append(f"{r.mean():+.3f}[{t_(r):+.1f}]({r.mean() - rr.mean():+.3f})")
+                p(f"  s={s:<4} 點差{c.mean():.3f}R " + "".join(f"{x:>26s}" for x in cells))
+        p()
+    open(OUT, "w").write("\n".join(lines) + "\n")
