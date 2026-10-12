@@ -102,20 +102,21 @@ def report(x, lab):
       f"年獲利/MDD(含浮動) {pnl.sum() / yrs / m_min:4.2f} (日結) {pnl.sum() / yrs / m_d:4.2f} | 最差日 {d.min():+6,.0f} | 訓練 {rat(x[tr], pnl[tr]):3.1f} 驗證 {rat(x[~tr], pnl[~tr]):3.1f}")
 
 
-p("第四十九部分：不含浮虧的 MDD + 額外防護（0.02 口，點差 + 0.3 滑價，2023/8 ~ 2026/10）")
-for t in (3, 4):
-    x = run(t)
-    d = (x.R).groupby(x.進場時間.dt.date).sum()
-    p(f"\n=== RR {t} ===  單日 R 分布：最差 {d.min():+.1f}R、1% 分位 {d.quantile(.01):+.1f}R、5% 分位 {d.quantile(.05):+.1f}R")
-    report(x, "最終版（無額外防護）")
-    for K in (6, 10, 15):
-        report(daily_stop(x, K), f"單日虧損上限 −{K}R")
-    for k in (1.5, 1.8, 2.2):
-        report(x[~(x.volrel > k).values], f"波動暴增暫停（ATR比 > {k}）")
-    for k in (2.0, 3.0):
-        report(x[~(x.sprel > k).values], f"點差 > 平常 {k} 倍不進")
-    nfp = first_friday(x.進場時間) & x.進場時間.dt.hour.between(15, 16)
-    report(x[~nfp.values], "非農時段不開新單")
-    allg = daily_stop(x[~((x.volrel > 2.2) | (x.sprel > 3.0) | nfp).values], 15)
-    report(allg, "組合：−15R + ATR>2.2 + 點差3倍 + 非農")
-open("results_part49.txt", "w").write("\n".join(lines) + "\n")
+if __name__ == "__main__":
+    p("第四十九部分：不含浮虧的 MDD + 額外防護（0.02 口，點差 + 0.3 滑價，2023/8 ~ 2026/10）")
+    for t in (3, 4):
+        x = run(t)
+        d = (x.R).groupby(x.進場時間.dt.date).sum()
+        p(f"\n=== RR {t} ===  單日 R 分布：最差 {d.min():+.1f}R、1% 分位 {d.quantile(.01):+.1f}R、5% 分位 {d.quantile(.05):+.1f}R")
+        report(x, "最終版（無額外防護）")
+        for K in (6, 10, 15):
+            report(daily_stop(x, K), f"單日虧損上限 −{K}R")
+        for k in (1.5, 1.8, 2.2):
+            report(x[~(x.volrel > k).values], f"波動暴增暫停（ATR比 > {k}）")
+        for k in (2.0, 3.0):
+            report(x[~(x.sprel > k).values], f"點差 > 平常 {k} 倍不進")
+        nfp = first_friday(x.進場時間) & x.進場時間.dt.hour.between(15, 16)
+        report(x[~nfp.values], "非農時段不開新單")
+        allg = daily_stop(x[~((x.volrel > 2.2) | (x.sprel > 3.0) | nfp).values], 15)
+        report(allg, "組合：−15R + ATR>2.2 + 點差3倍 + 非農")
+    open("results_part49.txt", "w").write("\n".join(lines) + "\n")
