@@ -16,7 +16,8 @@ W, IDX = G.W, G.IDX
 C, SP, dayv = W.C, W.SP, W.dayv
 import sys
 GROSS = "gross" in sys.argv  # python3 part37_lot002.py gross → 不扣點差、不扣滑價
-SLIP = 0.3
+SPREAD_ONLY = "spread" in sys.argv  # python3 part37_lot002.py spread → 只扣點差、不扣滑價
+SLIP = 0.0 if SPREAD_ONLY else 0.3
 dl = W.B.daily
 sma50 = dl.C.rolling(50).mean()
 ATRd = (dl.H - dl.L).rolling(10).mean().shift(1)
@@ -69,6 +70,7 @@ def half_when_crowded(df, lim=4):
 
 
 V0 = cap_total(ALL, 8).copy()
+V0E = eq_filter(V0.reset_index(drop=True)).copy()  # V0 + 權益濾網（影子），不加斜率
 V1 = cap_total(ALL[ALL.slope], 8).copy()
 V2 = eq_filter(V1.reset_index(drop=True)).copy()
 V3 = half_when_crowded(V2)
@@ -77,7 +79,7 @@ cut = np.nanmedian(V2.eq_gap[V2.進場時間 < "2025-01-01"])  # 訓練期中位
 V4 = half_when_crowded(V2)
 crowd = V4.lot < 0.02
 V4["lot"] = np.select([(V4.eq_gap > cut) & ~crowd, (V4.eq_gap > cut) & crowd, crowd], [0.03, 0.02, 0.01], 0.02)
-for v in (V0, V1, V2):
+for v in (V0, V0E, V1, V2):
     v["lot"] = 0.02
 
 
@@ -102,9 +104,9 @@ def p(s=""):
     lines.append(s)
 
 
-p("第三十七部分：0.02 口，防回撤措施前後（2023/8 ~ 2026/10，美元，" + ("不扣點差、不扣滑價" if GROSS else "已扣點差 + 每筆 0.3 美元/盎司滑價") + "）\n")
+p("第三十七部分：0.02 口，防回撤措施前後（2023/8 ~ 2026/10，美元，" + ("不扣點差、不扣滑價" if GROSS else "只扣點差" if SPREAD_ONLY else "已扣點差 + 每筆 0.3 美元/盎司滑價") + "）\n")
 summ = []
-for lab, v in (("V0 A+B，上限 8（未防回撤）", V0), ("V1 + 50MA 斜率同向", V1), ("V2 + 權益濾網（最終版）", V2), ("V3 + 持倉 ≥4 新單 0.01 口", V3), ("V4 加權 0.01/0.02/0.03（順時 0.03、持倉≥4 0.01）", V4)):
+for lab, v in (("V0 A+B，上限 8（未防回撤）", V0), ("V0 + 權益濾網（影子），不加斜率", V0E), ("V1 + 50MA 斜率同向", V1), ("V2 + 權益濾網（最終版）", V2), ("V3 + 持倉 ≥4 新單 0.01 口", V3), ("V4 加權 0.01/0.02/0.03（順時 0.03、持倉≥4 0.01）", V4)):
     v = v[v.進場時間 >= "2023-08-24"]  # 與最終版同一起點（SMA50 暖機後）
     pnl = v.usd * v.lot * 100
     d = pnl.groupby(v.進場時間.dt.date).sum(); e = d.cumsum()
@@ -124,4 +126,4 @@ for lab, v in (("V0 A+B，上限 8（未防回撤）", V0), ("V1 + 50MA 斜率�
     p(f"  逐年損益 2023/2024/2025/2026：{yr}；逐年 MDD：{' / '.join(yr_dd)}")
     p(f"  年獲利 / 逐分鐘 MDD = {pnl.sum() / yrs / mdd_m:.2f}；MDD ≤ 20% 需本金 ≥ {mdd_m / 0.2:,.0f}（對應年報酬約 {pnl.sum() / yrs / (mdd_m / 0.2):.0%}，單利）\n")
     summ.append((lab, len(v), pnl.sum(), pnl.sum() / yrs, mdd_m, d.min()))
-open("results_part37_gross.txt" if GROSS else "results_part37.txt", "w").write("\n".join(lines) + "\n")
+open("results_part37_gross.txt" if GROSS else "results_part37_spread.txt" if SPREAD_ONLY else "results_part37.txt", "w").write("\n".join(lines) + "\n")
