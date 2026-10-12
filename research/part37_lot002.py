@@ -4,6 +4,7 @@ V0  A + B，上限 8（未加防回撤）
 V1  V0 + 50 日均線斜率同向
 V2  V1 + 權益曲線濾網（50 筆均線）＝ 最終版
 V3  V2 + 已持倉 ≥ 4 筆時新單只下 0.01 口
+V4  V2 + 第三十五部分的加權：權益高於均線較多 → 0.03 口、已持倉 ≥ 4 → 0.01 口、兩者同時 → 0.02 口
 全部每筆 0.02 口（V3 部分 0.01 口）。MDD 列日結與逐分鐘含浮動。
 """
 import numpy as np
@@ -44,11 +45,14 @@ def eq_filter(df, look=50):
     cum = ex.R.cumsum().values
     ma = pd.Series(cum).rolling(look, min_periods=look).mean().values
     et = ex.出場時間.values
-    keep = []
+    keep, gap = [], []
     for t in df.進場時間.values:
         k = np.searchsorted(et, t, side="right") - 1
         keep.append(not (k >= look and cum[k] < ma[k]))
-    return df[np.array(keep)]
+        gap.append(cum[k] - ma[k] if k >= look else np.nan)
+    out = df.copy()
+    out["eq_gap"] = gap  # 影子累積 R − 50 筆均線
+    return out[np.array(keep)]
 
 
 def half_when_crowded(df, lim=4):
@@ -66,6 +70,11 @@ V0 = cap_total(ALL, 8).copy()
 V1 = cap_total(ALL[ALL.slope], 8).copy()
 V2 = eq_filter(V1.reset_index(drop=True)).copy()
 V3 = half_when_crowded(V2)
+# V4：第三十五部分的加權（基準 0.02；權益高於均線較多 ×1.5 → 0.03；已持倉 ≥ 4 ×0.5 → 0.01；兩者同時 → 0.02）
+cut = np.nanmedian(V2.eq_gap[V2.進場時間 < "2025-01-01"])  # 訓練期中位數
+V4 = half_when_crowded(V2)
+crowd = V4.lot < 0.02
+V4["lot"] = np.select([(V4.eq_gap > cut) & ~crowd, (V4.eq_gap > cut) & crowd, crowd], [0.03, 0.02, 0.01], 0.02)
 for v in (V0, V1, V2):
     v["lot"] = 0.02
 
@@ -93,7 +102,7 @@ def p(s=""):
 
 p("第三十七部分：0.02 口，防回撤措施前後（2023/8 ~ 2026/10，美元，已扣點差 + 每筆 0.3 美元/盎司滑價）\n")
 summ = []
-for lab, v in (("V0 A+B，上限 8（未防回撤）", V0), ("V1 + 50MA 斜率同向", V1), ("V2 + 權益濾網（最終版）", V2), ("V3 + 持倉 ≥4 新單 0.01 口", V3)):
+for lab, v in (("V0 A+B，上限 8（未防回撤）", V0), ("V1 + 50MA 斜率同向", V1), ("V2 + 權益濾網（最終版）", V2), ("V3 + 持倉 ≥4 新單 0.01 口", V3), ("V4 加權 0.01/0.02/0.03（順時 0.03、持倉≥4 0.01）", V4)):
     v = v[v.進場時間 >= "2023-08-24"]  # 與最終版同一起點（SMA50 暖機後）
     pnl = v.usd * v.lot * 100
     d = pnl.groupby(v.進場時間.dt.date).sum(); e = d.cumsum()
