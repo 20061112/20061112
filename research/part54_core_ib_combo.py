@@ -90,4 +90,27 @@ show("M15 最終版 0.02 口", [m_part(2)], Dd.M15)
 show("兩者各 0.02 口", [ib_part(2), m_part(2)], Dd.IB + Dd.M15)
 show("兩者各 0.01 口（總曝險同單一）", [ib_part(1), m_part(1)], (Dd.IB + Dd.M15) / 2)
 show("IB 0.01 + M15 0.02", [ib_part(1), m_part(2)], Dd.IB / 2 + Dd.M15)
+# ---- M15 + ATR 熵上升不做（第五十一、五十三部分；門檻 = 訓練期 80% 分位）----
+import part24_prev_bar_breakout as B24
+pid = B24.period_ids(15)
+g = pd.DataFrame({"pid": pid, "H": P.W.H, "L": P.W.Lo, "C": C})
+b = g.groupby("pid").agg(H=("H", "max"), L=("L", "min"), C=("C", "last"))
+tr15 = np.nan_to_num(np.maximum(b.H - b.L, np.maximum((b.H - b.C.shift(1)).abs(), (b.L - b.C.shift(1)).abs())).values)
+v = np.lib.stride_tricks.sliding_window_view(tr15, 20)
+pp = v / v.sum(1, keepdims=True)
+with np.errstate(divide="ignore", invalid="ignore"):
+    ent = np.r_[np.full(19, np.nan), -np.nansum(np.where(pp > 0, pp * np.log(pp), 0), 1) / np.log(20)]
+dent = ent - np.r_[np.full(10, np.nan), ent[:-10]]
+Mall = P.run(3)
+Mall = Mall[~(Mall.volrel > 2.2).values].reset_index(drop=True)
+Mall["dent"] = dent[np.maximum(pid[Mall.i.values] - 1, 0)]
+cut = np.nanquantile(Mall.dent[Mall.進場時間 < "2025-01-01"], 0.8)
+ME = P.daily_stop(Mall[~(Mall.dent > cut).values].reset_index(drop=True), 15)
+ME["date"] = ME.進場時間.dt.normalize()
+me_d = (ME.net * 2).groupby(ME.date).sum().reindex(idx, fill_value=0)
+me_part = lambda q: (ME.i.values, ME.j.values, ME.dir.values, ME.entry.values, ME.net.values, q)
+p(f"\n=== M15 + ATR 熵上升不做（門檻 {cut:+.3f}）× IB 核心 ===")
+show("M15 + 熵 0.02 口", [me_part(2)], me_d)
+show("IB 0.01 + (M15+熵) 0.01", [ib_part(1), me_part(1)], (Dd.IB + me_d) / 2)
+show("IB 0.01 + (M15+熵) 0.02", [ib_part(1), me_part(2)], Dd.IB / 2 + me_d)
 open("results_part54.txt", "w").write("\n".join(lines) + "\n")
