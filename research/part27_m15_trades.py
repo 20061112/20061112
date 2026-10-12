@@ -92,11 +92,12 @@ def summary(T, s, t):
     return out
 
 
-ev = W.events(15)
-lines = ["第二十七部分：M15 前一根 K 棒高/低點突破 —— 逐筆交易（XAUUSD 2023/6 ~ 2026/10）"]
-for s, t in CASES:
-    T = build(s, t, ev)
-    T.to_csv(f"part27_m15_trades_s{s:g}_t{t:g}.csv", index=False, encoding="utf-8-sig")
-    lines += summary(T, s, t)
-print("\n".join(lines))
-open("results_part27_m15.txt", "w").write("\n".join(lines) + "\n")
+if __name__ == "__main__":
+    ev = W.events(15)
+    lines = ["第二十七部分：M15 前一根 K 棒高/低點突破 —— 逐筆交易（XAUUSD 2023/6 ~ 2026/10）"]
+    for s, t in CASES:
+        T = build(s, t, ev)
+        T.to_csv(f"part27_m15_trades_s{s:g}_t{t:g}.csv", index=False, encoding="utf-8-sig")
+        lines += summary(T, s, t)
+    print("\n".join(lines))
+    open("results_part27_m15.txt", "w").write("\n".join(lines) + "\n")
