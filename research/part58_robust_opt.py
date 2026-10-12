@@ -58,8 +58,7 @@ Eib = Q.CI.events()
 def ib(slip, eq=False):
     X = Q.ib_prep(Q.CI.simulate(Eib, be=2), slip)
     X["進場時間"] = pd.to_datetime(X.t_in)
-    X["出場時間"] = [Q.CI.ARR[d][0][int(j)] for d, j in zip(X.day, X.j)]
-    X["出場時間"] = pd.to_datetime(X.出場時間)
+    X["出場時間"] = IDX[X.j.values]          # ib_prep 已把 j 換成全域 M1 索引
     X["risk"] = np.where(X.side == 1, X.lvl - X.ibl, X.ibh - X.lvl)
     X["R"] = X.net / X.risk
     X = X[X.進場時間 >= START].sort_values("進場時間").reset_index(drop=True)
