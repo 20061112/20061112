@@ -23,8 +23,9 @@ def first_hit(cond):
     return k if cond[k] else -1
 
 
-def sim_m1(d, E, tf_min, at_level):
+def sim_m1(d, E, tf_min, at_level, return_exit=False):
     out = np.full(len(E), np.nan)
+    ext = np.full(len(E), np.datetime64("NaT"), dtype="datetime64[ns]")
     a_prev = d.atr.shift().values
     idx = d.index
     for k, (t, dr, lvl, th) in enumerate(zip(E.i.values, E.dir.values, E.level.values, E.through.values)):
@@ -61,14 +62,16 @@ def sim_m1(d, E, tf_min, at_level):
         if at_level:
             hit_t[0] = False  # 進場那一分鐘不算停利（不知道先後）
         ks, kt = first_hit(hit_s), first_hit(hit_t)
+        base = j if at_level else j + 1
         if ks >= 0 and (kt < 0 or ks <= kt):
-            r = -1.0
+            r, xi = -1.0, base + ks
         elif kt >= 0:
-            r = z.TARGET_R
+            r, xi = z.TARGET_R, base + kt
         else:
-            r = dr * (C1[s2 - 1] - e) / (z.STOP_ATR * A)
+            r, xi = dr * (C1[s2 - 1] - e) / (z.STOP_ATR * A), s2 - 1
         out[k] = r - sp / (z.STOP_ATR * A)
-    return out
+        ext[k] = T1[xi]
+    return (out, ext) if return_exit else out
 
 
 def line(name, R, years):
