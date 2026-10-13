@@ -43,6 +43,10 @@ class P:
         s.ll20 = pd.Series(l).rolling(20).min().to_numpy()
         s.ll5p = sh(pd.Series(l).rolling(5).min().to_numpy(), 1)   # 前 5 根（不含這根）最低
 
+    def lowk(s, k):
+        """型態 k 根內的最低點（停損放這裡）。"""
+        return pd.Series(s.l).rolling(k, min_periods=1).min().to_numpy()
+
     def prev(s, k, name):
         return sh(getattr(s, name), k)
 
@@ -138,15 +142,15 @@ def fwd_matrix(a, idx, k):
     return out
 
 
-def trade_r(p, idx, cost, valid, tgt, mp, st, chunk=4000):
+def trade_r(p, idx, cost, valid, tgt, mp, st, chunk=4000, k=1):
     """分批呼叫 _trade_r，避免記憶體爆掉。"""
     if len(idx) <= chunk:
-        return _trade_r(p, idx, cost, valid, tgt, mp, st)
-    return np.concatenate([_trade_r(p, idx[i:i + chunk], cost[i:i + chunk], valid[i:i + chunk], tgt, mp, st)
+        return _trade_r(p, idx, cost, valid, tgt, mp, st, k)
+    return np.concatenate([_trade_r(p, idx[i:i + chunk], cost[i:i + chunk], valid[i:i + chunk], tgt, mp, st, k)
                            for i in range(0, len(idx), chunk)])
 
 
-def _trade_r(p, idx, cost, valid, tgt, mp, st):
+def _trade_r(p, idx, cost, valid, tgt, mp, st, k=1):
     """下一根突破型態高點進場、停損型態低點、目標 tgt R、最多 MAXH 根。用 M1 路徑判斷先後。
     mp = (o, h, l, c) M1 陣列（與 p 同方向，鏡像時也鏡像）；st = 每根 TF K 棒第一根 M1 的位置（多一格結尾）。
     同一分鐘同時碰到停損與目標算停損。回傳每筆 R（未觸發 = nan）。"""
@@ -161,7 +165,7 @@ def _trade_r(p, idx, cost, valid, tgt, mp, st):
     inwin = j < e[:, None]
     j = np.minimum(j, len(mh) - 1)
     H, L, O, C = mh[j], ml[j], mo[j], mc[j]
-    ph, pl = p.h[idx], p.l[idx]
+    ph, pl = p.h[idx], p.lowk(k)[idx]           # 進場：最後一根高點；停損：整個型態的最低點
     entry_zone = j < b1[:, None]
     trig_m = (H > ph[:, None]) & entry_zone & inwin
     trig = trig_m.any(1) & valid
@@ -237,7 +241,7 @@ def evaluate(name, tf, mins, df, m1):
             rec["win1"] = np.nanmean(nb[~np.isnan(nb)] > 0)
             idx2 = idx[fut_ok[MAXH][idx]]
             for tg in (1, 2):
-                rr = trade_r(p, idx2, cost[idx2], np.ones(len(idx2), bool), tg, mp, st)
+                rr = trade_r(p, idx2, cost[idx2], np.ones(len(idx2), bool), tg, mp, st, k=k)
                 for q in (0, 1):
                     m = per[idx2] == q
                     v = rr[m]
