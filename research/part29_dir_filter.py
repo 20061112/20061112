@@ -15,13 +15,14 @@ from load import load
 
 OOS_END = pd.Timestamp("2026-01-01")
 LIVE = json.load(open("final_A_live.json"))
-out = open("results_part29.txt", "w")
+out = None
 
 
 def P(s=""):
     print(s)
-    out.write(s + "\n")
-    out.flush()
+    if out:
+        out.write(s + "\n")
+        out.flush()
 
 
 def pf(p):
@@ -95,38 +96,40 @@ for X in (A, L1):
     X["day"] = pd.to_datetime(X.day)
 BASES = {"版本 A（凍結門檻）": frozen(A), "版本 A（滾動前推）": walk(A), "L1 核心 + 反向尾巴（前推）": walk(L1, 0.9, 1.0, 0.0)}
 
-P("第二十九部分：M30 紅綠不平衡當方向過濾（事先登記：N=25、多數 ≥ 60%、逆向的單不做）")
-for name, T in BASES.items():
-    P(f"\n# {name}")
-    for mode in ("不加過濾", "主規則", "嚴格", "動能", "反向"):
-        Y = T if mode == "不加過濾" else apply(T, mode=mode)
-        o, i = Y[Y.day < OOS_END], Y[Y.day >= OOS_END]
-        P(f"  {mode:6s} 樣本外 {line(o)}")
-        P(f"  {'':6s} 2026   {line(i)}")
-        if mode in ("不加過濾", "主規則"):
-            for y, g in Y.groupby(Y.day.dt.year):
-                lo, sh = g[g.side == 1], g[g.side == -1]
-                P(f"           {y}: {line(g)} | 多 {lo.R.mean():+.3f} (n={len(lo)}) 空 {sh.R.mean():+.3f} (n={len(sh)})")
+if __name__ == "__main__":
+    out = open("results_part29.txt", "w")
+    P("第二十九部分：M30 紅綠不平衡當方向過濾（事先登記：N=25、多數 ≥ 60%、逆向的單不做）")
+    for name, T in BASES.items():
+        P(f"\n# {name}")
+        for mode in ("不加過濾", "主規則", "嚴格", "動能", "反向"):
+            Y = T if mode == "不加過濾" else apply(T, mode=mode)
+            o, i = Y[Y.day < OOS_END], Y[Y.day >= OOS_END]
+            P(f"  {mode:6s} 樣本外 {line(o)}")
+            P(f"  {'':6s} 2026   {line(i)}")
+            if mode in ("不加過濾", "主規則"):
+                for y, g in Y.groupby(Y.day.dt.year):
+                    lo, sh = g[g.side == 1], g[g.side == -1]
+                    P(f"           {y}: {line(g)} | 多 {lo.R.mean():+.3f} (n={len(lo)}) 空 {sh.R.mean():+.3f} (n={len(sh)})")
 
-P("\n# 被主規則刪掉的單（逆著 M30 多數色）本身表現")
-for name, T in BASES.items():
-    kept = apply(T)
-    drop = T[~T.index.isin(kept.index)]
-    o, i = drop[drop.day < OOS_END], drop[drop.day >= OOS_END]
-    P(f"  {name:22s} 刪掉的：樣本外 {line(o)} | 2026 {line(i)}")
-    for side, lab in ((1, "多"), (-1, "空")):
-        P(f"      {lab}：保留 {kept[(kept.side == side) & (kept.day < OOS_END)].R.mean():+.3f}R / 刪掉 {drop[(drop.side == side) & (drop.day < OOS_END)].R.mean():+.3f}R（樣本外）")
+    P("\n# 被主規則刪掉的單（逆著 M30 多數色）本身表現")
+    for name, T in BASES.items():
+        kept = apply(T)
+        drop = T[~T.index.isin(kept.index)]
+        o, i = drop[drop.day < OOS_END], drop[drop.day >= OOS_END]
+        P(f"  {name:22s} 刪掉的：樣本外 {line(o)} | 2026 {line(i)}")
+        for side, lab in ((1, "多"), (-1, "空")):
+            P(f"      {lab}：保留 {kept[(kept.side == side) & (kept.day < OOS_END)].R.mean():+.3f}R / 刪掉 {drop[(drop.side == side) & (drop.day < OOS_END)].R.mean():+.3f}R（樣本外）")
 
-P("\n# 鄰近參數（主規則，版本 A 凍結）：每筆 R 樣本外 / 2026，括號 = 樣本外保留比例")
-T = BASES["版本 A（凍結門檻）"]
-FR = (0.55, 0.6, 0.65, 0.7)
-P("   N   " + "  ".join(f"{f:>24.0%}" for f in FR))
-for N in (10, 15, 20, 25, 30, 40, 50):
-    cells = []
-    for f in FR:
-        Y = apply(T, N, f)
-        o, i = Y[Y.day < OOS_END], Y[Y.day >= OOS_END]
-        cells.append(f"{o.R.mean():+.3f}/{i.R.mean():+.3f}({len(o) / (T.day < OOS_END).sum():.0%})")
-    P(f"  {N:3d} " + "  ".join(f"{c:>24s}" for c in cells))
-P("   對照：不加過濾 樣本外 {:+.3f} / 2026 {:+.3f}".format(T[T.day < OOS_END].R.mean(), T[T.day >= OOS_END].R.mean()))
-out.close()
+    P("\n# 鄰近參數（主規則，版本 A 凍結）：每筆 R 樣本外 / 2026，括號 = 樣本外保留比例")
+    T = BASES["版本 A（凍結門檻）"]
+    FR = (0.55, 0.6, 0.65, 0.7)
+    P("   N   " + "  ".join(f"{f:>24.0%}" for f in FR))
+    for N in (10, 15, 20, 25, 30, 40, 50):
+        cells = []
+        for f in FR:
+            Y = apply(T, N, f)
+            o, i = Y[Y.day < OOS_END], Y[Y.day >= OOS_END]
+            cells.append(f"{o.R.mean():+.3f}/{i.R.mean():+.3f}({len(o) / (T.day < OOS_END).sum():.0%})")
+        P(f"  {N:3d} " + "  ".join(f"{c:>24s}" for c in cells))
+    P("   對照：不加過濾 樣本外 {:+.3f} / 2026 {:+.3f}".format(T[T.day < OOS_END].R.mean(), T[T.day >= OOS_END].R.mean()))
+    out.close()
