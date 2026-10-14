@@ -8,13 +8,14 @@ from load import load
 from part29_dir_filter import BASES, OOS_END, pf
 from part32_side_gate import perf_gate, DAYS
 
-out = open("results_part33.txt", "w")
+out = None
 
 
 def P(s=""):
     print(s)
-    out.write(s + "\n")
-    out.flush()
+    if out:
+        out.write(s + "\n")
+        out.flush()
 
 
 m1 = load("data/XAUUSD_M1_2023_2026.csv")
@@ -124,42 +125,44 @@ def gate_state(T, N=120):
     return pd.DataFrame({"多開": st[1], "空開": st[-1]})
 
 
-P("第三十三部分：120 天側邊開關（某一邊最近 120 個交易日累計 R < 0 → 那一邊今天不開）")
-res = {}
-for name in ("L1 核心 + 反向尾巴（前推）", "版本 A（凍結門檻）"):
-    T0 = BASES[name]
-    G = perf_gate(T0, 120, 0)
-    res[name] = (detailed(G, f"{name} + 120 天開關"), detailed(T0, f"{name}（對照：不加開關）"))
-    st = gate_state(T0).loc[T0.day.min():T0.day.max()]
-    P(f"\n  ## {name}：開關狀態（每年兩邊開放的天數比例）")
-    for y, g in st.groupby(st.index.year):
-        P(f"    {y}: 多單開放 {g['多開'].mean():.0%}，空單開放 {g['空開'].mean():.0%}")
-    ch = st.astype(int).diff().abs().sum()
-    P(f"    開關切換次數：多 {int(ch['多開'])} 次，空 {int(ch['空開'])} 次")
-    G.drop(columns=["ym"], errors="ignore").to_csv(f"part33_{'L1tail' if 'L1' in name else 'A'}_gate120_trades.csv", index=False, float_format="%.4f")
+if __name__ == "__main__":
+    out = open("results_part33.txt", "w")
+    P("第三十三部分：120 天側邊開關（某一邊最近 120 個交易日累計 R < 0 → 那一邊今天不開）")
+    res = {}
+    for name in ("L1 核心 + 反向尾巴（前推）", "版本 A（凍結門檻）"):
+        T0 = BASES[name]
+        G = perf_gate(T0, 120, 0)
+        res[name] = (detailed(G, f"{name} + 120 天開關"), detailed(T0, f"{name}（對照：不加開關）"))
+        st = gate_state(T0).loc[T0.day.min():T0.day.max()]
+        P(f"\n  ## {name}：開關狀態（每年兩邊開放的天數比例）")
+        for y, g in st.groupby(st.index.year):
+            P(f"    {y}: 多單開放 {g['多開'].mean():.0%}，空單開放 {g['空開'].mean():.0%}")
+        ch = st.astype(int).diff().abs().sum()
+        P(f"    開關切換次數：多 {int(ch['多開'])} 次，空 {int(ch['空開'])} 次")
+        G.drop(columns=["ym"], errors="ignore").to_csv(f"part33_{'L1tail' if 'L1' in name else 'A'}_gate120_trades.csv", index=False, float_format="%.4f")
 
 
-def chart():
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(2, 2, figsize=(15, 8), sharex=True, gridspec_kw=dict(height_ratios=[2, 1]))
-    for j, (name, ((G, ecg, emg, ddg), (T0, ec0, em0, dd0))) in enumerate(res.items()):
-        lab = "L1 core + tail" if "L1" in name else "Version A (frozen)"
-        a = ax[0, j]
-        a.plot(em0.resample("1h").last().dropna(), color="#999999", lw=1, label="no gate")
-        a.plot(emg.resample("1h").last().dropna(), color="#3b6ea8", lw=1.2, label="120-day side gate")
-        for s, c, l in ((1, "#2e8b57", "gate: long side"), (-1, "#c0392b", "gate: short side")):
-            x = G[G.side == s].sort_values("exit_time")
-            a.plot(x.exit_time, x.R.cumsum(), color=c, lw=.8, alpha=.7, label=l)
-        a.axvline(pd.Timestamp("2026-01-01"), color="k", ls="--", lw=.8)
-        a.set_title(f"{lab}: cumulative R incl. open positions"); a.legend(loc="upper left", fontsize=8); a.grid(alpha=.3)
-        b = ax[1, j]
-        b.fill_between(dd0.resample("1h").min().dropna().index, dd0.resample("1h").min().dropna().values, 0, color="#999999", alpha=.4, label="no gate")
-        b.fill_between(ddg.resample("1h").min().dropna().index, ddg.resample("1h").min().dropna().values, 0, color="#c0392b", alpha=.5, label="120-day gate")
-        b.set_ylabel("drawdown incl. open (R)"); b.legend(loc="lower left", fontsize=8); b.grid(alpha=.3)
-    plt.tight_layout(); plt.savefig("part33_gate120.png", dpi=105)
+    def chart():
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(2, 2, figsize=(15, 8), sharex=True, gridspec_kw=dict(height_ratios=[2, 1]))
+        for j, (name, ((G, ecg, emg, ddg), (T0, ec0, em0, dd0))) in enumerate(res.items()):
+            lab = "L1 core + tail" if "L1" in name else "Version A (frozen)"
+            a = ax[0, j]
+            a.plot(em0.resample("1h").last().dropna(), color="#999999", lw=1, label="no gate")
+            a.plot(emg.resample("1h").last().dropna(), color="#3b6ea8", lw=1.2, label="120-day side gate")
+            for s, c, l in ((1, "#2e8b57", "gate: long side"), (-1, "#c0392b", "gate: short side")):
+                x = G[G.side == s].sort_values("exit_time")
+                a.plot(x.exit_time, x.R.cumsum(), color=c, lw=.8, alpha=.7, label=l)
+            a.axvline(pd.Timestamp("2026-01-01"), color="k", ls="--", lw=.8)
+            a.set_title(f"{lab}: cumulative R incl. open positions"); a.legend(loc="upper left", fontsize=8); a.grid(alpha=.3)
+            b = ax[1, j]
+            b.fill_between(dd0.resample("1h").min().dropna().index, dd0.resample("1h").min().dropna().values, 0, color="#999999", alpha=.4, label="no gate")
+            b.fill_between(ddg.resample("1h").min().dropna().index, ddg.resample("1h").min().dropna().values, 0, color="#c0392b", alpha=.5, label="120-day gate")
+            b.set_ylabel("drawdown incl. open (R)"); b.legend(loc="lower left", fontsize=8); b.grid(alpha=.3)
+        plt.tight_layout(); plt.savefig("part33_gate120.png", dpi=105)
 
 
-chart()
-out.close()
+    chart()
+    out.close()
