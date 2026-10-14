@@ -2,3 +2,7 @@ __pycache__/
 research/part22_sessions.pkl
 research/part22_levels.csv
 research/part22_breakout.csv
+research/part23_refs.pkl
+research/part23_events.csv
+research/part23_va80.csv
+research/part23_inventory.csv
