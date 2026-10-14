@@ -76,7 +76,8 @@ def trend_trades(X, events, idx, side):
                     continue
                 xi, r, why = exit_long(X, ei, ep, stop)
                 out.append(dict(cond=e["cond"], strat=f"{entry}{sname}", side=-side, entry_time=idx[ei],
-                                exit_time=idx[xi], pnl_R=r, exit=why, R_atr=(ep - stop) / A))
+                                exit_time=idx[xi], pnl_R=r, exit=why, R_atr=(ep - stop) / A,
+                                sig_time=idx[t], p1_time=idx[P1], ep_y=ep, stop_y=stop, spr=X["spr"][ei], atr=A))
     return out
 
 
