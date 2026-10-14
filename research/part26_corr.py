@@ -25,8 +25,9 @@ def stats(daily):
     return f"總 {daily.sum():+6.1f}R  最大回撤 {dd:5.1f}R  總/回撤 {daily.sum() / dd:4.1f}  日Sharpe {daily.mean() / daily.std() * np.sqrt(252):4.2f}"
 
 
-def main():
-    df = get_frames()["H1"]
+def main(df=None):
+    if df is None:
+        df = get_frames()["H1"]
     A, _ = cont_trades(df)
     A = A[(A.side == A.reg) & (A.side == A.ema)]
     pos = pd.Series(np.arange(len(df)), index=df.index)
@@ -49,7 +50,7 @@ def main():
         x["day"] = x.exit_time.dt.normalize()
         T[cnd] = x
 
-    print("## 1. 獲利 vs 超額（H1，D+E，C1S2，不重疊）")
+    print("## 1. 獲利 vs 超額（D+E，C1S2，不重疊）")
     print(f"  {'版本':8s} {'筆數':>5s} | {'獲利 研究':>16s} {'驗證':>16s} | {'漂移貢獻':>8s} | {'超額 研究':>16s} {'驗證':>16s} | 超額逐年")
     for k, x in T.items():
         a, b = x[x.entry_time < SPLIT], x[x.entry_time >= SPLIT]
