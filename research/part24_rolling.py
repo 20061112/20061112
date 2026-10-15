@@ -124,111 +124,116 @@ def rolling_pct(E, col, L):
     return out
 
 
-grid = []
-for tf in (1, 3):
-    E = pd.read_pickle(f"part23_events_M{tf}.pkl").reset_index(drop=True)
-    E["year"] = E.time_close.dt.year
-    fav, adv, cl, atr, j0 = paths(E)
-    day = E.day.to_numpy()
-    sp = E.spread.to_numpy()
-    pct = {(f, L): rolling_pct(E, f, L) for f in FEATS for L in LS}
-    common = np.isfinite(pct[(FEATS[0], 120)])           # 統一評估期間：L=120 有值以後
-    P(f"\nM{tf}：{len(E)} 事件；評估期間 {E.time_close[common].min():%Y-%m-%d} 起（{common.sum()} 事件）")
-    for stype, k in STOPS:
-        risk = k * (E.S.to_numpy() if stype == "S" else atr)
-        for rr in RRS:
-            R0, jx = outcomes(fav, adv, cl, risk, rr)
-            for f in FEATS:
-                for L in LS:
-                    for q in QS:
-                        sel = common & (pct[(f, L)] >= q) & np.isfinite(risk) & (risk > 0)
-                        keep = non_overlap(sel, day, j0, jx)
-                        R = R0[keep] - sp[keep] / risk[keep]
-                        yrs = E.year.to_numpy()[keep]
-                        row = dict(tf=tf, feat=f.split("_")[0], L=L, q=q, stop=f"{stype}{k}", rr=rr if rr else 0,
-                                   n=len(R), R=R.mean(), t=cluster_t(R, day[keep]),
-                                   pf=R[R > 0].sum() / max(1e-9, -R[R < 0].sum()),
-                                   risk_usd=np.median(risk[keep]),
-                                   R_slip10=(R0[keep] - (sp[keep] + 0.10) / risk[keep]).mean(),
-                                   R_slip30=(R0[keep] - (sp[keep] + 0.30) / risk[keep]).mean())
-                        for y in (2023, 2024, 2025, 2026):
-                            row[f"y{y}"] = R[yrs == y].mean() if (yrs == y).any() else np.nan
-                        grid.append(row)
-        # 基準：不篩選
-        for rr in RRS:
-            R0, jx = outcomes(fav, adv, cl, risk, rr)
-            keep = non_overlap(common & np.isfinite(risk) & (risk > 0), day, j0, jx)
-            R = R0[keep] - sp[keep] / risk[keep]
-            yrs = E.year.to_numpy()[keep]
-            row = dict(tf=tf, feat="none", L=-1, q=0, stop=f"{stype}{k}", rr=rr if rr else 0, n=len(R), R=R.mean(),
-                       t=cluster_t(R, day[keep]), pf=R[R > 0].sum() / max(1e-9, -R[R < 0].sum()),
-                       risk_usd=np.median(risk[keep]),
-                       R_slip10=(R0[keep] - (sp[keep] + 0.10) / risk[keep]).mean(),
-                       R_slip30=(R0[keep] - (sp[keep] + 0.30) / risk[keep]).mean())
-            for y in (2023, 2024, 2025, 2026):
-                row[f"y{y}"] = R[yrs == y].mean() if (yrs == y).any() else np.nan
-            grid.append(row)
+def main():
+    grid = []
+    for tf in (1, 3):
+        E = pd.read_pickle(f"part23_events_M{tf}.pkl").reset_index(drop=True)
+        E["year"] = E.time_close.dt.year
+        fav, adv, cl, atr, j0 = paths(E)
+        day = E.day.to_numpy()
+        sp = E.spread.to_numpy()
+        pct = {(f, L): rolling_pct(E, f, L) for f in FEATS for L in LS}
+        common = np.isfinite(pct[(FEATS[0], 120)])           # 統一評估期間：L=120 有值以後
+        P(f"\nM{tf}：{len(E)} 事件；評估期間 {E.time_close[common].min():%Y-%m-%d} 起（{common.sum()} 事件）")
+        for stype, k in STOPS:
+            risk = k * (E.S.to_numpy() if stype == "S" else atr)
+            for rr in RRS:
+                R0, jx = outcomes(fav, adv, cl, risk, rr)
+                for f in FEATS:
+                    for L in LS:
+                        for q in QS:
+                            sel = common & (pct[(f, L)] >= q) & np.isfinite(risk) & (risk > 0)
+                            keep = non_overlap(sel, day, j0, jx)
+                            R = R0[keep] - sp[keep] / risk[keep]
+                            yrs = E.year.to_numpy()[keep]
+                            row = dict(tf=tf, feat=f.split("_")[0], L=L, q=q, stop=f"{stype}{k}", rr=rr if rr else 0,
+                                       n=len(R), R=R.mean(), t=cluster_t(R, day[keep]),
+                                       pf=R[R > 0].sum() / max(1e-9, -R[R < 0].sum()),
+                                       risk_usd=np.median(risk[keep]),
+                                       R_slip10=(R0[keep] - (sp[keep] + 0.10) / risk[keep]).mean(),
+                                       R_slip30=(R0[keep] - (sp[keep] + 0.30) / risk[keep]).mean())
+                            for y in (2023, 2024, 2025, 2026):
+                                row[f"y{y}"] = R[yrs == y].mean() if (yrs == y).any() else np.nan
+                            grid.append(row)
+            # 基準：不篩選
+            for rr in RRS:
+                R0, jx = outcomes(fav, adv, cl, risk, rr)
+                keep = non_overlap(common & np.isfinite(risk) & (risk > 0), day, j0, jx)
+                R = R0[keep] - sp[keep] / risk[keep]
+                yrs = E.year.to_numpy()[keep]
+                row = dict(tf=tf, feat="none", L=-1, q=0, stop=f"{stype}{k}", rr=rr if rr else 0, n=len(R), R=R.mean(),
+                           t=cluster_t(R, day[keep]), pf=R[R > 0].sum() / max(1e-9, -R[R < 0].sum()),
+                           risk_usd=np.median(risk[keep]),
+                           R_slip10=(R0[keep] - (sp[keep] + 0.10) / risk[keep]).mean(),
+                           R_slip30=(R0[keep] - (sp[keep] + 0.30) / risk[keep]).mean())
+                for y in (2023, 2024, 2025, 2026):
+                    row[f"y{y}"] = R[yrs == y].mean() if (yrs == y).any() else np.nan
+                grid.append(row)
 
-G = pd.DataFrame(grid)
-G.to_csv("part24_grid.csv", index=False)
-YC = ["y2023", "y2024", "y2025", "y2026"]
-G["all4"] = (G[YC] > 0).all(axis=1)
+    G = pd.DataFrame(grid)
+    G.to_csv("part24_grid.csv", index=False)
+    YC = ["y2023", "y2024", "y2025", "y2026"]
+    G["all4"] = (G[YC] > 0).all(axis=1)
 
-P("\n" + "=" * 110)
-P("1. 滾動百分位（L、q）— 對所有停損 × RR 取中位數（range c1 h1）")
-for tf in (1, 3):
-    g = G[(G.tf == tf) & (G.feat.isin(["range", "none"]))]
-    P(f"\nM{tf}")
-    P(g.groupby(["feat", "L", "q"])[["n", "R", "t"] + YC + ["all4"]].median().round(3).to_string())
+    P("\n" + "=" * 110)
+    P("1. 滾動百分位（L、q）— 對所有停損 × RR 取中位數（range c1 h1）")
+    for tf in (1, 3):
+        g = G[(G.tf == tf) & (G.feat.isin(["range", "none"]))]
+        P(f"\nM{tf}")
+        P(g.groupby(["feat", "L", "q"])[["n", "R", "t"] + YC + ["all4"]].median().round(3).to_string())
 
-P("\n" + "=" * 110)
-P("2. 停損 × RR 熱圖（M1，range c1 h1，L=120，q=0.9）：每筆平均 R / t / 逐年")
-sub = G[(G.tf == 1) & (G.feat == "range") & (G.L == 120) & (G.q == 0.9)]
-P(sub.pivot_table(index="stop", columns="rr", values="R").round(3).to_string())
-P("\nt 值")
-P(sub.pivot_table(index="stop", columns="rr", values="t").round(2).to_string())
-P("\n四年都 > 0")
-P(sub.pivot_table(index="stop", columns="rr", values="all4").astype(int).to_string())
-P("\n中位停損金額（USD）")
-P(sub.groupby("stop").risk_usd.median().round(2).to_string())
-P("\n對照：同停損 × RR、不篩選（全部邊緣事件都追）")
-P(G[(G.tf == 1) & (G.feat == "none")].pivot_table(index="stop", columns="rr", values="R").round(3).to_string())
-P("\n區域穩健：M1 range，跨 L × q（12 組）中位 R")
-P(G[(G.tf == 1) & (G.feat == "range")].pivot_table(index="stop", columns="rr", values="R", aggfunc="median").round(3).to_string())
-P("\nM1 tickvol c1 h0（對照算法），跨 L × q 中位 R")
-P(G[(G.tf == 1) & (G.feat == "tickvol")].pivot_table(index="stop", columns="rr", values="R", aggfunc="median").round(3).to_string())
-P("\nM3 range，跨 L × q 中位 R")
-P(G[(G.tf == 3) & (G.feat == "range")].pivot_table(index="stop", columns="rr", values="R", aggfunc="median").round(3).to_string())
+    P("\n" + "=" * 110)
+    P("2. 停損 × RR 熱圖（M1，range c1 h1，L=120，q=0.9）：每筆平均 R / t / 逐年")
+    sub = G[(G.tf == 1) & (G.feat == "range") & (G.L == 120) & (G.q == 0.9)]
+    P(sub.pivot_table(index="stop", columns="rr", values="R").round(3).to_string())
+    P("\nt 值")
+    P(sub.pivot_table(index="stop", columns="rr", values="t").round(2).to_string())
+    P("\n四年都 > 0")
+    P(sub.pivot_table(index="stop", columns="rr", values="all4").astype(int).to_string())
+    P("\n中位停損金額（USD）")
+    P(sub.groupby("stop").risk_usd.median().round(2).to_string())
+    P("\n對照：同停損 × RR、不篩選（全部邊緣事件都追）")
+    P(G[(G.tf == 1) & (G.feat == "none")].pivot_table(index="stop", columns="rr", values="R").round(3).to_string())
+    P("\n區域穩健：M1 range，跨 L × q（12 組）中位 R")
+    P(G[(G.tf == 1) & (G.feat == "range")].pivot_table(index="stop", columns="rr", values="R", aggfunc="median").round(3).to_string())
+    P("\nM1 tickvol c1 h0（對照算法），跨 L × q 中位 R")
+    P(G[(G.tf == 1) & (G.feat == "tickvol")].pivot_table(index="stop", columns="rr", values="R", aggfunc="median").round(3).to_string())
+    P("\nM3 range，跨 L × q 中位 R")
+    P(G[(G.tf == 3) & (G.feat == "range")].pivot_table(index="stop", columns="rr", values="R", aggfunc="median").round(3).to_string())
 
-# 熱圖
-fig, axes = plt.subplots(1, 3, figsize=(15, 4.2))
-for ax, (tf, feat, ttl) in zip(axes, [(1, "range", "M1 barrier>=rolling p90 (L=120)"),
-                                      (1, "none", "M1 no filter"), (3, "range", "M3 barrier>=rolling p90 (L=120)")]):
-    s = G[(G.tf == tf) & (G.feat == feat) & ((G.L == 120) & (G.q == 0.9) | (G.feat == "none"))]
-    pv = s.pivot_table(index="stop", columns="rr", values="R").reindex([f"{a}{b}" for a, b in STOPS])
-    im = ax.imshow(pv.values, cmap="RdBu", vmin=-0.2, vmax=0.2, aspect="auto")
-    ax.set_xticks(range(len(pv.columns))); ax.set_xticklabels(["time" if c == 0 else c for c in pv.columns])
-    ax.set_yticks(range(len(pv.index))); ax.set_yticklabels(pv.index)
-    for i in range(pv.shape[0]):
-        for j in range(pv.shape[1]):
-            ax.text(j, i, f"{pv.values[i, j]:+.2f}", ha="center", va="center", fontsize=7)
-    ax.set_title(ttl, fontsize=9); ax.set_xlabel("RR")
-fig.colorbar(im, ax=axes, shrink=.8, label="mean R / trade")
-plt.savefig("part24_heatmap.png", dpi=110, bbox_inches="tight")
+    # 熱圖
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.2))
+    for ax, (tf, feat, ttl) in zip(axes, [(1, "range", "M1 barrier>=rolling p90 (L=120)"),
+                                          (1, "none", "M1 no filter"), (3, "range", "M3 barrier>=rolling p90 (L=120)")]):
+        s = G[(G.tf == tf) & (G.feat == feat) & ((G.L == 120) & (G.q == 0.9) | (G.feat == "none"))]
+        pv = s.pivot_table(index="stop", columns="rr", values="R").reindex([f"{a}{b}" for a, b in STOPS])
+        im = ax.imshow(pv.values, cmap="RdBu", vmin=-0.2, vmax=0.2, aspect="auto")
+        ax.set_xticks(range(len(pv.columns))); ax.set_xticklabels(["time" if c == 0 else c for c in pv.columns])
+        ax.set_yticks(range(len(pv.index))); ax.set_yticklabels(pv.index)
+        for i in range(pv.shape[0]):
+            for j in range(pv.shape[1]):
+                ax.text(j, i, f"{pv.values[i, j]:+.2f}", ha="center", va="center", fontsize=7)
+        ax.set_title(ttl, fontsize=9); ax.set_xlabel("RR")
+    fig.colorbar(im, ax=axes, shrink=.8, label="mean R / trade")
+    plt.savefig("part24_heatmap.png", dpi=110, bbox_inches="tight")
 
-P("\n" + "=" * 110)
-P("3. 巢狀前推：每年只用之前年份（滾動百分位 L=120、q=0.9 固定）選停損 × RR（之前各年平均 R 最大），套用到該年")
-for tf in (1, 3):
-    s = G[(G.tf == tf) & (G.feat == "range") & (G.L == 120) & (G.q == 0.9)].copy()
-    # 用年份平均近似（以筆數加權不必要，因為每年事件數相近）
-    for y in (2025, 2026):
-        prev = [c for c in YC if int(c[1:]) < y]
-        s["score"] = s[prev].mean(axis=1)
-        b = s.sort_values("score", ascending=False).iloc[0]
-        P(f"  M{tf} {y}：用 {prev[0][1:]}~{prev[-1][1:]} 選出 stop={b.stop} rr={b.rr or '時間出場'}（之前平均 {b.score:+.3f}R）"
-          f" → {y} 實際 {b[f'y{y}']:+.3f}R；同年所有組合中位 {s[f'y{y}'].median():+.3f}R")
+    P("\n" + "=" * 110)
+    P("3. 巢狀前推：每年只用之前年份（滾動百分位 L=120、q=0.9 固定）選停損 × RR（之前各年平均 R 最大），套用到該年")
+    for tf in (1, 3):
+        s = G[(G.tf == tf) & (G.feat == "range") & (G.L == 120) & (G.q == 0.9)].copy()
+        # 用年份平均近似（以筆數加權不必要，因為每年事件數相近）
+        for y in (2025, 2026):
+            prev = [c for c in YC if int(c[1:]) < y]
+            s["score"] = s[prev].mean(axis=1)
+            b = s.sort_values("score", ascending=False).iloc[0]
+            P(f"  M{tf} {y}：用 {prev[0][1:]}~{prev[-1][1:]} 選出 stop={b.stop} rr={b.rr or '時間出場'}（之前平均 {b.score:+.3f}R）"
+              f" → {y} 實際 {b[f'y{y}']:+.3f}R；同年所有組合中位 {s[f'y{y}'].median():+.3f}R")
 
-P("\n" + "=" * 110)
-P("4. 滑價壓力測試（每筆額外 $0.10 / $0.30），M1 range L=120 q=0.9")
-P(sub[["stop", "rr", "n", "risk_usd", "R", "R_slip10", "R_slip30"]].sort_values(["stop", "rr"]).round(3).to_string(index=False))
-open("results_part24.txt", "w").write("\n".join(lines) + "\n")
+    P("\n" + "=" * 110)
+    P("4. 滑價壓力測試（每筆額外 $0.10 / $0.30），M1 range L=120 q=0.9")
+    P(sub[["stop", "rr", "n", "risk_usd", "R", "R_slip10", "R_slip30"]].sort_values(["stop", "rr"]).round(3).to_string(index=False))
+    open("results_part24.txt", "w").write("\n".join(lines) + "\n")
+
+
+if __name__ == "__main__":
+    main()
