@@ -249,3 +249,56 @@ def to_bars(values, ev_bar, nbar, fill=np.nan):
     out = np.full(nbar, np.nan)
     out[ev_bar] = values            # 同一根多個事件時保留最後一個
     return pd.Series(out).ffill().fillna(fill).values
+
+
+# ------------------------------------------------- 非對稱 online EM + 強度
+@njit(cache=True)
+def online_em_asym(t, s, ev_day, beta, half_life, prior=20.0):
+    """四個激發係數各自估：a[接收方, 來源方]，0 = 上、1 = 下；μ 也分上下。
+    回傳每個事件之後的狀態：S↑、S↓、μ↑、μ↓、a_uu、a_ud、a_du、a_dd（a_ud = 下跌引發上漲）。"""
+    n = len(t)
+    g = np.log(2.0) / half_life
+    out = np.empty((n, 8))
+    Bk = np.full(2, prior * 0.25)                   # 背景責任
+    C = np.full((2, 2), prior * 0.125)              # C[接收, 來源]
+    P = np.full(2, prior * 0.5 / beta)              # 每種來源事件的曝險
+    Teff = prior * 0.5
+    mu = Bk / Teff; a = C / P.reshape(1, 2)
+    S = np.zeros(2); last = t[0] if n > 0 else 0.0
+    for j in range(n):
+        dt = t[j] - last
+        if j > 0 and ev_day[j] != ev_day[j - 1]:
+            S[:] = 0.0
+        else:
+            S *= np.exp(-beta * dt)
+        f = np.exp(-g * dt)
+        Bk *= f; C *= f; P *= f
+        Teff = Teff * f + (1.0 - f) / g
+        last = t[j]
+        k = 0 if s[j] > 0 else 1
+        lam = mu[k] + a[k, 0] * S[0] + a[k, 1] * S[1]
+        Bk[k] += mu[k] / lam
+        C[k, 0] += a[k, 0] * S[0] / lam
+        C[k, 1] += a[k, 1] * S[1] / lam
+        P[k] += 1.0 / beta
+        S[k] += 1.0
+        mu = Bk / Teff
+        for r in range(2):
+            for q in range(2):
+                a[r, q] = max(C[r, q] / P[q], 1e-9)
+        out[j, 0] = S[0]; out[j, 1] = S[1]; out[j, 2] = mu[0]; out[j, 3] = mu[1]
+        out[j, 4] = a[0, 0]; out[j, 5] = a[0, 1]; out[j, 6] = a[1, 0]; out[j, 7] = a[1, 1]
+    return out
+
+
+def intensity_at_bars(t, state, ev_bar, t_bar_end, beta):
+    """把事件後的狀態帶到每根 K 棒收盤：λ↑、λ↓（只用到收盤前的事件）。"""
+    nbar = len(t_bar_end)
+    st = np.full((nbar, 8), np.nan); te = np.full(nbar, np.nan)
+    st[ev_bar] = state; te[ev_bar] = t
+    st = pd.DataFrame(st).ffill().values; te = pd.Series(te).ffill().values
+    dec = np.exp(-beta * np.clip(t_bar_end - te, 0, None))
+    su = st[:, 0] * dec; sd = st[:, 1] * dec
+    lu = st[:, 2] + st[:, 4] * su + st[:, 5] * sd
+    ld = st[:, 3] + st[:, 6] * su + st[:, 7] * sd
+    return lu, ld, st
