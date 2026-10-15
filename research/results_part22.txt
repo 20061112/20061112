@@ -1,0 +1,63 @@
+M1 2023-06-01 01:00:00 ~ 2026-10-08 13:50:00  M15 78715  H4 5154
+H4 方向棒：425 根（看跌 208、看漲 217）
+
+[基準：K=1、溢價區、結構目標 RR≥1] {'n': 105, 'win': np.float64(0.171), 'avgR': np.float64(-0.346), 't': np.float64(-1.75), 'PF': np.float64(0.61), 'sumR': np.float64(-36.3), 'tp': np.float64(0.171), 'avg_rr': np.float64(4.42), 'cost_R': np.float64(0.033)}
+    2023: n=17 avg=-1.03R sum=-17.5  2024: n=45 avg=-0.52R sum=-23.5  2025: n=23 avg=+0.30R sum=+6.8  2026: n=20 avg=-0.11R sum=-2.2
+    多單 avg=+0.053R n=62  空單 avg=-0.920R n=43
+[基準但不要求溢價區] {'n': 106, 'win': np.float64(0.179), 'avgR': np.float64(-0.309), 't': np.float64(-1.55), 'PF': np.float64(0.65), 'sumR': np.float64(-32.8), 'tp': np.float64(0.179), 'avg_rr': np.float64(4.41), 'cost_R': np.float64(0.034)}
+    2023: n=17 avg=-1.03R sum=-17.5  2024: n=46 avg=-0.43R sum=-20.0  2025: n=23 avg=+0.30R sum=+6.8  2026: n=20 avg=-0.11R sum=-2.2
+    多單 avg=+0.053R n=62  空單 avg=-0.819R n=44
+[K=2（允許第二根 H4 才回檔）] {'n': 148, 'win': np.float64(0.169), 'avgR': np.float64(-0.328), 't': np.float64(-1.96), 'PF': np.float64(0.63), 'sumR': np.float64(-48.5), 'tp': np.float64(0.169), 'avg_rr': np.float64(5.02), 'cost_R': np.float64(0.036)}
+    2023: n=26 avg=-1.02R sum=-26.5  2024: n=61 avg=-0.42R sum=-25.8  2025: n=35 avg=+0.10R sum=+3.4  2026: n=26 avg=+0.01R sum=+0.4
+    多單 avg=+0.039R n=79  空單 avg=-0.748R n=69
+[K=3] {'n': 171, 'win': np.float64(0.17), 'avgR': np.float64(-0.316), 't': np.float64(-2.04), 'PF': np.float64(0.65), 'sumR': np.float64(-54.0), 'tp': np.float64(0.17), 'avg_rr': np.float64(5.3), 'cost_R': np.float64(0.036)}
+    2023: n=30 avg=-0.92R sum=-27.7  2024: n=70 avg=-0.45R sum=-31.3  2025: n=42 avg=+0.09R sum=+3.7  2026: n=29 avg=+0.04R sum=+1.3
+    多單 avg=+0.031R n=87  空單 avg=-0.675R n=84
+[結構目標 RR≥2] {'n': 82, 'win': np.float64(0.11), 'avgR': np.float64(-0.431), 't': np.float64(-1.79), 'PF': np.float64(0.55), 'sumR': np.float64(-35.4), 'tp': np.float64(0.11), 'avg_rr': np.float64(5.22), 'cost_R': np.float64(0.04)}
+    2023: n=12 avg=-1.18R sum=-14.1  2024: n=38 avg=-0.63R sum=-24.1  2025: n=18 avg=+0.24R sum=+4.3  2026: n=14 avg=-0.10R sum=-1.4
+    多單 avg=+0.002R n=45  空單 avg=-0.958R n=37
+[結構目標 RR≥3] {'n': 57, 'win': np.float64(0.07), 'avgR': np.float64(-0.483), 't': np.float64(-1.51), 'PF': np.float64(0.52), 'sumR': np.float64(-27.5), 'tp': np.float64(0.07), 'avg_rr': np.float64(6.43), 'cost_R': np.float64(0.049)}
+    2023: n=7 avg=-1.22R sum=-8.6  2024: n=25 avg=-0.89R sum=-22.2  2025: n=13 avg=+0.20R sum=+2.6  2026: n=12 avg=+0.05R sum=+0.6
+    多單 avg=-0.025R n=28  空單 avg=-0.925R n=29
+[固定 1R] {'n': 137, 'win': np.float64(0.511), 'avgR': np.float64(-0.035), 't': np.float64(-0.41), 'PF': np.float64(0.93), 'sumR': np.float64(-4.9), 'tp': np.float64(0.511), 'avg_rr': np.float64(1.0), 'cost_R': np.float64(0.033)}
+    2023: n=27 avg=-0.18R sum=-4.8  2024: n=52 avg=-0.13R sum=-6.5  2025: n=31 avg=+0.26R sum=+8.2  2026: n=27 avg=-0.06R sum=-1.7
+    多單 avg=+0.136R n=81  空單 avg=-0.284R n=56
+[固定 2R] {'n': 137, 'win': np.float64(0.343), 'avgR': np.float64(-0.028), 't': np.float64(-0.23), 'PF': np.float64(0.96), 'sumR': np.float64(-3.9), 'tp': np.float64(0.343), 'avg_rr': np.float64(2.0), 'cost_R': np.float64(0.033)}
+    2023: n=27 avg=-0.25R sum=-6.8  2024: n=52 avg=-0.01R sum=-0.5  2025: n=31 avg=+0.33R sum=+10.2  2026: n=27 avg=-0.25R sum=-6.7
+    多單 avg=+0.210R n=81  空單 avg=-0.373R n=56
+[固定 3R] {'n': 137, 'win': np.float64(0.234), 'avgR': np.float64(-0.123), 't': np.float64(-0.84), 'PF': np.float64(0.85), 'sumR': np.float64(-16.9), 'tp': np.float64(0.234), 'avg_rr': np.float64(3.0), 'cost_R': np.float64(0.033)}
+    2023: n=27 avg=-0.40R sum=-10.8  2024: n=52 avg=-0.20R sum=-10.5  2025: n=31 avg=+0.26R sum=+8.2  2026: n=27 avg=-0.14R sum=-3.7
+    多單 avg=+0.087R n=81  空單 avg=-0.427R n=56
+[固定 4R（影片宣稱 1:4）] {'n': 137, 'win': np.float64(0.182), 'avgR': np.float64(-0.145), 't': np.float64(-0.87), 'PF': np.float64(0.83), 'sumR': np.float64(-19.9), 'tp': np.float64(0.182), 'avg_rr': np.float64(4.0), 'cost_R': np.float64(0.033)}
+    2023: n=27 avg=-0.22R sum=-5.8  2024: n=52 avg=-0.28R sum=-14.5  2025: n=31 avg=+0.10R sum=+3.2  2026: n=27 avg=-0.10R sum=-2.7
+    多單 avg=+0.124R n=81  空單 avg=-0.534R n=56
+[容忍 0.1 ATR（幾乎弱勢也算）] {'n': 120, 'win': np.float64(0.167), 'avgR': np.float64(-0.389), 't': np.float64(-2.2), 'PF': np.float64(0.57), 'sumR': np.float64(-46.7), 'tp': np.float64(0.167), 'avg_rr': np.float64(5.01), 'cost_R': np.float64(0.036)}
+    2023: n=21 avg=-1.07R sum=-22.4  2024: n=49 avg=-0.52R sum=-25.7  2025: n=28 avg=+0.20R sum=+5.6  2026: n=22 avg=-0.19R sum=-4.2
+    多單 avg=-0.051R n=68  空單 avg=-0.832R n=52
+[容忍 0.1 ATR + K=2 + 固定 4R] {'n': 214, 'win': np.float64(0.187), 'avgR': np.float64(-0.131), 't': np.float64(-0.98), 'PF': np.float64(0.85), 'sumR': np.float64(-28.1), 'tp': np.float64(0.187), 'avg_rr': np.float64(4.0), 'cost_R': np.float64(0.036)}
+    2023: n=44 avg=-0.15R sum=-6.6  2024: n=77 avg=-0.14R sum=-11.0  2025: n=54 avg=-0.20R sum=-10.7  2026: n=39 avg=+0.00R sum=+0.1
+    多單 avg=+0.123R n=115  空單 avg=-0.427R n=99
+[技巧4 位置：方向棒為 6 根 H4 極值] {'n': 25, 'win': np.float64(0.12), 'avgR': np.float64(-0.677), 't': np.float64(-3.13), 'PF': np.float64(0.27), 'sumR': np.float64(-16.9), 'tp': np.float64(0.12), 'avg_rr': np.float64(4.4), 'cost_R': np.float64(0.031)}
+    2023: n=4 avg=-1.17R sum=-4.7  2024: n=8 avg=-0.24R sum=-2.0  2025: n=7 avg=-1.03R sum=-7.2  2026: n=6 avg=-0.52R sum=-3.1
+    多單 avg=-0.439R n=15  空單 avg=-1.036R n=10
+[技巧4 位置：方向棒為 20 根 H4 極值] {'n': 15, 'win': np.float64(0.067), 'avgR': np.float64(-0.805), 't': np.float64(-3.0), 'PF': np.float64(0.2), 'sumR': np.float64(-12.1), 'tp': np.float64(0.067), 'avg_rr': np.float64(4.89), 'cost_R': np.float64(0.032)}
+    2023: n=4 avg=-1.17R sum=-4.7  2024: n=4 avg=-0.05R sum=-0.2  2025: n=5 avg=-1.03R sum=-5.1  2026: n=2 avg=-1.03R sum=-2.1
+    多單 avg=-0.600R n=8  空單 avg=-1.040R n=7
+[技巧4 位置 20 + 固定 4R] {'n': 16, 'win': np.float64(0.062), 'avgR': np.float64(-0.754), 't': np.float64(-2.39), 'PF': np.float64(0.25), 'sumR': np.float64(-12.1), 'tp': np.float64(0.062), 'avg_rr': np.float64(4.0), 'cost_R': np.float64(0.031)}
+    2023: n=4 avg=-1.17R sum=-4.7  2024: n=4 avg=+0.20R sum=+0.8  2025: n=5 avg=-1.03R sum=-5.1  2026: n=3 avg=-1.02R sum=-3.1
+    多單 avg=-0.471R n=8  空單 avg=-1.037R n=8
+[舊版兩時框（不看 H4）固定 2R] {'n': 3790, 'win': np.float64(0.339), 'avgR': np.float64(-0.043), 't': np.float64(-1.87), 'PF': np.float64(0.94), 'sumR': np.float64(-164.0), 'tp': np.float64(0.339), 'avg_rr': np.float64(2.0), 'cost_R': np.float64(0.031)}
+    2023: n=645 avg=-0.21R sum=-133.4  2024: n=1164 avg=-0.03R sum=-38.0  2025: n=1149 avg=-0.04R sum=-49.7  2026: n=832 avg=+0.07R sum=+57.1
+    多單 avg=-0.035R n=1930  空單 avg=-0.052R n=1860
+[舊版兩時框（不看 H4）固定 4R] {'n': 3052, 'win': np.float64(0.206), 'avgR': np.float64(-0.042), 't': np.float64(-1.15), 'PF': np.float64(0.95), 'sumR': np.float64(-127.3), 'tp': np.float64(0.202), 'avg_rr': np.float64(4.0), 'cost_R': np.float64(0.031)}
+    2023: n=537 avg=-0.25R sum=-134.9  2024: n=932 avg=+0.00R sum=+4.2  2025: n=936 avg=-0.09R sum=-87.9  2026: n=647 avg=+0.14R sum=+91.3
+    多單 avg=-0.006R n=1542  空單 avg=-0.078R n=1510
+
+影片例子（方向棒 = 2026/6/10 08:00 看跌 H4；弱勢棒 = 16:45 M15 高 4186.29、收 4179.65）：
+  [嚴格（K=2、tol=0）]
+               dir_time  side           weak_time          entry_time    entry       sl       tp reason           exit_time     pnl_R
+180 2026-06-10 16:00:00    -1 2026-06-10 20:00:00 2026-06-10 20:15:00  4116.75  4134.95  4043.95     tp 2026-06-11 01:17:00  3.992857
+  [寬鬆（K=2、tol=0.1）]
+               dir_time  side           weak_time          entry_time    entry       sl       tp reason           exit_time     pnl_R
+194 2026-06-10 08:00:00    -1 2026-06-10 16:45:00 2026-06-10 17:00:00  4174.91  4186.29  4129.39     tp 2026-06-10 17:56:00  3.988576
+195 2026-06-10 16:00:00    -1 2026-06-10 20:00:00 2026-06-10 20:15:00  4116.75  4134.95  4043.95     tp 2026-06-11 01:17:00  3.992857
