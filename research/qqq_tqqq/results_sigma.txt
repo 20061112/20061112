@@ -1,0 +1,61 @@
+BASE  irr99 0.269 irr10 0.358 worst -0.52 g10min 0.83 worstyr -0.52 sh 0.63 sw 5.9
+
+預測力（樣本外 R²：ln σ̂² vs ln 未來 h 天 RV；括號 = 過去 20 日 ATR%²）
+  TR h= 1: R² 0.491（ATR 0.463）
+  TR h= 5: R² 0.629（ATR 0.601）
+  TR h=10: R² 0.615（ATR 0.596）
+  TR h=20: R² 0.561（ATR 0.554）
+  PK h= 1: R² 0.489（ATR 0.462）
+  PK h= 5: R² 0.619（ATR 0.595）
+  PK h=10: R² 0.604（ATR 0.588）
+  PK h=20: R² 0.545（ATR 0.540）
+
+替換 ATR z → σ̂ z（MA200、門檻、回看都不動；σ̂ 缺值退回 ATR z）
+  SIG TR h= 1 z<0.25 irr99 0.232 irr10 0.309 lev 1.94 win10  1/17 dIRR10y -0.042(min -0.133) worst -0.52 g10min 0.46 worstyr -0.52 sh 0.56 sw 10.3
+  SIG TR h= 1 z<0.5  irr99 0.247 irr10 0.320 lev 2.02 win10  5/17 dIRR10y -0.021(min -0.106) worst -0.52 g10min 0.74 worstyr -0.52 sh 0.59 sw 9.9
+  SIG TR h= 1 z<0.75 irr99 0.258 irr10 0.348 lev 2.12 win10  2/17 dIRR10y -0.018(min -0.069) worst -0.52 g10min 0.71 worstyr -0.52 sh 0.60 sw 8.4
+  MIX TR h= 1 z<0.5  irr99 0.241 irr10 0.319 win10  1/17 dIRR10y -0.019 worst -0.52 worstyr -0.52 sh 0.57
+  SIG TR h= 5 z<0.25 irr99 0.232 irr10 0.297 lev 1.93 win10  5/17 dIRR10y -0.030(min -0.126) worst -0.52 g10min 0.56 worstyr -0.52 sh 0.56 sw 10.3
+  SIG TR h= 5 z<0.5  irr99 0.232 irr10 0.299 lev 2.02 win10  4/17 dIRR10y -0.038(min -0.134) worst -0.52 g10min 0.84 worstyr -0.52 sh 0.57 sw 10.6
+  SIG TR h= 5 z<0.75 irr99 0.259 irr10 0.350 lev 2.12 win10  1/17 dIRR10y -0.019(min -0.065) worst -0.52 g10min 0.67 worstyr -0.52 sh 0.60 sw 8.5
+  MIX TR h= 5 z<0.5  irr99 0.225 irr10 0.294 win10  0/17 dIRR10y -0.056 worst -0.52 worstyr -0.52 sh 0.55
+  SIG TR h=10 z<0.25 irr99 0.236 irr10 0.298 lev 1.94 win10  5/17 dIRR10y -0.033(min -0.115) worst -0.52 g10min 0.69 worstyr -0.52 sh 0.57 sw 10.0
+  SIG TR h=10 z<0.5  irr99 0.226 irr10 0.291 lev 2.03 win10  2/17 dIRR10y -0.048(min -0.136) worst -0.52 g10min 0.77 worstyr -0.52 sh 0.56 sw 9.7
+  SIG TR h=10 z<0.75 irr99 0.260 irr10 0.351 lev 2.12 win10  3/17 dIRR10y -0.028(min -0.061) worst -0.52 g10min 0.67 worstyr -0.52 sh 0.61 sw 8.4
+  MIX TR h=10 z<0.5  irr99 0.233 irr10 0.308 win10  0/17 dIRR10y -0.052 worst -0.52 worstyr -0.52 sh 0.56
+  SIG TR h=20 z<0.25 irr99 0.245 irr10 0.310 lev 1.95 win10  6/17 dIRR10y -0.016(min -0.095) worst -0.52 g10min 0.68 worstyr -0.52 sh 0.59 sw 9.6
+  SIG TR h=20 z<0.5  irr99 0.223 irr10 0.283 lev 2.03 win10  3/17 dIRR10y -0.039(min -0.160) worst -0.52 g10min 0.65 worstyr -0.52 sh 0.55 sw 9.1
+  SIG TR h=20 z<0.75 irr99 0.262 irr10 0.352 lev 2.12 win10  2/17 dIRR10y -0.019(min -0.051) worst -0.52 g10min 0.75 worstyr -0.52 sh 0.61 sw 7.3
+  MIX TR h=20 z<0.5  irr99 0.246 irr10 0.324 win10  0/17 dIRR10y -0.034 worst -0.52 worstyr -0.52 sh 0.59
+  SIG PK h= 1 z<0.25 irr99 0.239 irr10 0.312 lev 1.95 win10  3/17 dIRR10y -0.024(min -0.089) worst -0.52 g10min 0.65 worstyr -0.52 sh 0.58 sw 10.1
+  SIG PK h= 1 z<0.5  irr99 0.250 irr10 0.341 lev 2.04 win10  3/17 dIRR10y -0.026(min -0.071) worst -0.52 g10min 0.59 worstyr -0.52 sh 0.59 sw 9.2
+  SIG PK h= 1 z<0.75 irr99 0.255 irr10 0.354 lev 2.11 win10  1/17 dIRR10y -0.032(min -0.071) worst -0.52 g10min 0.52 worstyr -0.55 sh 0.59 sw 8.3
+  MIX PK h= 1 z<0.5  irr99 0.255 irr10 0.343 win10  0/17 dIRR10y -0.017 worst -0.52 worstyr -0.52 sh 0.60
+  SIG PK h= 5 z<0.25 irr99 0.235 irr10 0.310 lev 1.93 win10  1/17 dIRR10y -0.032(min -0.076) worst -0.52 g10min 0.54 worstyr -0.52 sh 0.57 sw 10.7
+  SIG PK h= 5 z<0.5  irr99 0.249 irr10 0.323 lev 2.04 win10  3/17 dIRR10y -0.022(min -0.098) worst -0.52 g10min 0.81 worstyr -0.52 sh 0.60 sw 10.0
+  SIG PK h= 5 z<0.75 irr99 0.242 irr10 0.321 lev 2.11 win10  0/17 dIRR10y -0.039(min -0.099) worst -0.52 g10min 0.80 worstyr -0.52 sh 0.58 sw 8.6
+  MIX PK h= 5 z<0.5  irr99 0.256 irr10 0.347 win10  1/17 dIRR10y -0.047 worst -0.52 worstyr -0.52 sh 0.60
+  SIG PK h=10 z<0.25 irr99 0.234 irr10 0.305 lev 1.94 win10  0/17 dIRR10y -0.033(min -0.098) worst -0.52 g10min 0.65 worstyr -0.52 sh 0.57 sw 10.1
+  SIG PK h=10 z<0.5  irr99 0.248 irr10 0.320 lev 2.03 win10  8/17 dIRR10y -0.014(min -0.098) worst -0.52 g10min 0.70 worstyr -0.52 sh 0.59 sw 9.6
+  SIG PK h=10 z<0.75 irr99 0.234 irr10 0.312 lev 2.11 win10  0/17 dIRR10y -0.062(min -0.103) worst -0.52 g10min 0.76 worstyr -0.52 sh 0.56 sw 8.3
+  MIX PK h=10 z<0.5  irr99 0.257 irr10 0.344 win10  1/17 dIRR10y -0.038 worst -0.52 worstyr -0.52 sh 0.60
+  SIG PK h=20 z<0.25 irr99 0.245 irr10 0.320 lev 1.95 win10  4/17 dIRR10y -0.017(min -0.097) worst -0.52 g10min 0.68 worstyr -0.52 sh 0.59 sw 9.0
+  SIG PK h=20 z<0.5  irr99 0.236 irr10 0.307 lev 2.04 win10  3/17 dIRR10y -0.049(min -0.148) worst -0.52 g10min 0.73 worstyr -0.52 sh 0.57 sw 8.9
+  SIG PK h=20 z<0.75 irr99 0.256 irr10 0.345 lev 2.11 win10  4/17 dIRR10y -0.042(min -0.071) worst -0.52 g10min 0.71 worstyr -0.52 sh 0.60 sw 8.0
+  MIX PK h=20 z<0.5  irr99 0.268 irr10 0.349 win10  7/17 dIRR10y -0.005 worst -0.52 worstyr -0.52 sh 0.62
+  ATR z<0.25           irr99 0.268 irr10 0.355 win10  9/17 dIRR10y +0.002
+  ATR z<0.75           irr99 0.273 irr10 0.380 win10  4/17 dIRR10y -0.005
+
+σ̂ 替換整片網格（24 組）：irr99 中位 0.244（原 0.269）、10 年 IRR 差中位 -0.031、勝過原版 IRR 的比例 0%
+只看門檻 0.5（8 組）：irr99 中位 0.242、10 年 IRR 差中位 -0.032、10 年勝出段數中位 3/17
+
+診斷：σ̂ 平滑後再替換（PK / TR，h=5，門檻 0.5）
+  BASE ATR z           irr99 0.269 sw 5.9 出場 81 次，出場後 20 天 QQQ 平均 +0.65%
+  TR EMA1            irr99 0.232 irr10 0.299 win10  4/17 dIRR10y -0.038 sw 10.6 出場 146 次，出場後 20 天 QQQ 平均 +1.20%
+  TR EMA5            irr99 0.260 irr10 0.337 win10  6/17 dIRR10y -0.007 sw 6.6 出場 90 次，出場後 20 天 QQQ 平均 +0.39%
+  TR EMA10           irr99 0.255 irr10 0.322 win10 10/17 dIRR10y +0.013 sw 5.4 出場 74 次，出場後 20 天 QQQ 平均 +0.46%
+  TR EMA20           irr99 0.275 irr10 0.350 win10 10/17 dIRR10y +0.029 sw 4.7 出場 64 次，出場後 20 天 QQQ 平均 +0.78%
+  PK EMA1            irr99 0.249 irr10 0.323 win10  3/17 dIRR10y -0.022 sw 10.0 出場 137 次，出場後 20 天 QQQ 平均 +1.10%
+  PK EMA5            irr99 0.246 irr10 0.323 win10  2/17 dIRR10y -0.019 sw 6.1 出場 84 次，出場後 20 天 QQQ 平均 +0.63%
+  PK EMA10           irr99 0.247 irr10 0.314 win10  4/17 dIRR10y -0.016 sw 5.1 出場 70 次，出場後 20 天 QQQ 平均 +0.64%
+  PK EMA20           irr99 0.268 irr10 0.349 win10  9/17 dIRR10y +0.017 sw 4.6 出場 63 次，出場後 20 天 QQQ 平均 +0.79%
