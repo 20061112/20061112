@@ -67,11 +67,11 @@ def base_signals(q, ma=200, zthr=0.5):
     return ok, z
 
 
-def weights_from_rules(q, entry_ok, exit_bad):
+def weights_from_rules(q, entry_ok, exit_bad, entry_mask=None):
     """把「每週檢查進場、每天檢查出場」轉成二元權重。entry_ok / exit_bad 為當天收盤的布林（尚未 shift）。"""
     e = entry_ok.shift(1).fillna(False).values.astype(bool)
     x = exit_bad.shift(1).fillna(True).values.astype(bool)
-    ws = q.week_start.values
+    ws = q.week_start.values if entry_mask is None else np.asarray(entry_mask, bool)
     w = np.zeros(len(q))
     cur = 0.0
     for i in range(len(q)):
@@ -85,19 +85,26 @@ def weights_from_rules(q, entry_ok, exit_bad):
 
 # ---------------------------------------------------------------- 引擎
 def run(q, w, start=None, end=None, tq_col="tq_syn", dca_only=False, boost=True, panic=True,
-        rebalance_band=0.1, z=None, bz=None):
+        rebalance_band=0.1, z=None, bz=None, cash_frac=0.2, boost_thr=-0.6, boost_mult=2.0,
+        panic_thr=2.0, panic_asset="QQQ", dca_mask=None, off=None, cost=COST):
     """w：目標 TQQQ 權重（已是「當天收盤要持有」的值，即已用前一天訊號）。
+    其他參數（預設 = 原報告）：cash_frac 每筆定投存成現金的比例；boost_thr / boost_mult 布林加碼門檻與倍數；
+    panic_thr / panic_asset 恐慌補倉門檻與買進標的（"QQQ" 或 "TQQQ"）；dca_mask 哪些日子定投（預設每週第一個交易日）；
+    off 布林陣列（已對齊持有日）：為 True 時 1 倍部位改持 T-bill；cost 換倉成本。
     回傳 dict：dates、value（每日市值）、invested（累計投入）、flows（現金流，用於 IRR）、switches。"""
     idx = q.index
     i0 = 0 if start is None else idx.searchsorted(pd.Timestamp(start))
     i1 = len(idx) if end is None else idx.searchsorted(pd.Timestamp(end))
-    pq = q.close.values; pt = q[tq_col].values; rf = q.rf.values; ws = q.week_start.values
+    pq = q.close.values; pt = q[tq_col].values; rf = q.rf.values
+    ws = q.week_start.values if dca_mask is None else np.asarray(dca_mask, bool)
+    pb = np.cumprod(1 + rf)
+    offv = np.zeros(len(q), bool) if off is None else np.asarray(off, bool)
     if z is None:
         z = atr_z(q)
     if bz is None:
         bz = boll_z(q)
     zp = z.shift(1).values; bzp = bz.shift(1).values
-    nq = nt = 0.0; cash = 0.0; inv = 0.0
+    nq = nt = nb = 0.0; cash = 0.0; inv = 0.0
     vals = np.zeros(i1 - i0); invs = np.zeros(i1 - i0); flows = []
     sw = 0; first = True
     for k, i in enumerate(range(i0, i1)):
@@ -105,31 +112,41 @@ def run(q, w, start=None, end=None, tq_col="tq_syn", dca_only=False, boost=True,
         if ws[i] or first:
             first = False
             amt = 1.0
-            if not dca_only and boost and np.isfinite(bzp[i]) and bzp[i] <= -0.6:
-                amt = 2.0
+            if not dca_only and boost and np.isfinite(bzp[i]) and bzp[i] <= boost_thr:
+                amt = boost_mult
             inv += amt; flows.append((idx[i], -amt))
             if dca_only:
                 nq += amt / pq[i]
             else:
-                put = 0.8 * amt; cash += 0.2 * amt
+                put = (1 - cash_frac) * amt; cash += cash_frac * amt
                 wt = w[i] if np.isfinite(pt[i]) else 0.0
-                nq += put * (1 - wt) / pq[i]
+                if offv[i]:
+                    nb += put * (1 - wt) / pb[i]
+                else:
+                    nq += put * (1 - wt) / pq[i]
                 if wt > 0:
                     nt += put * wt / pt[i]
-                if panic and np.isfinite(zp[i]) and zp[i] > 2 and cash > 0:
-                    nq += cash / pq[i]; cash = 0.0
+                if panic and np.isfinite(zp[i]) and zp[i] > panic_thr and cash > 0:
+                    if panic_asset == "TQQQ" and np.isfinite(pt[i]):
+                        nt += cash / pt[i]
+                    else:
+                        nq += cash / pq[i]
+                    cash = 0.0
         if not dca_only:
-            vq = nq * pq[i]; vt = nt * pt[i] if nt > 0 else 0.0
-            tot = vq + vt
+            vq = nq * pq[i]; vt = nt * pt[i] if nt > 0 else 0.0; vb = nb * pb[i]
+            tot = vq + vt + vb
             wt = w[i] if np.isfinite(pt[i]) else 0.0
             cw = vt / tot if tot > 0 else 0.0
             need = (wt in (0.0, 1.0) and cw != wt and abs(cw - wt) > 1e-9) or abs(cw - wt) > rebalance_band
-            if tot > 0 and need:
-                trade = abs(wt - cw) * tot
-                tot -= trade * COST
-                nq = tot * (1 - wt) / pq[i]; nt = tot * wt / pt[i] if wt > 0 else 0.0
+            wrong_base = (offv[i] and vq > 1e-12) or (not offv[i] and vb > 1e-12)
+            if tot > 0 and (need or wrong_base):
+                trade = abs(wt - cw) * tot + (vq if offv[i] else vb)
+                tot -= trade * cost
+                base = tot * (1 - wt)
+                nq, nb = (0.0, base / pb[i]) if offv[i] else (base / pq[i], 0.0)
+                nt = tot * wt / pt[i] if wt > 0 else 0.0
                 sw += 1
-        vals[k] = nq * pq[i] + (nt * pt[i] if nt > 0 else 0.0) + cash
+        vals[k] = nq * pq[i] + (nt * pt[i] if nt > 0 else 0.0) + nb * pb[i] + cash
         invs[k] = inv
     flows.append((idx[i1 - 1], vals[-1]))
     return dict(dates=idx[i0:i1], value=vals, invested=invs, flows=flows, switches=sw,
