@@ -30,7 +30,7 @@ def run_nosell(d, w, div, mode="DELEVER", cash_frac=0.2, lev=3.0, start=None, en
     qs = d.index.to_period("Q"); qs = np.r_[True, qs[1:] != qs[:-1]]
     nq = cash = fs = inv = 0.0; flows = []; first = True; on_prev = False
     vals = np.zeros(i1 - i0); invs = np.zeros(i1 - i0)
-    lev_on = []; target_days = 0; capped_days = 0; min_cash = 0.0; debt_days = 0; max_ltv = 0.0
+    lev_on = []; target_days = 0; capped_days = 0; min_cash = 0.0; debt_days = 0; max_ltv = 0.0; max_debt_inv = 0.0; longest = run_len = 0
     for k, i in enumerate(range(i0, i1)):
         cash *= 1 + (rf[i] if cash >= 0 else rf[i] + NEG / 252)
         if fs and i > i0:
@@ -41,7 +41,7 @@ def run_nosell(d, w, div, mode="DELEVER", cash_frac=0.2, lev=3.0, start=None, en
             first = False
             amt = 2.0 if (np.isfinite(bz[i]) and bz[i] <= -0.6) else 1.0
             inv += amt; flows.append((idx[i], -amt))
-            if cash < 0:
+            if cash < 0 and mode != "NOREPAY":
                 rep = min(amt, -cash); cash += rep; amt_left = amt - rep
             else:
                 amt_left = amt
@@ -75,13 +75,16 @@ def run_nosell(d, w, div, mode="DELEVER", cash_frac=0.2, lev=3.0, start=None, en
         debt_days += cash < 0
         if cash < 0 and nq > 0:
             max_ltv = max(max_ltv, -cash / (nq * px[i]))
+            max_debt_inv = max(max_debt_inv, -cash / max(inv, 1e-9))
+        run_len = run_len + 1 if cash < 0 else 0
+        longest = max(longest, run_len)
         vals[k] = nav; invs[k] = inv
     flows.append((idx[i1 - 1], vals[-1]))
     lv = np.array(lev_on, float)
     n = i1 - i0
     return dict(value=vals, invested=invs, flows=flows, switches=0, years=(idx[i1 - 1] - idx[i0]).days / 365.25,
                 lev_med=np.nanmedian(lv) if len(lv) else np.nan, lev_p5=np.nanpercentile(lv, 5) if len(lv) else np.nan,
-                capped=capped_days / max(target_days, 1), min_cash=min_cash, debt_frac=debt_days / n, max_ltv=max_ltv)
+                capped=capped_days / max(target_days, 1), min_cash=min_cash, debt_frac=debt_days / n, max_ltv=max_ltv, max_debt_inv=max_debt_inv, longest_debt_years=longest / 252)
 
 
 def show(label, runner, starts, extra=True):
@@ -92,7 +95,8 @@ def show(label, runner, starts, extra=True):
     row = dict(label=label, irr=f["irr"], irr10=s10["irr"], roll_med=roll.irr.median(), roll_min=roll.irr.min(), worst=f["worst"])
     if extra and "lev_med" in res:
         msg += (f"｜訊號開啟時槓桿 中位 {res['lev_med']:.2f}（5% {res['lev_p5']:.2f}）"
-                f"｜現金最低 {res['min_cash']:.0%} 淨值、負債天數 {res['debt_frac']:.0%}、最高貸款成數 {res['max_ltv']:.0%}")
+                f"｜現金最低 {res['min_cash']:.0%} 淨值、負債天數 {res['debt_frac']:.0%}、最高貸款成數 {res['max_ltv']:.0%}"
+                f"、最長連續負債 {res['longest_debt_years']:.1f} 年")
         row |= {k: res[k] for k in ("lev_med", "lev_p5", "min_cash", "debt_frac", "max_ltv")}
     P(msg); return row
 
@@ -113,7 +117,7 @@ for t, (d, starts) in frames.items():
     _, _, ok = L.signals(d); lev = L.codes(d, ok); w = (lev == 3).astype(float)
     rows.append(show(f"[對照，會賣原型] {t.upper()} ↔ 3 倍 ETF", L.strat(d, lev, ("base", "bill", "real3")), starts, extra=False) | dict(idx=t))
     rows.append(show(f"[對照] 純定投 {t.upper()}", lambda a, b, d=d: L.dca_only(d, a, b), starts, extra=False) | dict(idx=t))
-    for mode in ["DEBT", "DELEVER"]:
+    for mode in ["DEBT", "NOREPAY", "DELEVER"]:
         for cf in [0.2, 0.3, 0.4, 0.5]:
             rows.append(show(f"期貨不賣原型 {mode:7s} 現金 {cf:.0%}", lambda a, b, d=d, w=w, m=mode, c=cf: run_nosell(d, w, DIV[t], m, c, start=a, end=b), starts)
                         | dict(idx=t, mode=mode, cash_frac=cf))
