@@ -110,35 +110,36 @@ def show(row):
       f"2023 {row['y2023']:+.0%}｜權利金 {row['prem']:.1%}/年")
 
 
-q["q_plain"] = q.close
-q["t_plain"] = q.tq_syn
-P("持倉狀態：1 倍 QQQ / T-bill / TQQQ；權利金 = 每年花在選擇權上的錢占當時部位的比例（只算持有該組合的期間）")
-show(evaluate("原策略", codes(base_w, no_off), ("q_plain", "bill", "t_plain")))
-show(evaluate("雙動能（T-bill，無選擇權）", codes(base_w, dm), ("q_plain", "bill", "t_plain")))
+if __name__ == "__main__":
+    q["q_plain"] = q.close
+    q["t_plain"] = q.tq_syn
+    P("持倉狀態：1 倍 QQQ / T-bill / TQQQ；權利金 = 每年花在選擇權上的錢占當時部位的比例（只算持有該組合的期間）")
+    show(evaluate("原策略", codes(base_w, no_off), ("q_plain", "bill", "t_plain")))
+    show(evaluate("雙動能（T-bill，無選擇權）", codes(base_w, dm), ("q_plain", "bill", "t_plain")))
 
-# 單向：往下保險
-for mny, mo in [(0.90, 1), (0.95, 1), (0.90, 3)]:
-    hq, sq = overlay(rq, "put", mny, 1, mo); q["q_put"] = series(hq)
-    show(evaluate(f"QQQ 1 倍時買 {mny:.0%} put（{mo} 個月）", codes(base_w, no_off), ("q_put", "bill", "t_plain"), [(1, sq)]))
-ht, st = overlay(r3, "put", 0.90, 3, 1); q["t_put"] = series(ht)
-show(evaluate("TQQQ 時買 90% put（1 個月）", codes(base_w, no_off), ("q_plain", "bill", "t_put"), [(3, st)]))
-hq, sq = overlay(rq, "put", 0.90, 1, 3); q["q_put"] = series(hq)
-show(evaluate("QQQ 與 TQQQ 都買 90% put", codes(base_w, no_off), ("q_put", "bill", "t_put"), [(1, sq), (3, st)]))
+    # 單向：往下保險
+    for mny, mo in [(0.90, 1), (0.95, 1), (0.90, 3)]:
+        hq, sq = overlay(rq, "put", mny, 1, mo); q["q_put"] = series(hq)
+        show(evaluate(f"QQQ 1 倍時買 {mny:.0%} put（{mo} 個月）", codes(base_w, no_off), ("q_put", "bill", "t_plain"), [(1, sq)]))
+    ht, st = overlay(r3, "put", 0.90, 3, 1); q["t_put"] = series(ht)
+    show(evaluate("TQQQ 時買 90% put（1 個月）", codes(base_w, no_off), ("q_plain", "bill", "t_put"), [(3, st)]))
+    hq, sq = overlay(rq, "put", 0.90, 1, 3); q["q_put"] = series(hq)
+    show(evaluate("QQQ 與 TQQQ 都買 90% put", codes(base_w, no_off), ("q_put", "bill", "t_put"), [(1, sq), (3, st)]))
 
-# 單向：往上保險（雙動能躲 T-bill 時買 call）
-for mny, mo in [(1.00, 1), (1.05, 1), (1.00, 3), (1.05, 3)]:
-    hb, sb = overlay(rb, "call", mny, 1, mo); q["b_call"] = series(hb)
-    show(evaluate(f"雙動能 + T-bill 時買 {mny:.0%} call（{mo} 個月）", codes(base_w, dm), ("q_plain", "b_call", "t_plain"), [(2, sb)]))
+    # 單向：往上保險（雙動能躲 T-bill 時買 call）
+    for mny, mo in [(1.00, 1), (1.05, 1), (1.00, 3), (1.05, 3)]:
+        hb, sb = overlay(rb, "call", mny, 1, mo); q["b_call"] = series(hb)
+        show(evaluate(f"雙動能 + T-bill 時買 {mny:.0%} call（{mo} 個月）", codes(base_w, dm), ("q_plain", "b_call", "t_plain"), [(2, sb)]))
 
-# 雙向
-hb, sb = overlay(rb, "call", 1.05, 1, 3); q["b_call"] = series(hb)
-hq, sq = overlay(rq, "put", 0.90, 1, 3); q["q_put"] = series(hq)
-show(evaluate("雙向：雙動能 + T-bill 買 call + QQQ 買 put（3 個月）", codes(base_w, dm), ("q_put", "b_call", "t_plain"), [(1, sq), (2, sb)]))
-show(evaluate("雙向：上面 + TQQQ 也買 put", codes(base_w, dm), ("q_put", "b_call", "t_put"), [(1, sq), (2, sb), (3, st)]))
-# 不用雙動能，始終同時持有 put + call（跨式 / 勒式）在 1 倍部位上
-hs1, ss1 = overlay(rq, "put", 0.90, 1, 3); hs2, ss2 = overlay(pd.Series(0.0, index=q.index), "call", 1.05, 1, 3)
-q["q_strangle"] = series(hs1 + hs2)
-show(evaluate("勒式：QQQ 1 倍時同時買 90% put + 105% call", codes(base_w, no_off), ("q_strangle", "bill", "t_plain"), [(1, ss1 + ss2)]))
+    # 雙向
+    hb, sb = overlay(rb, "call", 1.05, 1, 3); q["b_call"] = series(hb)
+    hq, sq = overlay(rq, "put", 0.90, 1, 3); q["q_put"] = series(hq)
+    show(evaluate("雙向：雙動能 + T-bill 買 call + QQQ 買 put（3 個月）", codes(base_w, dm), ("q_put", "b_call", "t_plain"), [(1, sq), (2, sb)]))
+    show(evaluate("雙向：上面 + TQQQ 也買 put", codes(base_w, dm), ("q_put", "b_call", "t_put"), [(1, sq), (2, sb), (3, st)]))
+    # 不用雙動能，始終同時持有 put + call（跨式 / 勒式）在 1 倍部位上
+    hs1, ss1 = overlay(rq, "put", 0.90, 1, 3); hs2, ss2 = overlay(pd.Series(0.0, index=q.index), "call", 1.05, 1, 3)
+    q["q_strangle"] = series(hs1 + hs2)
+    show(evaluate("勒式：QQQ 1 倍時同時買 90% put + 105% call", codes(base_w, no_off), ("q_strangle", "bill", "t_plain"), [(1, ss1 + ss2)]))
 
-pd.DataFrame(rows).to_csv("results_options.csv", index=False, float_format="%.4f")
-open("results_options.txt", "w").write("\n".join(out) + "\n")
+    pd.DataFrame(rows).to_csv("results_options.csv", index=False, float_format="%.4f")
+    open("results_options.txt", "w").write("\n".join(out) + "\n")
