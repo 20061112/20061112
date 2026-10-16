@@ -90,7 +90,7 @@ def run(q, w, start=None, end=None, tq_col="tq_syn", dca_only=False, boost=True,
     """w：目標 TQQQ 權重（已是「當天收盤要持有」的值，即已用前一天訊號）。
     其他參數（預設 = 原報告）：cash_frac 每筆定投存成現金的比例；boost_thr / boost_mult 布林加碼門檻與倍數；
     panic_thr / panic_asset 恐慌補倉門檻與買進標的（"QQQ" 或 "TQQQ"）；dca_mask 哪些日子定投（預設每週第一個交易日）；
-    off 布林陣列（已對齊持有日）：為 True 時 1 倍部位改持 T-bill；cost 換倉成本。
+    off 陣列（已對齊持有日）：1 倍部位改持 T-bill 的比例（布林 True = 全部，或 0~1 的小數）；cost 換倉成本。
     回傳 dict：dates、value（每日市值）、invested（累計投入）、flows（現金流，用於 IRR）、switches。"""
     idx = q.index
     i0 = 0 if start is None else idx.searchsorted(pd.Timestamp(start))
@@ -98,7 +98,7 @@ def run(q, w, start=None, end=None, tq_col="tq_syn", dca_only=False, boost=True,
     pq = q.close.values; pt = q[tq_col].values; rf = q.rf.values
     ws = q.week_start.values if dca_mask is None else np.asarray(dca_mask, bool)
     pb = np.cumprod(1 + rf)
-    offv = np.zeros(len(q), bool) if off is None else np.asarray(off, bool)
+    offv = np.zeros(len(q)) if off is None else np.nan_to_num(np.asarray(off, float))
     if z is None:
         z = atr_z(q)
     if bz is None:
@@ -120,10 +120,8 @@ def run(q, w, start=None, end=None, tq_col="tq_syn", dca_only=False, boost=True,
             else:
                 put = (1 - cash_frac) * amt; cash += cash_frac * amt
                 wt = w[i] if np.isfinite(pt[i]) else 0.0
-                if offv[i]:
-                    nb += put * (1 - wt) / pb[i]
-                else:
-                    nq += put * (1 - wt) / pq[i]
+                nb += put * (1 - wt) * offv[i] / pb[i]
+                nq += put * (1 - wt) * (1 - offv[i]) / pq[i]
                 if wt > 0:
                     nt += put * wt / pt[i]
                 if panic and np.isfinite(zp[i]) and zp[i] > panic_thr and cash > 0:
@@ -138,12 +136,15 @@ def run(q, w, start=None, end=None, tq_col="tq_syn", dca_only=False, boost=True,
             wt = w[i] if np.isfinite(pt[i]) else 0.0
             cw = vt / tot if tot > 0 else 0.0
             need = (wt in (0.0, 1.0) and cw != wt and abs(cw - wt) > 1e-9) or abs(cw - wt) > rebalance_band
-            wrong_base = (offv[i] and vq > 1e-12) or (not offv[i] and vb > 1e-12)
+            basev = vq + vb
+            bf = vb / basev if basev > 1e-12 else offv[i]
+            f = offv[i]
+            wrong_base = (f in (0.0, 1.0) and abs(bf - f) > 1e-9) or abs(bf - f) > rebalance_band
             if tot > 0 and (need or wrong_base):
-                trade = abs(wt - cw) * tot + (vq if offv[i] else vb)
+                trade = abs(wt - cw) * tot + abs(bf - f) * basev
                 tot -= trade * cost
                 base = tot * (1 - wt)
-                nq, nb = (0.0, base / pb[i]) if offv[i] else (base / pq[i], 0.0)
+                nq, nb = base * (1 - f) / pq[i], base * f / pb[i]
                 nt = tot * wt / pt[i] if wt > 0 else 0.0
                 sw += 1
         vals[k] = nq * pq[i] + (nt * pt[i] if nt > 0 else 0.0) + nb * pb[i] + cash
