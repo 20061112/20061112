@@ -1,0 +1,133 @@
+SMA   100 irr99 0.255 irr10 0.310 win10  8/17 dIRR10y -0.003 worst -0.57 g10min 1.42 worstyr -0.56 sh 0.59 sw 7.5
+SMA   120 irr99 0.257 irr10 0.337 win10  7/17 dIRR10y -0.015 worst -0.64 g10min 1.04 worstyr -0.65 sh 0.55 sw 7.3
+SMA   140 irr99 0.259 irr10 0.347 win10  6/17 dIRR10y -0.005 worst -0.62 g10min 0.72 worstyr -0.61 sh 0.58 sw 6.8
+SMA   160 irr99 0.270 irr10 0.357 win10 11/17 dIRR10y +0.017 worst -0.65 g10min 0.75 worstyr -0.57 sh 0.60 sw 6.1
+SMA   180 irr99 0.276 irr10 0.367 win10 14/17 dIRR10y +0.007 worst -0.59 g10min 0.85 worstyr -0.54 sh 0.62 sw 6.1
+SMA   200 irr99 0.269 irr10 0.358 win10  0/17 dIRR10y +0.000 worst -0.52 g10min 0.83 worstyr -0.52 sh 0.63 sw 5.9
+SMA   220 irr99 0.285 irr10 0.363 win10 14/17 dIRR10y +0.021 worst -0.52 g10min 1.11 worstyr -0.49 sh 0.68 sw 5.3
+SMA   240 irr99 0.278 irr10 0.352 win10 14/17 dIRR10y +0.020 worst -0.51 g10min 1.08 worstyr -0.47 sh 0.67 sw 5.2
+SMA   260 irr99 0.277 irr10 0.363 win10 16/17 dIRR10y +0.011 worst -0.52 g10min 0.89 worstyr -0.52 sh 0.65 sw 5.3
+SMA   280 irr99 0.282 irr10 0.373 win10 15/17 dIRR10y +0.019 worst -0.54 g10min 0.79 worstyr -0.58 sh 0.65 sw 4.9
+SMA   300 irr99 0.285 irr10 0.376 win10 15/17 dIRR10y +0.026 worst -0.54 g10min 0.82 worstyr -0.58 sh 0.65 sw 4.6
+EMA   100 irr99 0.272 irr10 0.351 win10 11/17 dIRR10y +0.008 worst -0.61 g10min 1.10 worstyr -0.55 sh 0.59 sw 8.1
+EMA   120 irr99 0.271 irr10 0.357 win10 12/17 dIRR10y +0.009 worst -0.57 g10min 0.92 worstyr -0.55 sh 0.59 sw 7.4
+EMA   140 irr99 0.271 irr10 0.357 win10 13/17 dIRR10y +0.016 worst -0.57 g10min 0.86 worstyr -0.51 sh 0.61 sw 6.6
+EMA   160 irr99 0.271 irr10 0.356 win10 12/17 dIRR10y +0.027 worst -0.53 g10min 0.81 worstyr -0.49 sh 0.62 sw 6.2
+EMA   180 irr99 0.268 irr10 0.345 win10 14/17 dIRR10y +0.015 worst -0.51 g10min 0.94 worstyr -0.49 sh 0.64 sw 6.0
+EMA   200 irr99 0.272 irr10 0.360 win10 11/17 dIRR10y +0.006 worst -0.51 g10min 0.71 worstyr -0.51 sh 0.64 sw 5.5
+EMA   220 irr99 0.286 irr10 0.371 win10 15/17 dIRR10y +0.028 worst -0.53 g10min 1.01 worstyr -0.54 sh 0.67 sw 5.2
+EMA   240 irr99 0.278 irr10 0.364 win10 11/17 dIRR10y +0.029 worst -0.53 g10min 0.68 worstyr -0.55 sh 0.64 sw 5.0
+EMA   260 irr99 0.273 irr10 0.369 win10 13/17 dIRR10y +0.018 worst -0.54 g10min 0.46 worstyr -0.58 sh 0.62 sw 5.4
+EMA   280 irr99 0.274 irr10 0.365 win10 14/17 dIRR10y +0.021 worst -0.54 g10min 0.60 worstyr -0.58 sh 0.63 sw 5.5
+EMA   300 irr99 0.273 irr10 0.361 win10 14/17 dIRR10y +0.017 worst -0.54 g10min 0.60 worstyr -0.58 sh 0.63 sw 5.2
+WMA   100 irr99 0.250 irr10 0.333 win10  4/17 dIRR10y -0.016 worst -0.63 g10min 0.67 worstyr -0.60 sh 0.53 sw 8.9
+WMA   120 irr99 0.255 irr10 0.326 win10  9/17 dIRR10y +0.008 worst -0.57 g10min 1.12 worstyr -0.54 sh 0.58 sw 7.6
+WMA   140 irr99 0.259 irr10 0.332 win10  9/17 dIRR10y +0.002 worst -0.60 g10min 1.19 worstyr -0.59 sh 0.57 sw 7.9
+WMA   160 irr99 0.256 irr10 0.343 win10  5/17 dIRR10y -0.004 worst -0.62 g10min 0.73 worstyr -0.62 sh 0.56 sw 7.9
+WMA   180 irr99 0.265 irr10 0.358 win10  9/17 dIRR10y +0.001 worst -0.66 g10min 0.72 worstyr -0.62 sh 0.56 sw 7.5
+WMA   200 irr99 0.267 irr10 0.359 win10  7/17 dIRR10y -0.002 worst -0.60 g10min 0.81 worstyr -0.55 sh 0.58 sw 6.8
+WMA   220 irr99 0.274 irr10 0.368 win10 12/17 dIRR10y +0.012 worst -0.60 g10min 0.77 worstyr -0.56 sh 0.60 sw 6.3
+WMA   240 irr99 0.274 irr10 0.366 win10 11/17 dIRR10y +0.021 worst -0.58 g10min 0.78 worstyr -0.55 sh 0.60 sw 6.3
+WMA   260 irr99 0.282 irr10 0.377 win10 17/17 dIRR10y +0.020 worst -0.58 g10min 0.84 worstyr -0.52 sh 0.63 sw 5.8
+WMA   280 irr99 0.270 irr10 0.365 win10 12/17 dIRR10y +0.007 worst -0.55 g10min 0.63 worstyr -0.51 sh 0.62 sw 6.0
+WMA   300 irr99 0.277 irr10 0.369 win10 15/17 dIRR10y +0.007 worst -0.52 g10min 0.71 worstyr -0.53 sh 0.65 sw 5.6
+VWMA  100 irr99 0.250 irr10 0.310 win10  9/17 dIRR10y +0.016 worst -0.59 g10min 1.13 worstyr -0.61 sh 0.55 sw 7.6
+VWMA  120 irr99 0.268 irr10 0.361 win10 13/17 dIRR10y +0.006 worst -0.65 g10min 0.85 worstyr -0.64 sh 0.57 sw 6.8
+VWMA  140 irr99 0.258 irr10 0.350 win10  3/17 dIRR10y -0.003 worst -0.65 g10min 0.67 worstyr -0.61 sh 0.56 sw 6.8
+VWMA  160 irr99 0.274 irr10 0.366 win10 11/17 dIRR10y +0.014 worst -0.65 g10min 0.72 worstyr -0.63 sh 0.61 sw 6.1
+VWMA  180 irr99 0.284 irr10 0.387 win10 14/17 dIRR10y +0.018 worst -0.60 g10min 0.71 worstyr -0.55 sh 0.63 sw 5.7
+VWMA  200 irr99 0.281 irr10 0.384 win10 14/17 dIRR10y +0.024 worst -0.59 g10min 0.51 worstyr -0.53 sh 0.61 sw 5.7
+VWMA  220 irr99 0.287 irr10 0.374 win10 17/17 dIRR10y +0.030 worst -0.52 g10min 0.91 worstyr -0.51 sh 0.67 sw 5.1
+VWMA  240 irr99 0.282 irr10 0.367 win10 17/17 dIRR10y +0.021 worst -0.51 g10min 0.98 worstyr -0.51 sh 0.67 sw 5.3
+VWMA  260 irr99 0.285 irr10 0.379 win10 15/17 dIRR10y +0.018 worst -0.52 g10min 0.76 worstyr -0.52 sh 0.67 sw 5.1
+VWMA  280 irr99 0.280 irr10 0.374 win10 15/17 dIRR10y +0.011 worst -0.54 g10min 0.69 worstyr -0.58 sh 0.65 sw 5.0
+VWMA  300 irr99 0.289 irr10 0.377 win10 17/17 dIRR10y +0.032 worst -0.54 g10min 0.84 worstyr -0.58 sh 0.66 sw 4.5
+VWAP  100 irr99 0.254 irr10 0.316 win10 11/17 dIRR10y +0.022 worst -0.57 g10min 1.15 worstyr -0.61 sh 0.58 sw 7.5
+VWAP  120 irr99 0.268 irr10 0.361 win10 13/17 dIRR10y +0.006 worst -0.65 g10min 0.86 worstyr -0.64 sh 0.57 sw 6.8
+VWAP  140 irr99 0.261 irr10 0.353 win10  6/17 dIRR10y -0.002 worst -0.63 g10min 0.70 worstyr -0.61 sh 0.57 sw 6.6
+VWAP  160 irr99 0.270 irr10 0.365 win10 10/17 dIRR10y +0.010 worst -0.65 g10min 0.62 worstyr -0.63 sh 0.60 sw 6.3
+VWAP  180 irr99 0.285 irr10 0.389 win10 14/17 dIRR10y +0.018 worst -0.60 g10min 0.72 worstyr -0.55 sh 0.64 sw 5.7
+VWAP  200 irr99 0.281 irr10 0.384 win10 14/17 dIRR10y +0.024 worst -0.58 g10min 0.52 worstyr -0.53 sh 0.62 sw 5.6
+VWAP  220 irr99 0.286 irr10 0.374 win10 17/17 dIRR10y +0.029 worst -0.52 g10min 0.85 worstyr -0.51 sh 0.67 sw 5.1
+VWAP  240 irr99 0.283 irr10 0.368 win10 17/17 dIRR10y +0.022 worst -0.51 g10min 0.98 worstyr -0.51 sh 0.67 sw 5.3
+VWAP  260 irr99 0.285 irr10 0.379 win10 15/17 dIRR10y +0.018 worst -0.52 g10min 0.76 worstyr -0.52 sh 0.67 sw 5.1
+VWAP  280 irr99 0.284 irr10 0.378 win10 15/17 dIRR10y +0.020 worst -0.54 g10min 0.71 worstyr -0.58 sh 0.66 sw 5.0
+VWAP  300 irr99 0.290 irr10 0.378 win10 17/17 dIRR10y +0.035 worst -0.54 g10min 0.84 worstyr -0.58 sh 0.66 sw 4.5
+KAMA  100 irr99 0.178 irr10 0.234 win10  1/17 dIRR10y -0.063 worst -0.62 g10min -0.05 worstyr -0.55 sh 0.43 sw 19.5
+KAMA  120 irr99 0.197 irr10 0.255 win10  1/17 dIRR10y -0.064 worst -0.60 g10min 0.14 worstyr -0.52 sh 0.47 sw 18.7
+KAMA  140 irr99 0.200 irr10 0.262 win10  1/17 dIRR10y -0.068 worst -0.64 g10min 0.17 worstyr -0.59 sh 0.45 sw 17.7
+KAMA  160 irr99 0.215 irr10 0.291 win10  1/17 dIRR10y -0.058 worst -0.63 g10min 0.15 worstyr -0.55 sh 0.48 sw 16.9
+KAMA  180 irr99 0.204 irr10 0.274 win10  1/17 dIRR10y -0.064 worst -0.63 g10min 0.06 worstyr -0.55 sh 0.47 sw 16.1
+KAMA  200 irr99 0.209 irr10 0.277 win10  1/17 dIRR10y -0.054 worst -0.64 g10min 0.18 worstyr -0.54 sh 0.48 sw 15.7
+KAMA  220 irr99 0.208 irr10 0.285 win10  0/17 dIRR10y -0.068 worst -0.64 g10min 0.09 worstyr -0.54 sh 0.47 sw 14.9
+KAMA  240 irr99 0.198 irr10 0.269 win10  0/17 dIRR10y -0.073 worst -0.64 g10min 0.07 worstyr -0.58 sh 0.44 sw 14.3
+KAMA  260 irr99 0.200 irr10 0.269 win10  1/17 dIRR10y -0.069 worst -0.64 g10min 0.15 worstyr -0.56 sh 0.45 sw 14.1
+KAMA  280 irr99 0.201 irr10 0.277 win10  0/17 dIRR10y -0.073 worst -0.64 g10min 0.06 worstyr -0.58 sh 0.44 sw 13.8
+KAMA  300 irr99 0.199 irr10 0.272 win10  1/17 dIRR10y -0.076 worst -0.65 g10min 0.12 worstyr -0.58 sh 0.44 sw 13.6
+CROSS 100 irr99 0.267 irr10 0.341 win10 10/17 dIRR10y +0.007 worst -0.59 g10min 1.30 worstyr -0.58 sh 0.61 sw 4.2
+CROSS 120 irr99 0.265 irr10 0.329 win10 13/17 dIRR10y +0.020 worst -0.62 g10min 1.32 worstyr -0.62 sh 0.61 sw 4.1
+CROSS 140 irr99 0.293 irr10 0.379 win10 17/17 dIRR10y +0.029 worst -0.60 g10min 1.15 worstyr -0.60 sh 0.68 sw 3.9
+CROSS 160 irr99 0.290 irr10 0.375 win10 17/17 dIRR10y +0.040 worst -0.55 g10min 0.91 worstyr -0.58 sh 0.68 sw 4.0
+CROSS 180 irr99 0.283 irr10 0.356 win10 14/17 dIRR10y +0.024 worst -0.55 g10min 1.17 worstyr -0.52 sh 0.67 sw 4.1
+CROSS 200 irr99 0.295 irr10 0.378 win10 17/17 dIRR10y +0.045 worst -0.51 g10min 1.08 worstyr -0.50 sh 0.69 sw 3.9
+CROSS 220 irr99 0.284 irr10 0.367 win10 15/17 dIRR10y +0.036 worst -0.54 g10min 1.02 worstyr -0.58 sh 0.65 sw 4.0
+CROSS 240 irr99 0.275 irr10 0.352 win10 14/17 dIRR10y +0.026 worst -0.54 g10min 0.91 worstyr -0.58 sh 0.63 sw 3.9
+CROSS 260 irr99 0.274 irr10 0.352 win10 14/17 dIRR10y +0.024 worst -0.54 g10min 0.75 worstyr -0.58 sh 0.63 sw 3.9
+CROSS 280 irr99 0.279 irr10 0.363 win10 13/17 dIRR10y +0.025 worst -0.54 g10min 0.70 worstyr -0.58 sh 0.64 sw 4.1
+CROSS 300 irr99 0.276 irr10 0.365 win10 14/17 dIRR10y +0.020 worst -0.54 g10min 0.56 worstyr -0.58 sh 0.63 sw 4.0
+
+BASE SMA200：irr99 0.269、最慘 -0.52、換倉 5.9/年
+
+1999 起 IRR（列 = 種類，欄 = 週期）
+n       100   120   140   160   180   200   220   240   260   280   300
+kind                                                                   
+SMA   0.255 0.257 0.259 0.270 0.276 0.269 0.285 0.278 0.277 0.282 0.285
+EMA   0.272 0.271 0.271 0.271 0.268 0.272 0.286 0.278 0.273 0.274 0.273
+WMA   0.250 0.255 0.259 0.256 0.265 0.267 0.274 0.274 0.282 0.270 0.277
+VWMA  0.250 0.268 0.258 0.274 0.284 0.281 0.287 0.282 0.285 0.280 0.289
+VWAP  0.254 0.268 0.261 0.270 0.285 0.281 0.286 0.283 0.285 0.284 0.290
+KAMA  0.178 0.197 0.200 0.215 0.204 0.209 0.208 0.198 0.200 0.201 0.199
+CROSS 0.267 0.265 0.293 0.290 0.283 0.295 0.284 0.275 0.274 0.279 0.276
+
+最慘相對本金
+n       100   120   140   160   180   200   220   240   260   280   300
+kind                                                                   
+SMA   -0.57 -0.64 -0.62 -0.65 -0.59 -0.52 -0.52 -0.51 -0.52 -0.54 -0.54
+EMA   -0.61 -0.57 -0.57 -0.53 -0.51 -0.51 -0.53 -0.53 -0.54 -0.54 -0.54
+WMA   -0.63 -0.57 -0.60 -0.62 -0.66 -0.60 -0.60 -0.58 -0.58 -0.55 -0.52
+VWMA  -0.59 -0.65 -0.65 -0.65 -0.60 -0.59 -0.52 -0.51 -0.52 -0.54 -0.54
+VWAP  -0.57 -0.65 -0.63 -0.65 -0.60 -0.58 -0.52 -0.51 -0.52 -0.54 -0.54
+KAMA  -0.62 -0.60 -0.64 -0.63 -0.63 -0.64 -0.64 -0.64 -0.64 -0.64 -0.65
+CROSS -0.59 -0.62 -0.60 -0.55 -0.55 -0.51 -0.54 -0.54 -0.54 -0.54 -0.54
+
+換倉次數 / 年
+n      100  120  140  160  180  200  220  240  260  280  300
+kind                                                        
+SMA    7.5  7.3  6.8  6.1  6.1  5.9  5.3  5.2  5.3  4.9  4.6
+EMA    8.1  7.4  6.6  6.2  6.0  5.5  5.2  5.0  5.4  5.5  5.2
+WMA    8.9  7.6  7.9  7.9  7.5  6.8  6.3  6.3  5.8  6.0  5.6
+VWMA   7.6  6.8  6.8  6.1  5.7  5.7  5.1  5.3  5.1  5.0  4.5
+VWAP   7.5  6.8  6.6  6.3  5.7  5.6  5.1  5.3  5.1  5.0  4.5
+KAMA  19.5 18.7 17.7 16.9 16.1 15.7 14.9 14.3 14.1 13.8 13.6
+CROSS  4.2  4.1  3.9  4.0  4.1  3.9  4.0  3.9  3.9  4.1  4.0
+
+各種類整片週期（100~300）彙總
+       irr99_med  irr99_min  irr99_max  d10_med  worst_med  worst_min  sw_med
+kind                                                                         
+SMA        0.276      0.255      0.285    0.011     -0.542     -0.652   5.906
+EMA        0.272      0.268      0.286    0.017     -0.542     -0.608   5.543
+WMA        0.267      0.250      0.282    0.007     -0.596     -0.658   6.848
+VWMA       0.281      0.250      0.289    0.018     -0.587     -0.654   5.688
+VWAP       0.283      0.254      0.290    0.020     -0.574     -0.654   5.616
+KAMA       0.200      0.178      0.215   -0.068     -0.639     -0.648  15.724
+CROSS      0.279      0.265      0.295    0.025     -0.542     -0.622   4.022
+
+區塊拼貼蒙地卡羅（200 條 10 年路徑；VWMA / VWAP 因拼貼路徑沒有真實成交量不納入）
+  EMA（150/200/250 平均）    − SMA：IRR 差 中位 +0.0050 勝率  58% | 最慘相對本金 差 中位 +0.004 5% -0.051
+  EMA200                 − SMA：IRR 差 中位 +0.0040 勝率  55% | 最慘相對本金 差 中位 +0.000 5% -0.073
+  WMA（150/200/250 平均）    − SMA：IRR 差 中位 -0.0028 勝率  43% | 最慘相對本金 差 中位 +0.000 5% -0.061
+  WMA200                 − SMA：IRR 差 中位 -0.0021 勝率  48% | 最慘相對本金 差 中位 +0.000 5% -0.091
+  KAMA（150/200/250 平均）   − SMA：IRR 差 中位 -0.0317 勝率  30% | 最慘相對本金 差 中位 +0.000 5% -0.154
+  KAMA200                − SMA：IRR 差 中位 -0.0278 勝率  35% | 最慘相對本金 差 中位 +0.000 5% -0.155
+  CROSS（150/200/250 平均）  − SMA：IRR 差 中位 -0.0001 勝率  49% | 最慘相對本金 差 中位 +0.000 5% -0.090
+  CROSS200               − SMA：IRR 差 中位 -0.0020 勝率  47% | 最慘相對本金 差 中位 +0.000 5% -0.114

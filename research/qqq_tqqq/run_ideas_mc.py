@@ -33,29 +33,30 @@ def wr(d, ok, stay=None):
     return E.weights_from_rules(d, ok, ~stay)
 
 
-res = []
-for k in range(300):
-    d = path(); cc = d.close; r = d.r
-    z = E.atr_z(d); above = cc > cc.rolling(200).mean()
-    sig = har_rel_daily(d, 5, "PK"); zs = ind.rz(np.log(sig))
-    W = {"BASE": wr(d, above & (z < 0.5))}
-    for h in [4.0, 6.0, 8.0]:
-        W[f"CUSUM_OR h{h:.0f}"] = wr(d, (above | (ind.cusum_state(r, 0.25, h) > 0)) & (z < 0.5))
-    W["TSMOM63_OR"] = wr(d, (above | (ind.tsmom(cc, 63) > 0).fillna(False)) & (z < 0.5))
-    W["ASYM σ̂ 0.75"] = wr(d, above & (zs.fillna(z) < 0.5) & (z < 0.75), above & (z < 0.75))
-    s0 = d.index[WARM]
-    row = {}
-    for name, w in W.items():
-        st = E.stats(E.run(d, w, start=s0, z=z)); row[name] = st["irr"]; row[name + "|worst"] = st["worst"]
-    trig = (z > 1.5) & (sig < r.rolling(20).std())
-    zf = z.where(z <= 2, 1.9).where(~trig, 3.0)
-    st = E.stats(E.run(d, W["BASE"], start=s0, z=zf)); row["PANIC σ̂"] = st["irr"]; row["PANIC σ̂|worst"] = st["worst"]
-    res.append(row)
-R = pd.DataFrame(res)
-out = ["\n區塊拼貼蒙地卡羅（300 條 10 年路徑）：相對 BASE"]
-for k in [c for c in R.columns if "|" not in c and c != "BASE"]:
-    d = R[k] - R.BASE; dw = R[k + "|worst"] - R["BASE|worst"]
-    out.append(f"  {k:14s} IRR 差 中位 {d.median():+.4f} 平均 {d.mean():+.4f} 勝率 {(d > 0).mean():4.0%} 5% {d.quantile(.05):+.4f} | "
-               f"最慘相對本金 差 中位 {dw.median():+.3f} 5% {dw.quantile(.05):+.3f}（BASE 最慘中位 {R['BASE|worst'].median():.2f}、5% {R['BASE|worst'].quantile(.05):.2f}）")
-print("\n".join(out))
-open("results_ideas.txt", "a").write("\n".join(out) + "\n")
+if __name__ == "__main__":
+    res = []
+    for k in range(300):
+        d = path(); cc = d.close; r = d.r
+        z = E.atr_z(d); above = cc > cc.rolling(200).mean()
+        sig = har_rel_daily(d, 5, "PK"); zs = ind.rz(np.log(sig))
+        W = {"BASE": wr(d, above & (z < 0.5))}
+        for h in [4.0, 6.0, 8.0]:
+            W[f"CUSUM_OR h{h:.0f}"] = wr(d, (above | (ind.cusum_state(r, 0.25, h) > 0)) & (z < 0.5))
+        W["TSMOM63_OR"] = wr(d, (above | (ind.tsmom(cc, 63) > 0).fillna(False)) & (z < 0.5))
+        W["ASYM σ̂ 0.75"] = wr(d, above & (zs.fillna(z) < 0.5) & (z < 0.75), above & (z < 0.75))
+        s0 = d.index[WARM]
+        row = {}
+        for name, w in W.items():
+            st = E.stats(E.run(d, w, start=s0, z=z)); row[name] = st["irr"]; row[name + "|worst"] = st["worst"]
+        trig = (z > 1.5) & (sig < r.rolling(20).std())
+        zf = z.where(z <= 2, 1.9).where(~trig, 3.0)
+        st = E.stats(E.run(d, W["BASE"], start=s0, z=zf)); row["PANIC σ̂"] = st["irr"]; row["PANIC σ̂|worst"] = st["worst"]
+        res.append(row)
+    R = pd.DataFrame(res)
+    out = ["\n區塊拼貼蒙地卡羅（300 條 10 年路徑）：相對 BASE"]
+    for k in [c for c in R.columns if "|" not in c and c != "BASE"]:
+        d = R[k] - R.BASE; dw = R[k + "|worst"] - R["BASE|worst"]
+        out.append(f"  {k:14s} IRR 差 中位 {d.median():+.4f} 平均 {d.mean():+.4f} 勝率 {(d > 0).mean():4.0%} 5% {d.quantile(.05):+.4f} | "
+                   f"最慘相對本金 差 中位 {dw.median():+.3f} 5% {dw.quantile(.05):+.3f}（BASE 最慘中位 {R['BASE|worst'].median():.2f}、5% {R['BASE|worst'].quantile(.05):.2f}）")
+    print("\n".join(out))
+    open("results_ideas.txt", "a").write("\n".join(out) + "\n")
