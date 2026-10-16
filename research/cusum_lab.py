@@ -171,3 +171,40 @@ def line(d, adj=True):
     if adj and "adj" in d:
         s += f" | 去漂移 {d['adj']:+.3f}R t={d['t_adj']:+.2f}"
     return s
+
+
+def backtest_pyr(b, sig, stop_atr=2.0, max_units=3, fin=0.0002):
+    """加碼版：持有中再出現「同方向」訊號就再開一單（各自停損 2 ATR），最多 max_units 單；
+    反向訊號 → 全部平倉並反手開 1 單。每單各自記成一筆交易。"""
+    o, h, l, c = (b[k].to_numpy(float) for k in ("open", "high", "low", "close"))
+    atr, sp = b.atr.to_numpy(float), b.sp.to_numpy(float)
+    idx = b.index; n = len(b)
+    out, units = [], []                     # unit = [side, ent, stop, R, ei]
+    def close(u, i, px, why):
+        side, ent, stop, R, ei = u
+        days = max((idx[i].normalize() - idx[ei].normalize()).days, 0)
+        gross = (px - ent) * side; cost = sp[ei] + fin * ent * days
+        out.append(dict(entry_time=idx[ei], exit_time=idx[i], side=side, entry=ent, exit=px, R=R, gross=gross, cost=cost,
+                        pnl=gross - cost, pnl_R=(gross - cost) / R, gross_R=gross / R, bars=i - ei, days=days, why=why,
+                        unit=len(units)))
+    for i in range(1, n):
+        s = sig[i - 1]
+        if units and s == -units[0][0]:
+            for u in units:
+                close(u, i, o[i], "flip")
+            units = []
+        if s != 0 and np.isfinite(atr[i - 1]) and atr[i - 1] > 0 and (not units or (units[0][0] == s and len(units) < max_units)):
+            R = stop_atr * atr[i - 1]
+            units.append([s, o[i], o[i] - s * R, R, i])
+        keep = []
+        for u in units:
+            if u[0] == 1 and l[i] <= u[2]:
+                close(u, i, min(o[i], u[2]), "stop")
+            elif u[0] == -1 and h[i] >= u[2]:
+                close(u, i, max(o[i], u[2]), "stop")
+            else:
+                keep.append(u)
+        units = keep
+    for u in units:
+        close(u, n - 1, c[-1], "end")
+    return pd.DataFrame(out).sort_values("entry_time").reset_index(drop=True)
