@@ -54,51 +54,52 @@ def codes(w, off):
     return np.where(w > 0, 3, np.where(off, 2, 1))
 
 
-q["q_plain"] = q.close; q["t_plain"] = q.tq_syn; q["bill"] = (1 + q.rf).cumprod()
-base_w = w_rule(OK0)
-no_off = np.zeros(len(q), bool)
-dm = dm_off(c, q.rf, 200, 252).values
-base_lev = codes(base_w, no_off); dm_lev = codes(base_w, dm)
-rows = []
-base_roll = None
+if __name__ == "__main__":
+    q["q_plain"] = q.close; q["t_plain"] = q.tq_syn; q["bill"] = (1 + q.rf).cumprod()
+    base_w = w_rule(OK0)
+    no_off = np.zeros(len(q), bool)
+    dm = dm_off(c, q.rf, 200, 252).values
+    base_lev = codes(base_w, no_off); dm_lev = codes(base_w, dm)
+    rows = []
+    base_roll = None
 
 
-def evaluate(label, lev, cols):
-    global base_roll
-    f = E.stats(run3(q, lev, cols=cols))
-    s10 = E.stats(run3(q, lev, "2010-02-12", cols=cols))
-    roll = pd.DataFrame([E.stats(run3(q, lev, f"{y}-01-01", f"{y + 10}-01-01", cols=cols)) for y in range(2000, 2017)])
-    if base_roll is None:
-        base_roll = roll
-    d = roll.irr.values - base_roll.irr.values
-    rets = {k: q[col].pct_change().fillna(0).values for k, col in zip((1, 2, 3), cols)}
-    held = np.r_[1, lev[:-1]]
-    ls = pd.Series([rets[h][i] for i, h in enumerate(held)], index=q.index)
-    eq = (1 + ls).cumprod(); mdd = (eq / eq.cummax() - 1).min()
-    yr = (1 + ls).groupby(ls.index.year).prod() - 1
-    row = dict(label=label, irr99=f["irr"], irr10=s10["irr"], d10=np.median(d), win10=int((d > 0).sum()),
-               worst=f["worst"], worst10=roll.worst.min(), mdd=mdd, sharpe=ls.mean() / ls.std() * np.sqrt(252), worst_year=yr.min())
-    rows.append(row)
-    P(f"{label:34s} IRR {f['irr']:.3f}｜2010 起 {s10['irr']:.3f}｜10 年 IRR 差中位 {np.median(d):+.4f}（{(d > 0).sum()}/17）｜"
-      f"最慘 {f['worst']:.2f} 10年段最慘 {roll.worst.min():.2f}｜MDD {mdd:.2f} Sharpe {row['sharpe']:.2f}")
+    def evaluate(label, lev, cols):
+        global base_roll
+        f = E.stats(run3(q, lev, cols=cols))
+        s10 = E.stats(run3(q, lev, "2010-02-12", cols=cols))
+        roll = pd.DataFrame([E.stats(run3(q, lev, f"{y}-01-01", f"{y + 10}-01-01", cols=cols)) for y in range(2000, 2017)])
+        if base_roll is None:
+            base_roll = roll
+        d = roll.irr.values - base_roll.irr.values
+        rets = {k: q[col].pct_change().fillna(0).values for k, col in zip((1, 2, 3), cols)}
+        held = np.r_[1, lev[:-1]]
+        ls = pd.Series([rets[h][i] for i, h in enumerate(held)], index=q.index)
+        eq = (1 + ls).cumprod(); mdd = (eq / eq.cummax() - 1).min()
+        yr = (1 + ls).groupby(ls.index.year).prod() - 1
+        row = dict(label=label, irr99=f["irr"], irr10=s10["irr"], d10=np.median(d), win10=int((d > 0).sum()),
+                   worst=f["worst"], worst10=roll.worst.min(), mdd=mdd, sharpe=ls.mean() / ls.std() * np.sqrt(252), worst_year=yr.min())
+        rows.append(row)
+        P(f"{label:34s} IRR {f['irr']:.3f}｜2010 起 {s10['irr']:.3f}｜10 年 IRR 差中位 {np.median(d):+.4f}（{(d > 0).sum()}/17）｜"
+          f"最慘 {f['worst']:.2f} 10年段最慘 {roll.worst.min():.2f}｜MDD {mdd:.2f} Sharpe {row['sharpe']:.2f}")
 
 
-P("原策略 / 雙動能，各自加 covered call（偏斜 = 賣出的 call 隱含波動比 VXN 低幾點）")
-evaluate("原策略", base_lev, ("q_plain", "bill", "t_plain"))
-for sk in [0, 2, 4, 6]:
-    rs, info = covered_series(sk)
-    q[f"q_cc{sk}"] = (1 + rs).cumprod()
-    if sk in (2, 4):
-        P(f"  偏斜 {sk}：平均履約價 現價 +{info.K_pct.mean():.1%}、平均權利金 {info.prem_pct.mean():.2%}/次、"
-          f"被漲穿的循環 {(info.payoff_pct > 0).mean():.0%}、被漲穿時平均損失 {info.payoff_pct[info.payoff_pct > 0].mean():.2%}")
-    evaluate(f"原策略 + covered call（偏斜 {sk}）", base_lev, (f"q_cc{sk}", "bill", "t_plain"))
-evaluate("雙動能", dm_lev, ("q_plain", "bill", "t_plain"))
-for sk in [2, 4]:
-    evaluate(f"雙動能 + covered call（偏斜 {sk}）", dm_lev, (f"q_cc{sk}", "bill", "t_plain"))
+    P("原策略 / 雙動能，各自加 covered call（偏斜 = 賣出的 call 隱含波動比 VXN 低幾點）")
+    evaluate("原策略", base_lev, ("q_plain", "bill", "t_plain"))
+    for sk in [0, 2, 4, 6]:
+        rs, info = covered_series(sk)
+        q[f"q_cc{sk}"] = (1 + rs).cumprod()
+        if sk in (2, 4):
+            P(f"  偏斜 {sk}：平均履約價 現價 +{info.K_pct.mean():.1%}、平均權利金 {info.prem_pct.mean():.2%}/次、"
+              f"被漲穿的循環 {(info.payoff_pct > 0).mean():.0%}、被漲穿時平均損失 {info.payoff_pct[info.payoff_pct > 0].mean():.2%}")
+        evaluate(f"原策略 + covered call（偏斜 {sk}）", base_lev, (f"q_cc{sk}", "bill", "t_plain"))
+    evaluate("雙動能", dm_lev, ("q_plain", "bill", "t_plain"))
+    for sk in [2, 4]:
+        evaluate(f"雙動能 + covered call（偏斜 {sk}）", dm_lev, (f"q_cc{sk}", "bill", "t_plain"))
 
-# 實際 vs 隱含：VXN 與之後 31 日實現波動
-fut = q.r[::-1].rolling(CYCLE).std()[::-1].shift(-1) * np.sqrt(252) * 100
-gap = (q.vxn - fut).dropna()
-P(f"\n參考：VXN − 之後 {CYCLE} 個交易日實現波動 平均 {gap.mean():+.1f} 點、中位 {gap.median():+.1f} 點、VXN 較高的日子 {(gap > 0).mean():.0%}")
-pd.DataFrame(rows).to_csv("results_covered.csv", index=False, float_format="%.4f")
-open("results_covered.txt", "w").write("\n".join(out) + "\n")
+    # 實際 vs 隱含：VXN 與之後 31 日實現波動
+    fut = q.r[::-1].rolling(CYCLE).std()[::-1].shift(-1) * np.sqrt(252) * 100
+    gap = (q.vxn - fut).dropna()
+    P(f"\n參考：VXN − 之後 {CYCLE} 個交易日實現波動 平均 {gap.mean():+.1f} 點、中位 {gap.median():+.1f} 點、VXN 較高的日子 {(gap > 0).mean():.0%}")
+    pd.DataFrame(rows).to_csv("results_covered.csv", index=False, float_format="%.4f")
+    open("results_covered.txt", "w").write("\n".join(out) + "\n")
