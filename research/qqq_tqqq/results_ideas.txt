@@ -1,0 +1,59 @@
+BASE                                       irr99 0.269 irr10 0.358 lev 2.09 sw  5.9 worst -0.52 g10min 0.83 worstyr -0.52 sh 0.63 mdd -0.89
+GRADE    0.5≤z<0.75 → 2x                    irr99 0.272 irr10 0.370 lev 2.13 sw  7.8 win10  6/17 dIRR10y -0.001(min -0.018) worst -0.52 g10min 0.66 worstyr -0.52 sh 0.62 mdd -0.88
+GRADE    0.5≤z<1.0 → 2x                     irr99 0.269 irr10 0.367 lev 2.15 sw  8.3 win10  6/17 dIRR10y -0.007(min -0.023) worst -0.52 g10min 0.76 worstyr -0.52 sh 0.62 mdd -0.88
+GRADE    0.5≤z<1.5 → 2x                     irr99 0.282 irr10 0.386 lev 2.18 sw  7.7 win10  6/17 dIRR10y -0.000(min -0.019) worst -0.52 g10min 0.83 worstyr -0.53 sh 0.64 mdd -0.89
+VOL_OR   ATRz<0.5 或 σ̂z<0.0                 irr99 0.261 irr10 0.351 lev 2.10 sw  6.5 win10  0/17 dIRR10y -0.011(min -0.020) worst -0.52 g10min 0.70 worstyr -0.52 sh 0.61 mdd -0.89
+VOL_OR   ATRz<0.5 或 σ̂z<0.25                irr99 0.268 irr10 0.361 lev 2.12 sw  6.5 win10  5/17 dIRR10y -0.003(min -0.011) worst -0.52 g10min 0.72 worstyr -0.52 sh 0.62 mdd -0.89
+VOL_OR   ATRz<0.5 或 σ̂z<0.5                 irr99 0.268 irr10 0.359 lev 2.13 sw  6.5 win10  6/17 dIRR10y -0.005(min -0.023) worst -0.52 g10min 0.77 worstyr -0.52 sh 0.62 mdd -0.89
+VOL_OR   ATRz<0.5 或 VXNz<0.0                irr99 0.277 irr10 0.374 lev 2.13 sw  6.8 win10  9/17 dIRR10y +0.004(min -0.016) worst -0.52 g10min 0.68 worstyr -0.52 sh 0.63 mdd -0.89
+VOL_OR   ATRz<0.5 或 VXNz<0.25               irr99 0.281 irr10 0.385 lev 2.15 sw  7.0 win10 10/17 dIRR10y +0.006(min -0.022) worst -0.52 g10min 0.65 worstyr -0.52 sh 0.64 mdd -0.89
+VOL_OR   ATRz<0.5 或 VXNz<0.5                irr99 0.279 irr10 0.386 lev 2.17 sw  6.8 win10  9/17 dIRR10y +0.002(min -0.027) worst -0.52 g10min 0.59 worstyr -0.52 sh 0.63 mdd -0.89
+ASYM     進 σ̂z<0.5&ATRz<0.75，出 ATRz≥0.75    irr99 0.278 irr10 0.375 lev 2.14 sw  5.2 win10 10/17 dIRR10y +0.003(min -0.021) worst -0.52 g10min 0.63 worstyr -0.52 sh 0.63 mdd -0.89
+ASYM     進 ATRz<0.5，出 ATRz≥0.75（對照）         irr99 0.267 irr10 0.357 lev 2.14 sw  5.0 win10  3/17 dIRR10y -0.015(min -0.041) worst -0.52 g10min 0.76 worstyr -0.52 sh 0.62 mdd -0.89
+ASYM     進 σ̂z<0.5&ATRz<1.0，出 ATRz≥1.0      irr99 0.265 irr10 0.349 lev 2.17 sw  4.7 win10  7/17 dIRR10y -0.005(min -0.047) worst -0.52 g10min 0.79 worstyr -0.52 sh 0.61 mdd -0.89
+ASYM     進 ATRz<0.5，出 ATRz≥1.0（對照）          irr99 0.252 irr10 0.338 lev 2.16 sw  4.7 win10  3/17 dIRR10y -0.033(min -0.072) worst -0.52 g10min 0.79 worstyr -0.52 sh 0.59 mdd -0.89
+TREND_OR MA200 或 CUSUM 翻多 h=4.0             irr99 0.300 irr10 0.382 lev 2.20 sw  5.5 win10 16/17 dIRR10y +0.048(min -0.000) worst -0.65 g10min 1.50 worstyr -0.68 sh 0.61 mdd -0.95
+TREND_OR MA200 或 CUSUM 翻多 h=6.0             irr99 0.284 irr10 0.373 lev 2.12 sw  5.6 win10 15/17 dIRR10y +0.018(min +0.000) worst -0.52 g10min 0.94 worstyr -0.52 sh 0.65 mdd -0.89
+TREND_OR MA200 或 CUSUM 翻多 h=8.0             irr99 0.277 irr10 0.366 lev 2.14 sw  5.9 win10 12/17 dIRR10y +0.015(min -0.013) worst -0.78 g10min 0.70 worstyr -0.89 sh 0.49 mdd -0.98
+TREND_OR MA200 或 ER20>0.3                   irr99 0.270 irr10 0.363 lev 2.11 sw  6.8 win10 13/17 dIRR10y +0.004(min -0.006) worst -0.58 g10min 0.77 worstyr -0.52 sh 0.61 mdd -0.91
+TREND_OR MA200 或 ER20>0.5                   irr99 0.269 irr10 0.358 lev 2.09 sw  5.9 win10  0/17 dIRR10y +0.000(min +0.000) worst -0.52 g10min 0.83 worstyr -0.52 sh 0.63 mdd -0.89
+TREND_OR MA200 或 ER60>0.3                   irr99 0.269 irr10 0.358 lev 2.09 sw  5.9 win10  0/17 dIRR10y +0.000(min +0.000) worst -0.52 g10min 0.83 worstyr -0.52 sh 0.63 mdd -0.89
+TREND_OR MA200 或 ER60>0.5                   irr99 0.269 irr10 0.358 lev 2.09 sw  5.9 win10  0/17 dIRR10y +0.000(min +0.000) worst -0.52 g10min 0.83 worstyr -0.52 sh 0.63 mdd -0.89
+TREND_OR MA200 或 TSMOM42>0                  irr99 0.287 irr10 0.371 lev 2.18 sw  6.4 win10 16/17 dIRR10y +0.027(min -0.026) worst -0.62 g10min 1.07 worstyr -0.58 sh 0.61 mdd -0.93
+TREND_OR MA200 或 TSMOM63>0                  irr99 0.281 irr10 0.351 lev 2.18 sw  5.9 win10 13/17 dIRR10y +0.046(min -0.061) worst -0.61 g10min 1.47 worstyr -0.58 sh 0.60 mdd -0.94
+BELOW2X  MA200 下且 ATRz<-1.0 → 2x            irr99 0.271 irr10 0.363 lev 2.12 sw  6.7 win10 10/17 dIRR10y +0.000(min -0.009) worst -0.59 g10min 0.83 worstyr -0.52 sh 0.60 mdd -0.92
+BELOW2X  MA200 下且 ATRz<-0.5 → 2x            irr99 0.277 irr10 0.371 lev 2.14 sw  7.1 win10 16/17 dIRR10y +0.007(min -0.008) worst -0.66 g10min 0.88 worstyr -0.65 sh 0.57 mdd -0.95
+BELOW2X  MA200 下且 ATRz<0.0 → 2x             irr99 0.282 irr10 0.373 lev 2.17 sw  7.3 win10 16/17 dIRR10y +0.022(min -0.010) worst -0.66 g10min 0.95 worstyr -0.62 sh 0.58 mdd -0.95
+PANIC    z>1.5 且 σ̂<RV20 補倉                  irr99 0.270 irr10 0.358 win10 14/17 dIRR10y +0.0008 worst -0.49 g10min 0.84
+PANIC    z>2.0 且 σ̂<RV20 補倉                  irr99 0.269 irr10 0.358 win10 11/17 dIRR10y +0.0004 worst -0.46 g10min 0.80
+
+區塊拼貼蒙地卡羅（300 條 10 年路徑）：相對 BASE
+  CUSUM_OR h4    IRR 差 中位 +0.0089 平均 +0.0092 勝率  62% 5% -0.0426 | 最慘相對本金 差 中位 +0.000 5% -0.125（BASE 最慘中位 -0.31、5% -0.60）
+  CUSUM_OR h6    IRR 差 中位 +0.0066 平均 +0.0099 勝率  64% 5% -0.0303 | 最慘相對本金 差 中位 +0.000 5% -0.107（BASE 最慘中位 -0.31、5% -0.60）
+  CUSUM_OR h8    IRR 差 中位 +0.0066 平均 +0.0153 勝率  59% 5% -0.0392 | 最慘相對本金 差 中位 +0.000 5% -0.151（BASE 最慘中位 -0.31、5% -0.60）
+  TSMOM63_OR     IRR 差 中位 +0.0142 平均 +0.0109 勝率  62% 5% -0.0541 | 最慘相對本金 差 中位 +0.000 5% -0.146（BASE 最慘中位 -0.31、5% -0.60）
+  ASYM σ̂ 0.75   IRR 差 中位 +0.0029 平均 +0.0046 勝率  55% 5% -0.0567 | 最慘相對本金 差 中位 +0.000 5% -0.092（BASE 最慘中位 -0.31、5% -0.60）
+  PANIC σ̂       IRR 差 中位 +0.0005 平均 +0.0007 勝率  60% 5% -0.0045 | 最慘相對本金 差 中位 +0.000 5% -0.023（BASE 最慘中位 -0.31、5% -0.60）
+
+區塊拼貼蒙地卡羅（300 條 10 年路徑）：相對 BASE
+  CUSUM_OR h4    IRR 差 中位 +0.0089 平均 +0.0092 勝率  62% 5% -0.0426 | 最慘相對本金 差 中位 +0.000 5% -0.125（BASE 最慘中位 -0.31、5% -0.60）
+  CUSUM_OR h6    IRR 差 中位 +0.0066 平均 +0.0099 勝率  64% 5% -0.0303 | 最慘相對本金 差 中位 +0.000 5% -0.107（BASE 最慘中位 -0.31、5% -0.60）
+  CUSUM_OR h8    IRR 差 中位 +0.0066 平均 +0.0153 勝率  59% 5% -0.0392 | 最慘相對本金 差 中位 +0.000 5% -0.151（BASE 最慘中位 -0.31、5% -0.60）
+  TSMOM63_OR     IRR 差 中位 +0.0142 平均 +0.0109 勝率  62% 5% -0.0541 | 最慘相對本金 差 中位 +0.000 5% -0.146（BASE 最慘中位 -0.31、5% -0.60）
+  ASYM σ̂ 0.75   IRR 差 中位 +0.0029 平均 +0.0046 勝率  55% 5% -0.0567 | 最慘相對本金 差 中位 +0.000 5% -0.092（BASE 最慘中位 -0.31、5% -0.60）
+  PANIC σ̂       IRR 差 中位 +0.0005 平均 +0.0007 勝率  60% 5% -0.0045 | 最慘相對本金 差 中位 +0.000 5% -0.023（BASE 最慘中位 -0.31、5% -0.60）
+
+早期上車只開 2 倍（歷史）
+  CUSUM h4   3x irr99 0.300 irr10 0.382 win10 16/17 dIRR10y +0.048(min -0.000) worst -0.65 g10min 1.50 worstyr -0.68 sw 5.5
+  CUSUM h4   2x irr99 0.285 irr10 0.370 win10 16/17 dIRR10y +0.024(min -0.000) worst -0.59 g10min 1.16 worstyr -0.53 sw 6.7
+  CUSUM h6   3x irr99 0.284 irr10 0.373 win10 15/17 dIRR10y +0.018(min +0.000) worst -0.52 g10min 0.94 worstyr -0.52 sw 5.6
+  CUSUM h6   2x irr99 0.277 irr10 0.366 win10 15/17 dIRR10y +0.009(min +0.000) worst -0.52 g10min 0.89 worstyr -0.52 sw 6.1
+  CUSUM h8   3x irr99 0.277 irr10 0.366 win10 12/17 dIRR10y +0.015(min -0.013) worst -0.78 g10min 0.70 worstyr -0.89 sw 5.9
+  CUSUM h8   2x irr99 0.273 irr10 0.362 win10 12/17 dIRR10y +0.008(min -0.008) worst -0.68 g10min 0.75 worstyr -0.73 sw 6.5
+  TSMOM63    3x irr99 0.281 irr10 0.351 win10 13/17 dIRR10y +0.046(min -0.061) worst -0.61 g10min 1.47 worstyr -0.58 sw 5.9
+  TSMOM63    2x irr99 0.276 irr10 0.356 win10 13/17 dIRR10y +0.024(min -0.028) worst -0.57 g10min 1.16 worstyr -0.51 sw 7.2
+區塊拼貼蒙地卡羅（早期上車只開 2 倍）
+  CUSUM h4 2x    IRR 差 中位 +0.0025 平均 +0.0026 勝率  58% 5% -0.0266 | 最慘 差 中位 +0.000 5% -0.056
+  CUSUM h6 2x    IRR 差 中位 +0.0038 平均 +0.0042 勝率  63% 5% -0.0179 | 最慘 差 中位 +0.000 5% -0.054
+  CUSUM h8 2x    IRR 差 中位 +0.0031 平均 +0.0047 勝率  60% 5% -0.0255 | 最慘 差 中位 +0.000 5% -0.080
+  TSMOM63 2x     IRR 差 中位 +0.0051 平均 +0.0043 勝率  62% 5% -0.0284 | 最慘 差 中位 +0.000 5% -0.070
