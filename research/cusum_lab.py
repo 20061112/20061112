@@ -89,7 +89,7 @@ def backtest(b, sig, stop_atr=2.0, side="both", max_bars=None, trail_atr=None, b
     return pd.DataFrame(out)
 
 
-def m1_backtest(hb, sig, m1, stop_atr=2.0, fin=0.0002, slip=0.0):
+def m1_backtest(hb, sig, m1, stop_atr=2.0, fin=0.0002, slip=0.0, tp_R=None):
     """訊號在 H1（hb）收盤產生；進出場改用 M1 逐根：
     進場 = 下一根 H1 開始時間後第一根 M1 的開盤；停損逐分鐘檢查（跳空穿越用該分鐘開盤價成交）；
     反手 = 反向訊號後下一根 H1 開始的第一根 M1 開盤。點差用實際進場與出場那一分鐘的點差各算一半。"""
@@ -126,10 +126,18 @@ def m1_backtest(hb, sig, m1, stop_atr=2.0, fin=0.0002, slip=0.0):
         if pos != 0:
             seg = slice(max(a, ej), z)
             hit = np.where(ml[seg] <= stop)[0] if pos > 0 else np.where(mh[seg] >= stop)[0]
-            if len(hit):
-                j = seg.start + hit[0]
-                px = min(mo[j], stop) if pos > 0 else max(mo[j], stop)
-                close(j, px, "stop")
+            js = seg.start + hit[0] if len(hit) else None
+            jt = None
+            if tp_R:
+                tgt = ent + pos * tp_R * R
+                th = np.where(mh[seg] >= tgt)[0] if pos > 0 else np.where(ml[seg] <= tgt)[0]
+                jt = seg.start + th[0] if len(th) else None
+            if js is not None and (jt is None or js <= jt):          # 同一分鐘都碰到 → 算停損
+                px = min(mo[js], stop) if pos > 0 else max(mo[js], stop)
+                close(js, px, "stop")
+            elif jt is not None:
+                px = max(mo[jt], tgt) if pos > 0 else min(mo[jt], tgt)
+                close(jt, px, "tp")
     if pos != 0:
         close(len(mt) - 1, mc[-1], "end")
     return pd.DataFrame(out)
@@ -208,3 +216,67 @@ def backtest_pyr(b, sig, stop_atr=2.0, max_units=3, fin=0.0002):
     for u in units:
         close(u, n - 1, c[-1], "end")
     return pd.DataFrame(out).sort_values("entry_time").reset_index(drop=True)
+
+
+def with_atr(b, n):
+    """換 ATR 長度（n 根簡單平均 TR）。"""
+    b = b.copy()
+    pc = b.close.shift()
+    tr = np.maximum(b.high - b.low, np.maximum((b.high - pc).abs(), (b.low - pc).abs()))
+    b["atr"] = tr.rolling(n).mean()
+    return b
+
+
+def backtest_pm(b, sig, stop_atr=2.0, tp_R=None, max_bars=None, partial=None, be_after_partial=False,
+                fin=0.0002, risk_atr=2.0):
+    """持倉管理版（反向訊號一律反手）：
+    tp_R：固定停利（R 倍數）。max_bars：持有上限（根）。partial=(R 倍數, 比例)：到價先平一部分，其餘照原規則；
+    be_after_partial：部分停利後剩下的停損移到進場價。同一根 K 棒同時碰到停損與停利 → 算停損（保守）。
+    pnl_R 是整筆（含部分平倉）的加權結果。"""
+    o, h, l, c = (b[k].to_numpy(float) for k in ("open", "high", "low", "close"))
+    atr, sp = b.atr.to_numpy(float), b.sp.to_numpy(float)
+    idx = b.index; n = len(b)
+    out = []
+    pos = 0; ent = stop = R = 0.0; ei = -1; done = 0.0; realized = 0.0
+    def close(i, px, why):
+        nonlocal pos
+        days = max((idx[i].normalize() - idx[ei].normalize()).days, 0)
+        rest = 1 - done
+        gross = realized + rest * (px - ent) * pos
+        cost = sp[ei] + fin * ent * days
+        out.append(dict(entry_time=idx[ei], exit_time=idx[i], side=pos, entry=ent, exit=px, R=R, gross=gross, cost=cost,
+                        pnl=gross - cost, pnl_R=(gross - cost) / R, gross_R=gross / R, bars=i - ei, days=days, why=why))
+        pos = 0
+    for i in range(1, n):
+        s = sig[i - 1]
+        if pos != 0:
+            if s == -pos:
+                close(i, o[i], "flip")
+            elif max_bars is not None and i - ei >= max_bars:
+                close(i, o[i], "time")
+        if pos == 0 and s != 0 and np.isfinite(atr[i - 1]) and atr[i - 1] > 0:
+            pos, ent, ei = s, o[i], i
+            R = (stop_atr or risk_atr) * atr[i - 1]
+            stop = ent - pos * stop_atr * atr[i - 1] if stop_atr else (-np.inf if pos > 0 else np.inf)
+            done = 0.0; realized = 0.0
+        if pos == 0:
+            continue
+        adv = (l[i] - ent) * pos if pos > 0 else (ent - h[i])           # 最不利
+        fav = (h[i] - ent) if pos > 0 else (ent - l[i])                 # 最有利
+        if (pos > 0 and l[i] <= stop) or (pos < 0 and h[i] >= stop):
+            close(i, min(o[i], stop) if pos > 0 else max(o[i], stop), "stop"); continue
+        if partial and done == 0 and fav >= partial[0] * R:
+            px = ent + pos * partial[0] * R
+            if (o[i] - ent) * pos > partial[0] * R:
+                px = o[i]
+            realized += partial[1] * (px - ent) * pos; done = partial[1]
+            if be_after_partial:
+                stop = max(stop, ent) if pos > 0 else min(stop, ent)
+        if tp_R and fav >= tp_R * R:
+            px = ent + pos * tp_R * R
+            if (o[i] - ent) * pos > tp_R * R:
+                px = o[i]
+            close(i, px, "tp")
+    if pos != 0:
+        close(n - 1, c[-1], "end")
+    return pd.DataFrame(out)
