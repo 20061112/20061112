@@ -87,18 +87,21 @@ def regime(S, z_on=0.5):
 
 def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="borrow", basis=0.0025,
         spread=0.01, buffer=1.5, contract=None, start_notional=None, base=1000.0, lump=0.0,
-        regime_arr=None, switch_cost=0.0005, boll=True, panic=True, cash_frac=0.2, shock=None):
+        regime_arr=None, switch_cost=0.0005, boll=True, panic=True, cash_frac=0.2, shock=None,
+        L_arr=None, fut_ret=None):
     """回傳 dict：V（每日淨值）、flows、lev（每日總曝險/部位淨值）、twr（每日時間加權報酬）及成本統計。
 
     contract=None 為可分割（理想）合約；"MNQ"/"NQ" 為整數口數。
     start_notional：設定後，一口合約在 i0 的名目 = start_notional，之後隨 QQQ 價格變動（模擬「從今天的合約大小開始」）。
     fund：borrow（期貨帳戶可為負，借款利率 T-bill + spread）/ sell（維持現金 ≥ buffer × 保證金，不足時賣 QQQ）。
     shock：(日期索引, 跌幅) —— 在該日額外加一個單日跌幅（壓力測試）。
+    L_arr：每天開槓桿時的目標倍數（覆蓋 L）；fut_ret：期貨部位當天的報酬（覆蓋 QQQ 日報酬，用於盤中停損）。
     """
     i1 = len(S) if i1 is None else i1
     P, R, rf, rfa = S.close.values, S.ret.values.copy(), S.rf.values, S.rf_ann.values
     ws, z, bz, mr, roll = S.ws.values, S.z.values, S.bz.values, S.mrate.values, S.roll.values
     reg = S.on.values if regime_arr is None else regime_arr
+    RF = R if fut_ret is None else fut_ret
     zp, bthr = S.attrs["z_panic"], S.attrs["bthr"]
     if shock is not None:
         R[shock[0]] = (1 + R[shock[0]]) * (1 - shock[1]) - 1
@@ -129,7 +132,7 @@ def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="bor
             else:
                 ip = -acct * (d + spread / 252); acct -= ip; interest_paid += ip
             if n:
-                acct += n * cn[i - 1] * (r - d - basis / 252)
+                acct += n * cn[i - 1] * (RF[i] - d - basis / 252)
             T *= 1 + 3 * r - (0.0095 + 2 * (rfa[i] + 0.0045)) / 252
         E = q * p + acct + u * T + res
         twr[k] = E / Vprev - 1 if Vprev > 0 else 0.0
@@ -165,7 +168,7 @@ def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="bor
         if overlay or allf:
             if on != prev_on:
                 switches += 1
-            base_lev = L if on else (1.0 if allf else 0.0)
+            base_lev = (L if L_arr is None else L_arr[i]) if on else (1.0 if allf else 0.0)
             per = side                                 # 每口單邊成本（可分割合約時 n 以 MNQ 口為單位）
             if overlay and not on:
                 if n:
