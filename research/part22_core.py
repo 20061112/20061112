@@ -91,7 +91,7 @@ def regime(S, z_on=0.5):
 def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="borrow", basis=0.0025,
         spread=0.01, buffer=1.5, contract=None, start_notional=None, base=1000.0, lump=0.0,
         regime_arr=None, switch_cost=0.0005, boll=True, panic=True, cash_frac=0.2, shock=None,
-        L_arr=None, fut_ret=None, fut_name="MNQ", ratio=NDX_PER_QQQ, panic_arr=None, boost_arr=None):
+        L_arr=None, fut_ret=None, fut_name="MNQ", ratio=NDX_PER_QQQ, panic_arr=None, boost_arr=None, amt_mult=None):
     """回傳 dict：V（每日淨值）、flows、lev（每日總曝險/部位淨值）、twr（每日時間加權報酬）及成本統計。
 
     contract=None 為可分割（理想）合約；"MNQ"/"NQ" 為整數口數。
@@ -99,7 +99,7 @@ def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="bor
     fund：borrow（期貨帳戶可為負，借款利率 T-bill + spread）/ sell（維持現金 ≥ buffer × 保證金，不足時賣 QQQ）。
     shock：(日期索引, 跌幅) —— 在該日額外加一個單日跌幅（壓力測試）。
     L_arr：每天開槓桿時的目標倍數（覆蓋 L）；fut_ret：期貨部位當天的報酬（覆蓋 QQQ 日報酬，用於盤中停損）。
-    panic_arr：每天是否觸發恐慌補倉（覆蓋 ATR z > 2）；boost_arr：當週是否加倍投入（覆蓋布林 z ≤ −0.6）。
+    panic_arr：每天是否觸發恐慌補倉（覆蓋 ATR z > 2）；boost_arr：當週是否加倍投入（覆蓋布林 z ≤ −0.6）；amt_mult：當週投入金額再乘上的倍數。
     """
     i1 = len(S) if i1 is None else i1
     P, R, rf, rfa = S.close.values, S.ret.values.copy(), S.rf.values, S.rf_ann.values
@@ -152,7 +152,7 @@ def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="bor
         # 2) 定投與恐慌補倉
         if ws[i]:
             dbl = (bz[i] <= bthr) if boost_arr is None else boost_arr[i]
-            amt = base * (2 if (boll and eng != "dca" and dbl) else 1) + (lump if k == 0 else 0.0)
+            amt = base * (2 if (boll and eng != "dca" and dbl) else 1) * (1.0 if amt_mult is None else amt_mult[i]) + (lump if k == 0 else 0.0)
             inv += amt; flows.append((S.index[i], amt))
             if eng == "dca":
                 q += amt / p
