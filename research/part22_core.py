@@ -24,7 +24,10 @@ TBILL = {1999: 4.64, 2000: 5.82, 2001: 3.39, 2002: 1.60, 2003: 1.01, 2004: 1.37,
          2023: 5.07, 2024: 4.97, 2025: 4.10, 2026: 3.70}
 NDX_PER_QQQ = 41.0                       # NDX ≈ 41 × QQQ（近年比值）
 # 合約：乘數（美元/點）、單邊成本（手續費 + 0.25 點滑價）
-CONTRACTS = {"MNQ": (2.0, 0.62 + 0.25 * 2.0), "NQ": (20.0, 2.25 + 0.25 * 20.0)}
+CONTRACTS = {"MNQ": (2.0, 0.62 + 0.25 * 2.0), "NQ": (20.0, 2.25 + 0.25 * 20.0),
+             "MES": (5.0, 0.62 + 0.25 * 5.0), "ES": (50.0, 2.25 + 0.25 * 50.0),
+             "MYM": (0.5, 0.62 + 1.0 * 0.5), "YM": (5.0, 2.25 + 1.0 * 5.0)}
+# 指數 / ETF 比值：NDX ≈ 41 × QQQ、SPX ≈ 10 × SPY、DJIA ≈ 100 × DIA
 TODAY_MNQ = 2.0 * NDX_PER_QQQ * 709.80   # 2026/10/16 一口 MNQ 名目 ≈ 58,000 美元
 
 
@@ -88,7 +91,7 @@ def regime(S, z_on=0.5):
 def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="borrow", basis=0.0025,
         spread=0.01, buffer=1.5, contract=None, start_notional=None, base=1000.0, lump=0.0,
         regime_arr=None, switch_cost=0.0005, boll=True, panic=True, cash_frac=0.2, shock=None,
-        L_arr=None, fut_ret=None):
+        L_arr=None, fut_ret=None, fut_name="MNQ", ratio=NDX_PER_QQQ):
     """回傳 dict：V（每日淨值）、flows、lev（每日總曝險/部位淨值）、twr（每日時間加權報酬）及成本統計。
 
     contract=None 為可分割（理想）合約；"MNQ"/"NQ" 為整數口數。
@@ -106,11 +109,11 @@ def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="bor
     if shock is not None:
         R[shock[0]] = (1 + R[shock[0]]) * (1 - shock[1]) - 1
         P = P.copy(); P[shock[0]:] = P[shock[0]:] * (1 - shock[1])
-    mult, side = CONTRACTS[contract or "MNQ"]
+    mult, side = CONTRACTS[contract or fut_name]
     if start_notional is not None:
         cn = start_notional * P / P[i0]
     else:
-        cn = mult * NDX_PER_QQQ * P
+        cn = mult * ratio * P
     integer = contract is not None
     overlay, allf = eng == "fut", eng == "allfut"
 
