@@ -91,7 +91,7 @@ def regime(S, z_on=0.5):
 def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="borrow", basis=0.0025,
         spread=0.01, buffer=1.5, contract=None, start_notional=None, base=1000.0, lump=0.0,
         regime_arr=None, switch_cost=0.0005, boll=True, panic=True, cash_frac=0.2, shock=None,
-        L_arr=None, fut_ret=None, fut_name="MNQ", ratio=NDX_PER_QQQ):
+        L_arr=None, fut_ret=None, fut_name="MNQ", ratio=NDX_PER_QQQ, panic_arr=None):
     """回傳 dict：V（每日淨值）、flows、lev（每日總曝險/部位淨值）、twr（每日時間加權報酬）及成本統計。
 
     contract=None 為可分割（理想）合約；"MNQ"/"NQ" 為整數口數。
@@ -99,6 +99,7 @@ def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="bor
     fund：borrow（期貨帳戶可為負，借款利率 T-bill + spread）/ sell（維持現金 ≥ buffer × 保證金，不足時賣 QQQ）。
     shock：(日期索引, 跌幅) —— 在該日額外加一個單日跌幅（壓力測試）。
     L_arr：每天開槓桿時的目標倍數（覆蓋 L）；fut_ret：期貨部位當天的報酬（覆蓋 QQQ 日報酬，用於盤中停損）。
+    panic_arr：每天是否觸發恐慌補倉（覆蓋 ATR z > 2）。
     """
     i1 = len(S) if i1 is None else i1
     P, R, rf, rfa = S.close.values, S.ret.values.copy(), S.rf.values, S.rf_ann.values
@@ -156,7 +157,7 @@ def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="bor
                 q += amt / p
             else:
                 put = (1 - cash_frac) * amt; res += cash_frac * amt
-                if panic and z[i] > zp:
+                if panic and (z[i] > zp if panic_arr is None else panic_arr[i]):
                     put += res; res = 0.0
                 if eng == "etf":
                     if on:
