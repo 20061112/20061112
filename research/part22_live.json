@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-16",
+  "qqq_close": 709.8,
+  "ma200": 674.91,
+  "above_ma200": true,
+  "atr20_pct": 1.456,
+  "regime_on_after_close": true,
+  "note": "z/bz 欄為『截至前一日』；下一個交易日的判斷請用 signals() 重算",
+  "atr_z_today": -0.452,
+  "boll_z100_today": -0.588,
+  "exit_tomorrow": false,
+  "mnq_notional_est": 58204,
+  "contracts_formula": "全期貨：MNQ 口數 = round(目標槓桿 × 部位淨值 / (2 × NDX))；現股+期貨：round((L × 淨值 − QQQ 市值) / (2 × NDX))"
+}
