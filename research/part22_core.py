@@ -200,7 +200,9 @@ def run(S, eng="fut", i0=0, i1=None, L=3.0, rebal="weekly", band=0.25, fund="bor
                         y = (acct - b * N) / (1 - b)
                         q += y / p; acct -= y; spot = q * p
                 if need:
-                    Nt = max(base_lev * (spot + acct) - spot, 0.0)
+                    Nt = base_lev * (spot + acct) - spot
+                    if not allf:                       # 只有全期貨允許淨空（L_arr < 0）
+                        Nt = max(Nt, 0.0)
                     nt = Nt / cn[i]
                     if integer:
                         nt = float(np.floor(nt + 0.5))
