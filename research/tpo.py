@@ -8,6 +8,7 @@ POC：TPO 最多的格子；同票時取離區間中心最近的。
 價值區（VA）：標準 CBOT 做法，從 POC 往上下各看兩格，取 TPO 較多的一邊加入，直到 ≥ 70%。
 IB：交易日的前 60 分鐘（A+B 期）。另外提供倫敦 / 紐約 IB（任意起點 60 分鐘）。
 """
+import os
 import numpy as np
 import pandas as pd
 from load import load
@@ -18,8 +19,20 @@ DAY_START_H = 1
 LETTERS = [chr(c) for c in range(ord("A"), ord("Z") + 1)] + [chr(c) for c in range(ord("a"), ord("z") + 1)]
 
 
-def load_m1(path="data/XAUUSD_M1_2026.csv"):
-    d = load(path)
+# 商品切換（環境變數 SYMBOL）：(預設檔案, 價格除數, 每點價格)。
+# NAS100（第二十二部分）：價格 ÷ 5，讓 1 格 ≈ ATR10 / 100，與黃金的相對解析度相同；點差 1 點 = 0.1 指數點。
+INSTR = {"XAUUSD": ("data/XAUUSD_M1_2026.csv", 1.0, 0.01), "NAS100": ("data/NAS100_M1_2025_2026.csv", 5.0, 0.1)}
+SYMBOL = os.environ.get("SYMBOL", "XAUUSD")
+
+
+def load_m1(path=None):
+    if path is None:
+        path, k, pt = INSTR[SYMBOL]
+        d = load(path)
+        d[["open", "high", "low", "close"]] /= k
+        d["spread"] = d.spread * pt / k / 0.01          # 下游一律用 spread × 0.01 換成價格
+    else:
+        d = load(path)
     d["day"] = (d.index - pd.Timedelta(hours=DAY_START_H)).normalize()
     mins = (d.index.hour - DAY_START_H) * 60 + d.index.minute
     d["period"] = mins // PERIOD
