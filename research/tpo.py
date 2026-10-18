@@ -22,9 +22,12 @@ LETTERS = [chr(c) for c in range(ord("A"), ord("Z") + 1)] + [chr(c) for c in ran
 # 商品切換（環境變數 SYMBOL）：(預設檔案, 價格除數, 每點價格)。
 # NAS100（第二十二部分）：價格 ÷ 5，讓 1 格 ≈ ATR10 / 100，與黃金的相對解析度相同；點差 1 點 = 0.1 指數點。
 INSTR = {"XAUUSD": ("data/XAUUSD_M1_2026.csv", 1.0, 0.01), "NAS100": ("data/NAS100_M1_2025_2026.csv", 5.0, 0.1),
-         "NAS100_OLD": ("data/NAS100_M1_2024_2025.csv", 5.0, 0.1), "NAS100_2023": ("data/NAS100_M1_2023_2024.csv", 5.0, 0.1)}
+         "NAS100_OLD": ("data/NAS100_M1_2024_2025.csv", 5.0, 0.1), "NAS100_2023": ("data/NAS100_M1_2023_2024.csv", 5.0, 0.1),
+         # 第二十七部分：黃金 2023/6 ~ 2025/12（版本 A 研究從沒用過）；X3 = 價格 ×3，讓 TPO 格子 / ATR 接近 2026 年
+         "XAUUSD_2023": ("data/XAUUSD_M1_2023_2026.csv", 1.0, 0.01), "XAUUSD_2023X3": ("data/XAUUSD_M1_2023_2026.csv", 1 / 3, 0.01)}
 # 第二十四、二十五部分：與下一個檔案重疊的日子不用
-END = {"NAS100_OLD": pd.Timestamp("2025-10-01 01:00"), "NAS100_2023": pd.Timestamp("2024-10-01 01:00")}
+END = {"NAS100_OLD": pd.Timestamp("2025-10-01 01:00"), "NAS100_2023": pd.Timestamp("2024-10-01 01:00"),
+       "XAUUSD_2023": pd.Timestamp("2026-01-01 01:00"), "XAUUSD_2023X3": pd.Timestamp("2026-01-01 01:00")}
 SYMBOL = os.environ.get("SYMBOL", "XAUUSD")
 
 
