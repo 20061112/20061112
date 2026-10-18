@@ -6,23 +6,27 @@
   次要：第十二部分 A、M15 H6 量能高潮、紐約 OR15 假突破反向抱到 21:00
   參考：版本 A（第二十二部分已判定無效）
 輸出：results_part24.txt、part24_equity.png
+第二十五部分（2023/10 ~ 2024/9）用同一支程式：python3 part24_nas100_2024.py NAS100_2023 → results_part25.txt、part25_equity.png
 """
 import os
-os.environ["SYMBOL"] = "NAS100_OLD"
+import sys
+SYM = sys.argv[1] if len(sys.argv) > 1 else "NAS100_OLD"
+os.environ["SYMBOL"] = SYM
 import numpy as np
 import pandas as pd
 from tpo import load_m1, INSTR
 from backtest import resample
 
-K = INSTR["NAS100_OLD"][1]
-CUT = pd.Timestamp("2025-04-01")
+K = INSTR[SYM][1]
+PART, CUT, PERIOD = {"NAS100_OLD": (24, pd.Timestamp("2025-04-01"), "2024/10 ~ 2025/9"),
+                     "NAS100_2023": (25, pd.Timestamp("2024-04-01"), "2023/10 ~ 2024/9")}[SYM]
 import part12_strategy as p12
 D = p12.DD
 ATR = p12.d.groupby("day").apply(lambda g: g.high.max() - g.low.min())      # 只用來顯示
 M1 = p12.d
 M15 = resample(M1[["open", "high", "low", "close", "tickvol", "spread"]], "15min")
 
-out = open("results_part24.txt", "w")
+out = open(f"results_part{PART}.txt", "w")
 def P(s=""): print(s); out.write(s + "\n"); out.flush()
 
 
@@ -41,7 +45,7 @@ def months(p, when):
     return m
 
 
-P(f"第二十四部分：NAS100 2024/10 ~ 2025/9 樣本外（{M1.index.min()} ~ {M1.index.max()}，{len(p12.DAYS)} 個交易日）")
+P(f"第{'二十四' if PART == 24 else '二十五'}部分：NAS100 {PERIOD} 樣本外（{M1.index.min()} ~ {M1.index.max()}，{len(p12.DAYS)} 個交易日）")
 P(f"前半 < {CUT.date()} ≤ 後半；日波幅中位數 {ATR.median() * K:.0f} 點；點差中位數 {M1.spread.median() * 0.01 * K:.2f} 點")
 P("候選在 2025/10 ~ 2026/10（第二十三部分）的結果：B PF 1.30、t 2.4；A PF 1.28；H6 +0.14R；紐約 OR15 抱到 21:00 +0.23R")
 
@@ -116,5 +120,5 @@ for k_, col, lab in (("B", "#3b6ea8", "Part 12 B: reverse, IB30, stop opposite, 
     t, c = curves[k_]
     ax.plot(t, c, color=col, lw=1.3, drawstyle="steps-post", label=lab)
 ax.axhline(0, color="k", lw=.6); ax.set_ylabel("cumulative PnL (index points, 1 unit)"); ax.legend(loc="upper left"); ax.grid(alpha=.3)
-ax.set_title("NAS100 Oct 2024 - Sep 2025 — unseen data, rules frozen")
-plt.tight_layout(); plt.savefig("part24_equity.png", dpi=110)
+ax.set_title(f"NAS100 {PERIOD} — unseen data, rules frozen")
+plt.tight_layout(); plt.savefig(f"part{PART}_equity.png", dpi=110)
