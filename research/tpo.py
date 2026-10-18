@@ -21,7 +21,9 @@ LETTERS = [chr(c) for c in range(ord("A"), ord("Z") + 1)] + [chr(c) for c in ran
 
 # 商品切換（環境變數 SYMBOL）：(預設檔案, 價格除數, 每點價格)。
 # NAS100（第二十二部分）：價格 ÷ 5，讓 1 格 ≈ ATR10 / 100，與黃金的相對解析度相同；點差 1 點 = 0.1 指數點。
-INSTR = {"XAUUSD": ("data/XAUUSD_M1_2026.csv", 1.0, 0.01), "NAS100": ("data/NAS100_M1_2025_2026.csv", 5.0, 0.1)}
+INSTR = {"XAUUSD": ("data/XAUUSD_M1_2026.csv", 1.0, 0.01), "NAS100": ("data/NAS100_M1_2025_2026.csv", 5.0, 0.1),
+         "NAS100_OLD": ("data/NAS100_M1_2024_2025.csv", 5.0, 0.1)}
+END = {"NAS100_OLD": pd.Timestamp("2025-10-01 01:00")}   # 第二十四部分：與 NAS100 新檔重疊的日子不用
 SYMBOL = os.environ.get("SYMBOL", "XAUUSD")
 
 
@@ -29,6 +31,8 @@ def load_m1(path=None):
     if path is None:
         path, k, pt = INSTR[SYMBOL]
         d = load(path)
+        if SYMBOL in END:
+            d = d[d.index < END[SYMBOL]].copy()
         d[["open", "high", "low", "close"]] /= k
         d["spread"] = d.spread * pt / k / 0.01          # 下游一律用 spread × 0.01 換成價格
     else:
